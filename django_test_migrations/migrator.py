@@ -7,14 +7,9 @@ from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.executor import MigrationExecutor
 from django.db.migrations.state import ProjectState
 
-_Migration = Union[
-    # Initial migration: None -> 0001
-    Tuple[Optional[str], str],
-    # Regular or rollback migration: 0001 -> 0002, or 0002 -> 0001
-    Tuple[str, str],
-    # Rollback migration to initial state: 0001 -> None
-    Tuple[str, Optional[str]],
-]
+# Regular or rollback migration: 0001 -> 0002, or 0002 -> 0001
+# Rollback migration to initial state: 0001 -> None
+_Migration = Tuple[str, Optional[str]]
 
 
 class Migrator(object):
