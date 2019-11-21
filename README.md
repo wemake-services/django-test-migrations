@@ -112,6 +112,8 @@ migrator.reset()
 Sometimes we also want to be sure that our migrations are in the correct order.
 And all our `dependecies = [...]` are correct.
 
+To achieve that we have [`plan.py`](https://github.com/wemake-services/django-test-migrations/blob/master/django_test_migrations/plan.py) module.
+
 That's how it can be used:
 
 ```python
