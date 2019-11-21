@@ -15,6 +15,8 @@
 - Fully typed with annotations and checked with `mypy`, [PEP561 compatible](https://www.python.org/dev/peps/pep-0561/)
 - Easy to start: has lots of docs, tests, and tutorials
 
+Read the [announcing post](https://sobolevn.me/2019/10/testing-django-migrations).
+
 
 ## Installation
 

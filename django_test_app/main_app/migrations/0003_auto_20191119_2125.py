@@ -8,9 +8,9 @@ from main_app.logic.pure.migrations import is_clean_item
 
 def _set_clean_flag(apps, schema_editor):
     """
-    Performs the data-migration.
+    Performs the data migration.
 
-    We can't import the Person model directly as it may be a newer
+    We can't import the ``SomeItem`` model directly as it may be a newer
     version than this migration expects. We use the historical version.
 
     We are using ``.all()`` because
