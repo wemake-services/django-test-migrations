@@ -22,6 +22,15 @@
 pip install django-test-migrations
 ```
 
+We support several `django` versions:
+
+- `1.11`
+- `2.1`
+- `2.2`
+
+Other versions might work too, but they are not officially supported.
+
+
 ## Testing django migrations
 
 Testing migrations is not a frequent thing in `django` land.

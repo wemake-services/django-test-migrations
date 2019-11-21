@@ -29,10 +29,10 @@ def test_all_migrations_missing():
 def test_all_migrations_auth():
     """Testing migraions for a builtin app."""
     auth_migrations = all_migrations('default', ['auth'])
-    assert len(auth_migrations) >= 13  # noqa: WPS432
+    assert len(auth_migrations) >= 10
 
 
 @pytest.mark.django_db
 def test_all_migrations_all():
     """Testing migraions for all apps."""
-    assert len(all_migrations()) >= 21  # noqa: WPS432
+    assert len(all_migrations()) >= 17  # noqa: WPS432
