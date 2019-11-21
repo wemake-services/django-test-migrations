@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 
 from django.core.management import call_command
 from django.db import DEFAULT_DB_ALIAS, connections
