@@ -134,7 +134,7 @@ This way you can be sure that migrations
 and apps that depend on each other will be executed in the correct order.
 
 
-## Test framework integrations
+## Test framework integrations 🐍
 
 We support several test frameworks as first-class citizens.
 That's a testing tool after all!
