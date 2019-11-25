@@ -16,6 +16,7 @@
 - Easy to start: has lots of docs, tests, and tutorials
 
 Read the [announcing post](https://sobolevn.me/2019/10/testing-django-migrations).
+See real-world [usage example](https://github.com/wemake-services/wemake-django-template).
 
 
 ## Installation
