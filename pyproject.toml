@@ -67,6 +67,6 @@ safety = "^1.8"
 
 pytest = "^5.3"
 pytest-cov = "^2.7"
-pytest-randomly = "^3.1"
+pytest-randomly = "^3.2"
 pytest-django = "^3.7"
 pytest-pythonpath = "^0.7.3"
