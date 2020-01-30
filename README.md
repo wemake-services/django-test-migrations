@@ -52,7 +52,10 @@ To test all migrations we have a [`Migrator`](https://github.com/wemake-services
 It has three methods to work with:
 
 - `.before()` which takes app and migration names to generate a state
-  before the actual migration happens
+  before the actual migration happens.
+  It creates the `before state` by applying all migrations up to and including
+  the one passed as an argument.
+
 - `.after()` which takes app and migration names to perform the actual migration
 - `.reset()` to clean everything up after we are done with testing
 
@@ -64,6 +67,12 @@ from django_test_migrations.migrator import Migrator
 migrator = Migrator(database='default')
 
 # Initial migration, currently our model has only a single string field:
+# Note:
+# We are testing migration `0002_someitem_is_clean`, so we are specifying
+# the name of the previous migration (`0001_initial`) in the .before()
+# method in order to prepare a state of the database before applying
+# the migration we are going to test.
+#
 old_state = migrator.before(('main_app', '0001_initial'))
 SomeItem = old_state.apps.get_model('main_app', 'SomeItem')
 
