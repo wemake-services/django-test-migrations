@@ -242,6 +242,7 @@ python manage.py check --deploy --fail-level WARNING
 ```
 
 This way you will be safe from wrong names in your migrations.
+
 Do you have a migrations that cannot be renamed? Add them to the ignore list:
 
 ```python
