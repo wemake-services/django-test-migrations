@@ -5,7 +5,6 @@ from typing import List, Set, Tuple
 
 from django.conf import settings
 from django.core.checks import CheckMessage, Warning
-from django.db.migrations.loader import MigrationLoader
 from typing_extensions import Final
 
 #: We use this value as a unique identifier of this check.
@@ -16,7 +15,15 @@ _SETTINGS_NAME: Final = 'DTM_IGNORED_MIGRATIONS'
 
 
 def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
-    """Finds automatic names in available migrations."""
+    """
+    Finds automatic names in available migrations.
+
+    We use nested import here, because some versions of django fails otherwise.
+    They do raise:
+    ``django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.``
+    """
+    from django.db.migrations.loader import MigrationLoader  # noqa: WPS433
+
     loader = MigrationLoader(None, ignore_no_migrations=True)
     loader.load_disk()
 
