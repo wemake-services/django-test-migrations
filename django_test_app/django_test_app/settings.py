@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Our custom check:
+    'django_test_migrations.contrib.django_checks.AutoNames',
+
     # Custom:
     'main_app',
 ]
