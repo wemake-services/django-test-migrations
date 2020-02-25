@@ -13,7 +13,7 @@ def test_all_migrations_main():
     assert nodes_to_tuples(main_migrations) == [
         ('main_app', '0001_initial'),
         ('main_app', '0002_someitem_is_clean'),
-        ('main_app', '0003_auto_20191119_2125'),
+        ('main_app', '0003_update_is_clean'),
         ('main_app', '0004_auto_20191119_2125'),
     ]
 

@@ -12,6 +12,7 @@
 - Allows to test `django` schema and data migrations
 - Allows to test both forward and rollback migrations
 - Allows to test the migrations order
+- Allows to test migration names
 - Fully typed with annotations and checked with `mypy`, [PEP561 compatible](https://www.python.org/dev/peps/pep-0561/)
 - Easy to start: has lots of docs, tests, and tutorials
 
@@ -136,7 +137,7 @@ assert nodes_to_tuples(main_migrations) == [
     ('main_app', '0001_initial'),
     ('main_app', '0002_someitem_is_clean'),
     ('other_app', '0001_initial'),
-    ('main_app', '0003_auto_20191119_2125'),
+    ('main_app', '0003_update_is_clean'),
     ('main_app', '0004_auto_20191119_2125'),
     ('other_app', '0002_auto_20191120_2230'),
 ]
@@ -193,7 +194,7 @@ class TestDirectMigration(MigratorTestCase):
     """This class is used to test direct migrations."""
 
     migrate_from = ('main_app', '0002_someitem_is_clean')
-    migrate_to = ('main_app', '0003_auto_20191119_2125')
+    migrate_to = ('main_app', '0003_update_is_clean')
 
     def prepare(self):
         """Prepare some data before the migration."""
@@ -210,6 +211,39 @@ class TestDirectMigration(MigratorTestCase):
 ```
 
 
+## Testing migration names
+
+`django` generates migration names for you when you run `makemigrations`.
+And these names are bad ([read more](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/) about why it is bad)!
+Just look at this: `0004_auto_20191119_2125.py`
+
+What does this migration do? What changes does it have?
+
+One can also pass `--name` attribute when creating migrations, but it is easy to forget.
+
+We offer an automated solution: `django` check
+that produces a warning for each badly named migration.
+
+Add our check into your `INSTALLED_APPS`:
+
+```python
+INSTALLED_APPS = [
+    # ...
+
+    # Our custom check:
+    'django_test_migrations.contrib.django_checks.AutoNames',
+]
+```
+
+And then in your CI run:
+
+```bash
+python manage.py check --deploy --fail-level WARNING
+```
+
+This way you will be safe from wrong names in your migrations.
+
+
 ## Credits
 
 This project is based on work of other awesome people:
@@ -217,6 +251,7 @@ This project is based on work of other awesome people:
 - [@asfaltboy](https://gist.github.com/asfaltboy/b3e6f9b5d95af8ba2cc46f2ba6eae5e2)
 - [@blueyed](https://gist.github.com/blueyed/4fb0a807104551f103e6)
 - [@fernandogrd](https://gist.github.com/blueyed/4fb0a807104551f103e6#gistcomment-1546191)
+- [@@adamchainz](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/)
 
 ## License
 

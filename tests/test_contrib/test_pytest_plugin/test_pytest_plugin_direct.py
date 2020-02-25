@@ -52,7 +52,7 @@ def test_pytest_plugin0002(migrator):
     assert SomeItem.objects.count() == 2
     assert SomeItem.objects.filter(is_clean=True).count() == 2
 
-    new_state = migrator.after(('main_app', '0003_auto_20191119_2125'))
+    new_state = migrator.after(('main_app', '0003_update_is_clean'))
     SomeItem = new_state.apps.get_model('main_app', 'SomeItem')
 
     assert SomeItem.objects.count() == 2
@@ -62,7 +62,7 @@ def test_pytest_plugin0002(migrator):
 @pytest.mark.django_db
 def test_pytest_plugin0003(migrator):
     """Ensures that the third migration works."""
-    old_state = migrator.before(('main_app', '0003_auto_20191119_2125'))
+    old_state = migrator.before(('main_app', '0003_update_is_clean'))
     SomeItem = old_state.apps.get_model('main_app', 'SomeItem')
     SomeItem.objects.create(string_field='a')  # default is still there
 

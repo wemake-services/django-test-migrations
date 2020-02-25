@@ -7,7 +7,7 @@ class TestDirectMigration(MigratorTestCase):
     """This class is used to test direct migrations."""
 
     migrate_from = ('main_app', '0002_someitem_is_clean')
-    migrate_to = ('main_app', '0003_auto_20191119_2125')
+    migrate_to = ('main_app', '0003_update_is_clean')
 
     def prepare(self):
         """Prepare some data before the migration."""
