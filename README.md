@@ -251,7 +251,7 @@ This project is based on work of other awesome people:
 - [@asfaltboy](https://gist.github.com/asfaltboy/b3e6f9b5d95af8ba2cc46f2ba6eae5e2)
 - [@blueyed](https://gist.github.com/blueyed/4fb0a807104551f103e6)
 - [@fernandogrd](https://gist.github.com/blueyed/4fb0a807104551f103e6#gistcomment-1546191)
-- [@@adamchainz](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/)
+- [@adamchainz](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/)
 
 ## License
 
