@@ -242,6 +242,18 @@ python manage.py check --deploy --fail-level WARNING
 ```
 
 This way you will be safe from wrong names in your migrations.
+Do you have a migrations that cannot be renamed? Add them to the ignore list:
+
+```python
+# settings.py
+
+DTM_IGNORED_MIGRATIONS = {
+    ('main_app', '0004_auto_20191119_2125'),
+    ('dependency_app', '0001_auto_20201110_2100'),
+}
+```
+
+And we won't complain about them.
 
 
 ## Credits
@@ -252,6 +264,7 @@ This project is based on work of other awesome people:
 - [@blueyed](https://gist.github.com/blueyed/4fb0a807104551f103e6)
 - [@fernandogrd](https://gist.github.com/blueyed/4fb0a807104551f103e6#gistcomment-1546191)
 - [@adamchainz](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/)
+
 
 ## License
 
