@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from typing import Optional
+
 import pytest
 from django.db import DEFAULT_DB_ALIAS
 
 
 @pytest.fixture()
-def migrator_factory(request, transactional_db):
+def migrator_factory(request, transactional_db, django_db_use_migrations):
     """
     Pytest fixture to create migrators inside the pytest tests.
 
@@ -32,7 +34,10 @@ def migrator_factory(request, transactional_db):
     """
     from django_test_migrations.migrator import Migrator  # noqa: WPS433
 
-    def factory(database_name=None):
+    if not django_db_use_migrations:
+        pytest.skip('--nomigrations was specified')
+
+    def factory(database_name: Optional[str] = None) -> Migrator:
         migrator = Migrator(database_name)
         request.addfinalizer(migrator.reset)
         return migrator

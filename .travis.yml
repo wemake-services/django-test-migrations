@@ -25,6 +25,8 @@ script:
   - poetry run flake8 .
   - poetry run mypy django_test_migrations
   - poetry run pytest
+  # We need one more test run to make sure that `--nomigrations` work:
+  - poetry run pytest --nomigrations --cov-fail-under=0
   - poetry check
   - poetry run pip check
   - poetry run safety check --bare --full-report

@@ -12,6 +12,18 @@ We follow Semantic Versions since the `0.1.0` release.
 - Adds `python3.8` support
 
 
+### Bugfixes
+
+- Fixes that migtaions were failing with `pre_migrate` and `post_migrate` signals
+- Fixes that tests were failing when `pytest --nomigration` was executed,
+  now they are skipped
+
+
+### Misc
+
+- Updates to `poetry@1.0`
+
+
 ## Version 0.1.0
 
 - Initial release
