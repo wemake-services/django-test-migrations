@@ -4,11 +4,13 @@ dist: xenial
 python:
   - 3.6
   - 3.7
+  - 3.8
 
 env:
   - DJANGO_VERSION: "'Django~=1.11.0'"
   - DJANGO_VERSION: "'Django~=2.1.0'"
   - DJANGO_VERSION: "'Django~=2.2.0'"
+  - DJANGO_VERSION: "'Django~=3.0.0'"
 
 before_install:
   - pip freeze | xargs pip uninstall -y
