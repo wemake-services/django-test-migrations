@@ -38,7 +38,6 @@ class MigratorTestCase(TransactionTestCase):
 
         """
         super().setUp()
-        self._pre_setup()
         self._migrator = Migrator(self.database_name)
         self.old_state = self._migrator.before(self.migrate_from)
         self.prepare()
