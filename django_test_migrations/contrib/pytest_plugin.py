@@ -38,9 +38,9 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
         pytest.skip('--nomigrations was specified')
 
     def factory(database_name: Optional[str] = None) -> Migrator:
-        migrator = Migrator(database_name)
-        request.addfinalizer(migrator.reset)
-        return migrator
+        # ``migrator.reset()`` is not called because database is flushed
+        # by ``transactional_db`` fixture's finalizers
+        return Migrator(database_name)
     return factory
 
 
