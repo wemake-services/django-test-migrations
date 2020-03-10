@@ -7,7 +7,7 @@ from django.db import DEFAULT_DB_ALIAS
 
 
 @pytest.fixture()
-def migrator_factory(request, transactional_db, django_db_use_migrations):
+def migrator_factory(transactional_db, django_db_use_migrations):
     """
     Pytest fixture to create migrators inside the pytest tests.
 
@@ -38,9 +38,9 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
         pytest.skip('--nomigrations was specified')
 
     def factory(database_name: Optional[str] = None) -> Migrator:
-        migrator = Migrator(database_name)
-        request.addfinalizer(migrator.reset)
-        return migrator
+        # ``Migrator.reset`` is not registered as finalizer here, because
+        # database is flushed by ``transactional_db`` fixture's finalizers
+        return Migrator(database_name)
     return factory
 
 
