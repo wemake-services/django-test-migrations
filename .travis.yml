@@ -12,6 +12,11 @@ env:
   - DJANGO_VERSION: "'Django~=2.1.0'"
   - DJANGO_VERSION: "'Django~=2.2.0'"
   - DJANGO_VERSION: "'Django~=3.0.0'"
+  - DJANGO_VERSION: "https://github.com/django/django/archive/master.zip"
+
+jobs:
+  allow_failures:
+    - env: DJANGO_VERSION=https://github.com/django/django/archive/master.zip
 
 before_install:
   - pip freeze | xargs pip uninstall -y
