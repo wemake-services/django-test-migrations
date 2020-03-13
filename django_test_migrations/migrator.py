@@ -70,7 +70,7 @@ class Migrator(object):
         with _mute_migrate_signals():
             return self._executor.migrate(migrate_from)
 
-    def after(self, migrate_to: _Migration) -> ProjectState:
+    def after(self, migrate_to: _MigrationSpec) -> ProjectState:
         """Apply the next migration."""
         self._executor.loader.build_graph()  # reload.
         return self.before(migrate_to)
