@@ -64,8 +64,10 @@ class Migrator(object):
 
     def before(self, migrate_from: _Migration) -> ProjectState:
         """Reverse back to the original migration."""
+        if type(migrate_from) is not list:
+            migrate_from = [migrate_from]
         with _mute_migrate_signals():
-            return self._executor.migrate([migrate_from])
+            return self._executor.migrate(migrate_from)
 
     def after(self, migrate_to: _Migration) -> ProjectState:
         """Apply the next migration."""
