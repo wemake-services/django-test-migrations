@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from contextlib import contextmanager
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 from django.core.management import call_command
 from django.db import DEFAULT_DB_ALIAS, connections
@@ -12,6 +12,7 @@ from django.db.models.signals import post_migrate, pre_migrate
 # Regular or rollback migration: 0001 -> 0002, or 0002 -> 0001
 # Rollback migration to initial state: 0001 -> None
 _Migration = Tuple[str, Optional[str]]
+_MigrationSpec = Union[_Migration, List[_Migration]]
 
 
 @contextmanager
@@ -62,12 +63,14 @@ class Migrator(object):
         self._database: str = database
         self._executor = MigrationExecutor(connections[self._database])
 
-    def before(self, migrate_from: _Migration) -> ProjectState:
+    def before(self, migrate_from: _MigrationSpec) -> ProjectState:
         """Reverse back to the original migration."""
+        if not isinstance(migrate_from, list):
+            migrate_from = [migrate_from]
         with _mute_migrate_signals():
-            return self._executor.migrate([migrate_from])
+            return self._executor.migrate(migrate_from)
 
-    def after(self, migrate_to: _Migration) -> ProjectState:
+    def after(self, migrate_to: _MigrationSpec) -> ProjectState:
         """Apply the next migration."""
         self._executor.loader.build_graph()  # reload.
         return self.before(migrate_to)
