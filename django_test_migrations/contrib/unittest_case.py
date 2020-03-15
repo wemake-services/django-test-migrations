@@ -49,3 +49,8 @@ class MigratorTestCase(TransactionTestCase):
 
         Used to prepare some data before the migration process.
         """
+
+    def tearDown(self) -> None:
+        """Used to clean mess up after each test."""
+        self._migrator.reset()
+        super().tearDown()
