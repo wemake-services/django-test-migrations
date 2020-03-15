@@ -57,7 +57,7 @@ def flush_django_migrations_table(
 
 def get_django_migrations_table_sequences(
     connection: _Connection,
-) -> List[Dict[str, str]]:  # pragma: no cover
+) -> List[Dict[str, str]]:
     """`django_migrations` table introspected sequences.
 
     Returns properly inspected sequences when using `Django>1.11`
@@ -65,7 +65,7 @@ def get_django_migrations_table_sequences(
 
     """
     if hasattr(connection.introspection, 'get_sequences'):  # noqa: WPS421
-        with connection.cursor() as cursor:  # noqa: E800
+        with connection.cursor() as cursor:
             return connection.introspection.get_sequences(
                 cursor,
                 DJANGO_MIGRATIONS_TABLE_NAME,

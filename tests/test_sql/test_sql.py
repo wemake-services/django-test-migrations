@@ -30,6 +30,26 @@ def test_drop_models_table_table_detected(mocker):
     testing_connection_mock.ops.execute_sql_flush.assert_called_once()
 
 
+def test_get_django_migrations_table_sequences0(mocker):
+    """Ensure valid sequences are returned when using `Django>1.11`."""
+    connection_mock = mocker.MagicMock()
+    sql.get_django_migrations_table_sequences(connection_mock)
+    connection_mock.introspection.get_sequences.assert_called_once_with(
+        connection_mock.cursor().__enter__.return_value,  # noqa: WPS609
+        sql.DJANGO_MIGRATIONS_TABLE_NAME,
+    )
+
+
+def test_get_django_migrations_table_sequences1(mocker):
+    """Ensure valid sequences are returned when using `Django==1.11`."""
+    connection_mock = mocker.Mock()
+    del connection_mock.introspection.get_sequences  # noqa: WPS420
+    assert (
+        sql.get_django_migrations_table_sequences(connection_mock) ==
+        [{'table': sql.DJANGO_MIGRATIONS_TABLE_NAME, 'column': 'id'}]
+    )
+
+
 def test_get_execute_sql_flush_for_method_present(mocker):
     """Ensure connections.ops method returned when it is already present."""
     connection_mock = mocker.Mock()
