@@ -5,7 +5,7 @@ from typing import ClassVar, Optional
 from django.db.migrations.state import ProjectState
 from django.test import TransactionTestCase
 
-from django_test_migrations.migrator import (  # noqa: WPS436
+from django_test_migrations.migrator import (  # noqa: WPS450
     Migrator,
     _Migration,
 )
@@ -21,10 +21,6 @@ class MigratorTestCase(TransactionTestCase):
     #: Part of the end-user API. Used to tell what migrations we are using.
     migrate_from: ClassVar[_Migration]
     migrate_to: ClassVar[_Migration]
-
-    def __init__(self, *args, **kwargs) -> None:
-        """Initializes our :class:`Migrator` instance."""
-        super().__init__(*args, **kwargs)
 
     def setUp(self) -> None:
         """
