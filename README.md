@@ -268,28 +268,6 @@ DTM_IGNORED_MIGRATIONS = {
 }
 ```
 
-Or if you split your third party apps separately, you can go even further:
-
-```python
-# settings.py
-THIRD_PARTY_APPS = (
-    'dependency_app',
-    'another_dependency_app',
-)
-
-# Apps specific for this project go here.
-LOCAL_APPS = (
-    'app_1',
-    'app_2',
-)
-
-INSTALLED_APPS = THIRD_PARTY_APPS + LOCAL_APPS
-
-DTM_IGNORED_MIGRATIONS = {
-    (app, '*') for app in THIRD_PARTY_APPS
-}
-```
-
 
 ## Credits
 

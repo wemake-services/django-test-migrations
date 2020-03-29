@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from fnmatch import fnmatch
-from typing import List, Set, Tuple
+from typing import FrozenSet, List, Set, Tuple
 
 from django.conf import settings
 from django.core.checks import CheckMessage, Warning
@@ -17,7 +17,10 @@ _SETTINGS_NAME: Final = 'DTM_IGNORED_MIGRATIONS'
 _IGNORE_APP_MIGRATIONS_SPECIAL_KEY: Final = '*'
 
 
-def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
+def check_migration_names(  # noqa: WPS210
+    *args,
+    **kwargs,
+) -> List[CheckMessage]:
     """
     Finds automatic names in available migrations.
 
@@ -34,15 +37,17 @@ def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
         settings, _SETTINGS_NAME, set(),
     )
 
-    ignored_apps: Set[str] = set(
-        i[0] for i in ignored_migrations
-        if i[1] == _IGNORE_APP_MIGRATIONS_SPECIAL_KEY
+    ignored_apps: FrozenSet[str] = frozenset(
+        migration[0] for migration in ignored_migrations
+        if migration[1] == _IGNORE_APP_MIGRATIONS_SPECIAL_KEY
     )
 
     messages = []
     for app_label, migration_name in loader.disk_migrations.keys():
-        if (app_label in ignored_apps or
-                (app_label, migration_name) in ignored_migrations):
+        if app_label in ignored_apps:
+            continue
+
+        if (app_label, migration_name) in ignored_migrations:
             continue
 
         if fnmatch(migration_name, '????_auto_*'):
