@@ -13,6 +13,9 @@ CHECK_NAME: Final = 'django_test_migrations.autonames'
 #: Settings name for this check to ignore some migrations.
 _SETTINGS_NAME: Final = 'DTM_IGNORED_MIGRATIONS'
 
+# Special key to ignore all migrations inside an app
+_IGNORE_APP_MIGRATIONS_SPECIAL_KEY: Final = '*'
+
 
 def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
     """
@@ -31,9 +34,15 @@ def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
         settings, _SETTINGS_NAME, set(),
     )
 
+    ignored_apps: Set[str] = set(
+        i[0] for i in ignored_migrations
+        if i[1] == _IGNORE_APP_MIGRATIONS_SPECIAL_KEY
+    )
+
     messages = []
     for app_label, migration_name in loader.disk_migrations.keys():
-        if (app_label, migration_name) in ignored_migrations:
+        if (app_label in ignored_apps or
+                (app_label, migration_name) in ignored_migrations):
             continue
 
         if fnmatch(migration_name, '????_auto_*'):
