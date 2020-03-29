@@ -73,7 +73,7 @@ class Migrator(object):
         sql.drop_models_tables(self._database, style)
         sql.flush_django_migrations_table(self._database, style)
         # apply all necessary migrations on clean database
-        # (only forward, so any unexpted migration won't be applied)
+        # (only forward, so any unexpected migration won't be applied)
         # to restore database state before tested migration
         self._executor.loader.build_graph()  # reload.
         return self._migrate(migrate_from)
