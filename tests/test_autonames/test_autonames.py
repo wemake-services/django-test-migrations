@@ -19,7 +19,8 @@ def test_autonames():
         [
             warnings[0].id.startswith(CHECK_NAME),
             warnings[1].id.startswith(CHECK_NAME),
-        ])
+        ],
+    )
     assert warnings_msgs == {
         'Migration main_app.0004_auto_20191119_2125 has an automatic name.',
         'Migration main_app.0005_auto_20200329_1118 has an automatic name.',
