@@ -199,3 +199,4 @@ fabric.properties
 ### Custom ###
 ex.py
 *.sqlite3
+.tests_reports/

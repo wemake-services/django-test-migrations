@@ -32,7 +32,7 @@ script:
 
 after_success:
   - pip install coveralls
-  - coveralls
+  - coveralls --rcfile=setup.cfg
 
 notifications:
   email:
