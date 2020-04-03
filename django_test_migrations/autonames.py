@@ -26,10 +26,7 @@ _IGNORED_APPS: FrozenSet[str] = frozenset(
 )
 
 
-def check_migration_names(
-    *args,
-    **kwargs,
-) -> List[CheckMessage]:
+def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
     """
     Finds automatic names in available migrations.
 
