@@ -16,8 +16,17 @@ _SETTINGS_NAME: Final = 'DTM_IGNORED_MIGRATIONS'
 # Special key to ignore all migrations inside an app
 _IGNORE_APP_MIGRATIONS_SPECIAL_KEY: Final = '*'
 
+_IGNORED_MIGRATIONS: Set[Tuple[str, str]] = getattr(
+    settings, _SETTINGS_NAME, set(),
+)
 
-def check_migration_names(  # noqa: WPS210
+_IGNORED_APPS: FrozenSet[str] = frozenset(
+    app_label for app_label, migration_name in _IGNORED_MIGRATIONS
+    if migration_name == _IGNORE_APP_MIGRATIONS_SPECIAL_KEY
+)
+
+
+def check_migration_names(
     *args,
     **kwargs,
 ) -> List[CheckMessage]:
@@ -33,21 +42,12 @@ def check_migration_names(  # noqa: WPS210
     loader = MigrationLoader(None, ignore_no_migrations=True)
     loader.load_disk()
 
-    ignored_migrations: Set[Tuple[str, str]] = getattr(
-        settings, _SETTINGS_NAME, set(),
-    )
-
-    ignored_apps: FrozenSet[str] = frozenset(
-        migration[0] for migration in ignored_migrations
-        if migration[1] == _IGNORE_APP_MIGRATIONS_SPECIAL_KEY
-    )
-
     messages = []
     for app_label, migration_name in loader.disk_migrations.keys():
-        if app_label in ignored_apps:
+        if app_label in _IGNORED_APPS:
             continue
 
-        if (app_label, migration_name) in ignored_migrations:
+        if (app_label, migration_name) in _IGNORED_MIGRATIONS:
             continue
 
         if fnmatch(migration_name, '????_auto_*'):
