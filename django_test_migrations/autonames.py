@@ -7,8 +7,12 @@ from django.conf import settings
 from django.core.checks import CheckMessage, Warning
 from typing_extensions import Final
 
-#: We use this type to represent ignore rules for migrations.
-_IgnoreSpec = Tuple[FrozenSet[str], FrozenSet[Tuple[str, str]]]
+_IgnoreAppSpec = FrozenSet[str]
+
+_IgnoreMigrationSpec = FrozenSet[Tuple[str, str]]
+
+#: We use this type hint to represent ignore rules for migrations.
+_IgnoreSpec = Tuple[_IgnoreAppSpec, _IgnoreMigrationSpec]
 
 #: We use this value as a unique identifier of this check.
 CHECK_NAME: Final = 'django_test_migrations.autonames'
@@ -32,11 +36,11 @@ def _is_ignored(
 
 
 def _build_ignores() -> _IgnoreSpec:
-    ignored_migrations: FrozenSet[Tuple[str, str]] = getattr(
+    ignored_migrations: _IgnoreMigrationSpec = getattr(
         settings, _SETTINGS_NAME, frozenset(),
     )
 
-    ignored_apps: FrozenSet[str] = frozenset(
+    ignored_apps: _IgnoreAppSpec = frozenset(
         app_label
         for app_label, migration_name in ignored_migrations
         if migration_name == _IGNORE_APP_MIGRATIONS_SPECIAL_KEY
