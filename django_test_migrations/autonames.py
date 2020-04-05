@@ -7,6 +7,9 @@ from django.conf import settings
 from django.core.checks import CheckMessage, Warning
 from typing_extensions import Final
 
+#: We use this type to represent ignore rules for migrations.
+_IgnoreSpec = Tuple[FrozenSet[str], FrozenSet[str, str]]
+
 #: We use this value as a unique identifier of this check.
 CHECK_NAME: Final = 'django_test_migrations.autonames'
 
@@ -15,6 +18,31 @@ _SETTINGS_NAME: Final = 'DTM_IGNORED_MIGRATIONS'
 
 # Special key to ignore all migrations inside an app
 _IGNORE_APP_MIGRATIONS_SPECIAL_KEY: Final = '*'
+    
+    
+def _is_ignored(
+    app_label: str, migration_name: str, ignored: _IgnoreSpec,
+) -> bool:
+    ignored_apps, ignored_migrations = ignored
+
+    return (
+        app_label in ignored_apps or 
+        (app_label, migration_name) in ignored_migrations
+    )
+
+
+def _build_ignores() -> _IgnoreSpec:
+    ignored_migrations: FrozenSet[Tuple[str, str]] = getattr(
+        settings, _SETTINGS_NAME, frozenset(),
+    )
+
+    ignored_apps: FrozenSet[str] = frozenset(
+        app_label 
+        for app_label, migration_name in ignored_migrations
+        if migration_name == _IGNORE_APP_MIGRATIONS_SPECIAL_KEY
+    )
+
+    return ignored_apps, ignored_migrations
 
 
 def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
@@ -31,21 +59,10 @@ def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
     loader.load_disk()
 
     messages = []
-
-    ignored_migrations: Set[Tuple[str, str]] = getattr(
-        settings, _SETTINGS_NAME, set(),
-    )
-
-    ignored_apps: FrozenSet[str] = frozenset(
-        app_label for app_label, migration_name in ignored_migrations
-        if migration_name == _IGNORE_APP_MIGRATIONS_SPECIAL_KEY
-    )
+    ignores = _build_ignores()
 
     for app_label, migration_name in loader.disk_migrations.keys():
-        if app_label in ignored_apps:
-            continue
-
-        if (app_label, migration_name) in ignored_migrations:
+        if _is_ignored(app_label, migration_name, ignores):
             continue
 
         if fnmatch(migration_name, '????_auto_*'):
