@@ -15,6 +15,7 @@ def test_all_migrations_main():
         ('main_app', '0002_someitem_is_clean'),
         ('main_app', '0003_update_is_clean'),
         ('main_app', '0004_auto_20191119_2125'),
+        ('main_app', '0005_auto_20200329_1118'),
     ]
 
 
