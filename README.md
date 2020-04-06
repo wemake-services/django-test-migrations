@@ -257,6 +257,17 @@ DTM_IGNORED_MIGRATIONS = {
 
 And we won't complain about them.
 
+Or you can completely ignore entire app:
+
+```python
+# settings.py
+
+DTM_IGNORED_MIGRATIONS = {
+    ('dependency_app', '*'),
+    ('another_dependency_app', '*'),
+}
+```
+
 
 ## Credits
 
