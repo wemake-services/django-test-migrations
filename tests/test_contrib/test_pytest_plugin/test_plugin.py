@@ -21,3 +21,9 @@ def test_call_pytest_setup_plan():
 
     assert 'migrator' in output_text
     assert 'migrator_factory' in output_text
+
+
+def test_signal_muting(migrator):
+    """Checks that `post_migrate` signal has been muted."""
+    from django.db.models.signals import post_migrate
+    assert post_migrate.receivers == []
