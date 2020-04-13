@@ -2,6 +2,8 @@
 
 import subprocess
 
+from django.db.models.signals import post_migrate
+
 
 def test_call_pytest_setup_plan():
     """Checks that module is registered and visible in the meta data."""
@@ -25,5 +27,4 @@ def test_call_pytest_setup_plan():
 
 def test_signal_muting(migrator):
     """Checks that `post_migrate` signal has been muted."""
-    from django.db.models.signals import post_migrate
     assert post_migrate.receivers == []
