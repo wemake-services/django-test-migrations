@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db.models.signals import post_migrate
+
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
 
 
@@ -44,14 +45,12 @@ class TestBackwardMigration(MigratorTestCase):
 
 
 class TestSignalMuting(MigratorTestCase):
-    """This class is used to test that the `post_migrate` signal
-    has been muted.
-    """
+    """Test that the `post_migrate` signal has been muted."""
 
     migrate_from = ('main_app', '0002_someitem_is_clean')
     migrate_to = ('main_app', '0001_initial')
 
     def test_post_migrate_muted(self):
-        """Confirm that there are no signal handlers for `post_migrate`"""
-        assert post_migrate.receivers == []
-        assert len(self._post_migrate_receivers) > 0
+        """Confirm that there are no signal handlers for `post_migrate`."""
+        assert not post_migrate.receivers
+        assert self._post_migrate_receivers

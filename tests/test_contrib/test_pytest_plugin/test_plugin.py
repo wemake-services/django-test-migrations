@@ -27,4 +27,4 @@ def test_call_pytest_setup_plan():
 
 def test_signal_muting(migrator):
     """Checks that `post_migrate` signal has been muted."""
-    assert post_migrate.receivers == []
+    assert not post_migrate.receivers
