@@ -1,41 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from contextlib import contextmanager
 from typing import List, Optional, Tuple, Union
 
 from django.core.management import call_command
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.executor import MigrationExecutor
 from django.db.migrations.state import ProjectState
-from django.db.models.signals import post_migrate, pre_migrate
 
 # Regular or rollback migration: 0001 -> 0002, or 0002 -> 0001
 # Rollback migration to initial state: 0001 -> None
 _Migration = Tuple[str, Optional[str]]
 _MigrationSpec = Union[_Migration, List[_Migration]]
-
-
-@contextmanager
-def _mute_migrate_signals():
-    """
-    Mutes post_migrate and pre_migrate signals that breaks during testing.
-
-    This context manager just turns them off temporarly.
-
-    Related:
-    https://github.com/wemake-services/django-test-migrations/issues/11
-    """
-    restore_post, post_migrate.receivers = (  # noqa: WPS414
-        post_migrate.receivers, [],
-    )
-    restore_pre, pre_migrate.receivers = (  # noqa: WPS414
-        pre_migrate.receivers, [],
-    )
-
-    yield
-
-    post_migrate.receivers = restore_post
-    pre_migrate.receivers = restore_pre
 
 
 class Migrator(object):
@@ -67,8 +42,7 @@ class Migrator(object):
         """Reverse back to the original migration."""
         if not isinstance(migrate_from, list):
             migrate_from = [migrate_from]
-        with _mute_migrate_signals():
-            return self._executor.migrate(migrate_from)
+        return self._executor.migrate(migrate_from)
 
     def after(self, migrate_to: _MigrationSpec) -> ProjectState:
         """Apply the next migration."""

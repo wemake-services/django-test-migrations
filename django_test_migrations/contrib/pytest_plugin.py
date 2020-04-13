@@ -4,6 +4,7 @@ from typing import Optional
 
 import pytest
 from django.db import DEFAULT_DB_ALIAS
+from django.db.models.signals import post_migrate, pre_migrate
 
 
 @pytest.fixture()
@@ -45,7 +46,20 @@ def migrator_factory(transactional_db, django_db_use_migrations):
 
 
 @pytest.fixture()
-def migrator(migrator_factory):  # noqa: WPS442
+def _mute_migration_signals():
+    restore_post, post_migrate.receivers = (  # noqa: WPS414
+        post_migrate.receivers, [],
+    )
+    restore_pre, pre_migrate.receivers = (  # noqa: WPS414
+        pre_migrate.receivers, [],
+    )
+    yield
+    post_migrate.receivers = restore_post
+    pre_migrate.receivers = restore_pre
+
+
+@pytest.fixture()
+def migrator(_mute_migration_signals, migrator_factory):  # noqa: WPS442
     """
     Useful alias for ``'default'`` database in ``django``.
 
