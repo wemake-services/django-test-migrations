@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from fnmatch import fnmatch
 from typing import FrozenSet, List, Tuple
 

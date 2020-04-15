@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
 
 

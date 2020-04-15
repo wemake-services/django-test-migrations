@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import List, Optional, Set, Tuple
 
 from django.apps import apps

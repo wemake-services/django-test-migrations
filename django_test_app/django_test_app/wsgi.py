@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 WSGI config for django_test_app project.
 

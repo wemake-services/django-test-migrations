@@ -3,6 +3,22 @@
 We follow Semantic Versions since the `0.1.0` release.
 
 
+## Version 0.3.0 WIP
+
+### Features
+
+- Drops `django@2.1` support
+
+### Bugfixes
+
+- Fixes how `pre_migrate` and `post_migrate` signals are muted
+
+### Misc
+
+- Updates `wemake-python-styleguide`
+- Moves from `travis` to Github Actions
+
+
 ## Version 0.2.0
 
 ### Features

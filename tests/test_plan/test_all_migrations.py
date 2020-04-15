@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from django_test_migrations.plan import all_migrations, nodes_to_tuples
