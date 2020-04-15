@@ -9,10 +9,9 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8]
         django-version: [
-          'Django~=1.11.0', 
-          'Django~=2.2.0', 
-          'Django~=3.0.0', 
-          'https://github.com/django/django/archive/master.zip',
+          'Django~=1.11.0',
+          'Django~=2.2.0',
+          'Django~=3.0.0',
         ]
 
     steps:
@@ -43,7 +42,7 @@ jobs:
       run: |
         source "$HOME/.poetry/env"
         make test
-        
+
     - name: Upload coverage to Codecov  
       uses: codecov/codecov-action@v1
       with:
