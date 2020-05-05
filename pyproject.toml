@@ -55,7 +55,7 @@ django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 python = "^3.6"
 
 [tool.poetry.dev-dependencies]
-django = "^2.2"
+django = "^3.0"
 
 mypy = "^0.770"
 wemake-python-styleguide = "^0.14.0"
