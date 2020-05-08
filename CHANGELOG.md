@@ -3,11 +3,13 @@
 We follow Semantic Versions since the `0.1.0` release.
 
 
-## Version 0.3.0 WIP
+## Version 0.3.0
 
 ### Features
 
 - Drops `django@2.1` support
+- Adds `'*'` alias for ignoring
+  all migrations in an app with `DTM_IGNORED_MIGRATIONS`
 
 ### Bugfixes
 
