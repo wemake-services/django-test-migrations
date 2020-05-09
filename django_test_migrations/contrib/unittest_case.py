@@ -3,7 +3,8 @@ from typing import ClassVar, Optional
 from django.db.migrations.state import ProjectState
 from django.test import TransactionTestCase
 
-from django_test_migrations.migrator import Migrator, _Migration  # noqa: WPS450
+from django_test_migrations.migrator import Migrator
+from django_test_migrations.types import MigrationSpec
 
 
 class MigratorTestCase(TransactionTestCase):
@@ -14,8 +15,8 @@ class MigratorTestCase(TransactionTestCase):
     new_state: ProjectState
 
     #: Part of the end-user API. Used to tell what migrations we are using.
-    migrate_from: ClassVar[_Migration]
-    migrate_to: ClassVar[_Migration]
+    migrate_from: ClassVar[MigrationSpec]
+    migrate_to: ClassVar[MigrationSpec]
 
     def setUp(self) -> None:
         """
