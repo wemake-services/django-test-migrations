@@ -7,6 +7,7 @@ from django.db.migrations.executor import MigrationExecutor
 from django.db.migrations.state import ProjectState
 from django.db.models.signals import post_migrate, pre_migrate
 
+from django_test_migrations.logic.migrations import normalize
 from django_test_migrations.types import MigrationSpec
 
 
@@ -60,8 +61,7 @@ class Migrator(object):
 
     def before(self, migrate_from: MigrationSpec) -> ProjectState:
         """Reverse back to the original migration."""
-        if not isinstance(migrate_from, list):
-            migrate_from = [migrate_from]
+        migrate_from = normalize(migrate_from)
         with _mute_migrate_signals():
             return self._executor.migrate(migrate_from)
 
