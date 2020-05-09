@@ -75,9 +75,4 @@ class Migrator(object):
 
     def reset(self) -> None:
         """Reset the state to the most recent one."""
-        call_command(
-            'flush',
-            database=self._database,
-            interactive=False,
-            verbosity=0,
-        )
+        call_command('migrate')
