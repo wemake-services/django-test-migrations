@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.continue-on-error }}
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
@@ -13,6 +14,12 @@ jobs:
           'Django~=2.2.0',
           'Django~=3.0.0',
         ]
+        continue-on-error: [false]
+
+        include:
+          - python-version: 3.8
+            django-version: 'https://github.com/django/django/archive/master.zip'
+            continue-on-error: true
 
     steps:
     - uses: actions/checkout@v2
@@ -43,7 +50,7 @@ jobs:
         source "$HOME/.poetry/env"
         make test
 
-    - name: Upload coverage to Codecov  
+    - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
         file: ./coverage.xml
