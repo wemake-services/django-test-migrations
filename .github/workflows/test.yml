@@ -1,5 +1,5 @@
+---
 name: test
-
 on: [push, pull_request]
 
 jobs:
@@ -22,35 +22,35 @@ jobs:
             continue-on-error: true
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install poetry
-      run: |
-        curl -sSL \
-          "https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py" | python
+      - name: Install poetry
+        run: |
+          curl -sSL \
+            "https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py" | python
 
-    - name: Set up cache
-      uses: actions/cache@v1
-      with:
-        path: .venv
-        key: venv-${{ matrix.python-version }}-${{ matrix.django-version }}-${{ hashFiles('poetry.lock') }}
-    - name: Install dependencies
-      run: |
-        source "$HOME/.poetry/env"
-        poetry config virtualenvs.in-project true
-        poetry install
-        pip install -U "${{ matrix.django-version }}"
+      - name: Set up cache
+        uses: actions/cache@v1
+        with:
+          path: .venv
+          key: venv-${{ matrix.python-version }}-${{ matrix.django-version }}-${{ hashFiles('poetry.lock') }}
+      - name: Install dependencies
+        run: |
+          source "$HOME/.poetry/env"
+          poetry config virtualenvs.in-project true
+          poetry install
+          pip install -U "${{ matrix.django-version }}"
 
-    - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
-      run: |
-        source "$HOME/.poetry/env"
-        make test
+      - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
+        run: |
+          source "$HOME/.poetry/env"
+          make test
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        file: ./coverage.xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
