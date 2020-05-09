@@ -75,4 +75,4 @@ class Migrator(object):
 
     def reset(self) -> None:
         """Reset the state to the most recent one."""
-        call_command('migrate')
+        call_command('migrate', verbosity=0, database=self._database)
