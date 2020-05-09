@@ -2,8 +2,12 @@ from typing import List, Optional, Set, Tuple
 
 from django.apps import apps
 from django.db import DEFAULT_DB_ALIAS, connections
+from django.db.migrations import Migration
 from django.db.migrations.graph import Node
 from django.db.migrations.loader import MigrationLoader
+
+from django_test_migrations.exceptions import MigrationNotInPlan
+from django_test_migrations.types import MigrationPlan, MigrationTarget
 
 
 def all_migrations(
@@ -80,3 +84,37 @@ def _generate_plan(
                 plan.append(node)
                 seen.add(migration)
     return plan
+
+
+def truncate_plan(
+    targets: List[MigrationTarget],
+    plan: MigrationPlan,
+) -> MigrationPlan:
+    """Truncate migrations ``plan`` up to ``targets``."""
+    if not targets or not plan:
+        return plan
+
+    target_max_index = max(_get_index(target, plan) for target in targets)
+    return plan[:(target_max_index + 1)]
+
+
+def _get_index(target: MigrationTarget, plan: MigrationPlan) -> int:
+    try:
+        index = next(
+            index
+            for index, (migration, _) in enumerate(plan)  # noqa: WPS405, WPS414
+            if _filter_predicate(target, migration)
+        )
+    except StopIteration:
+        raise MigrationNotInPlan(target)
+    else:
+        # exclude target app from migrations plan
+        return index - (target[1] is None)
+
+
+def _filter_predicate(target: MigrationTarget, migration: Migration) -> bool:
+    # when ``None`` passed as migration name then initial migration from
+    # target's app will be chosen and handled properly in ``_get_index``
+    # so in final all target app migrations will be excluded from plan
+    index = 2 - (target[1] is None)
+    return (migration.app_label, migration.name)[:index] == target[:index]

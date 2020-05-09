@@ -2,13 +2,16 @@ from contextlib import contextmanager
 from typing import Optional
 
 from django.core.management import call_command
+from django.core.management.color import no_style
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.executor import MigrationExecutor
 from django.db.migrations.state import ProjectState
 from django.db.models.signals import post_migrate, pre_migrate
 
+from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
-from django_test_migrations.types import MigrationSpec
+from django_test_migrations.plan import truncate_plan
+from django_test_migrations.types import MigrationPlan, MigrationSpec
 
 
 @contextmanager
@@ -62,14 +65,38 @@ class Migrator(object):
     def before(self, migrate_from: MigrationSpec) -> ProjectState:
         """Reverse back to the original migration."""
         migrate_from = normalize(migrate_from)
-        with _mute_migrate_signals():
-            return self._executor.migrate(migrate_from)
+
+        style = no_style()
+        # start from clean database state
+        sql.drop_models_tables(self._database, style)
+        sql.flush_django_migrations_table(self._database, style)
+
+        # prepare as broad plan as possible based on full plan
+        self._executor.loader.build_graph()  # reload
+        full_plan = self._executor.migration_plan(
+            self._executor.loader.graph.leaf_nodes(),
+            clean_start=True,
+        )
+        plan = truncate_plan(migrate_from, full_plan)
+
+        # apply all migrations from generated plan on clean database
+        # (only forward, so any unexpected migration won't be applied)
+        # to restore database state before tested migration
+        return self._migrate(migrate_from, plan=plan)
 
     def after(self, migrate_to: MigrationSpec) -> ProjectState:
         """Apply the next migration."""
-        self._executor.loader.build_graph()  # reload.
-        return self.before(migrate_to)
+        self._executor.loader.build_graph()  # reload
+        return self._migrate(normalize(migrate_to))
 
     def reset(self) -> None:
         """Reset the state to the most recent one."""
         call_command('migrate', verbosity=0, database=self._database)
+
+    def _migrate(
+        self,
+        migration_targets: MigrationSpec,
+        plan: Optional[MigrationPlan] = None,
+    ) -> ProjectState:
+        with _mute_migrate_signals():
+            return self._executor.migrate(migration_targets, plan=plan)
