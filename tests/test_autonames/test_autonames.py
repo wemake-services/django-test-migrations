@@ -26,18 +26,23 @@ def test_autonames():
 
 
 @pytest.mark.django_db
-def test_autonames_with_ignore(ignore_migration):
+def test_autonames_with_ignore(settings):
     """Here we check that some migrations can be ignored."""
+    # patch settings to ignore two bad migrations
+    settings.DTM_IGNORED_MIGRATIONS = {
+        ('main_app', '0004_auto_20191119_2125'),
+        ('main_app', '0005_auto_20200329_1118'),
+    }
     warnings = check_migration_names()
 
     assert not warnings
 
 
 @pytest.mark.django_db
-def test_autonames_with_ignore_all_app_migrations(
-    ignore_migration_with_special_key,
-):
+def test_autonames_with_ignore_all_app_migrations(settings):
     """Here we check that all migrations ignored inside app."""
+    # patch settings to ignore all migrations in the app
+    settings.DTM_IGNORED_MIGRATIONS = {('main_app', '*')}
     warnings = check_migration_names()
 
     assert not warnings
