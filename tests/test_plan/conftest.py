@@ -3,7 +3,7 @@ from django.db.migrations import Migration
 
 
 @pytest.fixture()
-def plan(mocker):
+def plan():
     """Fake migrations plan for testing purposes."""
     migrations_plan = [
         Migration('0001_initial', 'app1'),

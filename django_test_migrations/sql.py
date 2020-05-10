@@ -4,10 +4,11 @@ from typing import Callable, Dict, List, Optional, Union
 from django.core.management.color import Style, no_style
 from django.db import DefaultConnectionProxy, connections, transaction
 from django.db.backends.base.base import BaseDatabaseWrapper
+from typing_extensions import Final
 
 _Connection = Union[DefaultConnectionProxy, BaseDatabaseWrapper]
 
-DJANGO_MIGRATIONS_TABLE_NAME = 'django_migrations'
+DJANGO_MIGRATIONS_TABLE_NAME: Final = 'django_migrations'
 
 
 def drop_models_tables(
@@ -35,7 +36,14 @@ def flush_django_migrations_table(
     database_name: str,
     style: Optional[Style] = None,
 ) -> None:
-    """Flush `django_migrations` table."""
+    """Flush `django_migrations` table.
+
+    Ensures compability with all supported Django versions.
+    `django_migrations` is not "regular" Django model, so its not returned
+    by ``ConnectionRouter.get_migratable_models`` which is used e.g. to
+    implement sequences reset in ``Django==1.11``.
+
+    """
     style = style or no_style()
     connection = connections[database_name]
     django_migrations_sequences = get_django_migrations_table_sequences(
@@ -58,7 +66,7 @@ def get_django_migrations_table_sequences(
 ) -> List[Dict[str, str]]:
     """`django_migrations` table introspected sequences.
 
-    Returns properly inspected sequences when using `Django>1.11`
+    Returns properly inspected sequences when using ``Django>1.11``
     and static sequence for `id` column otherwise.
 
     """
@@ -68,7 +76,7 @@ def get_django_migrations_table_sequences(
                 cursor,
                 DJANGO_MIGRATIONS_TABLE_NAME,
             )
-    # for `Django==1.11` only primary key sequence is returned
+    # for ``Django==1.11`` only primary key sequence is returned
     return [{'table': DJANGO_MIGRATIONS_TABLE_NAME, 'column': 'id'}]
 
 
@@ -91,10 +99,9 @@ def execute_sql_flush(
     """Execute a list of SQL statements to flush the database.
 
     This function is copy of ``connection.ops.execute_sql_flush``
-    method from Django's source code:
-    https://github.com/django/django/blob/227d0c7365cfd0a64d021cb9bdcf77bed2d3f170/django/db/backends/base/operations.py#L401
-    to make `django-test-migrations` compatible with `Django==1.11`.
-    ``connection.ops.execute_sql_flush()`` was introduced in `Django==2.0`.
+    method from Django's source code: https://bit.ly/3doGMye
+    to make `django-test-migrations` compatible with ``Django==1.11``.
+    ``connection.ops.execute_sql_flush()`` was introduced in ``Django==2.0``.
 
     """
     with transaction.atomic(
