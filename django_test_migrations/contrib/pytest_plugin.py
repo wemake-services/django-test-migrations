@@ -16,8 +16,10 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
         @pytest.mark.django_db
         def test_migration(migrator_factory):
             migrator = migrator_factory('custom_db_alias')
-            old_state = migrator.before(('main_app', None))
-            new_state = migrator.after(('main_app', '0001_initial'))
+            old_state = migrator.apply_initial_migration(('main_app', None))
+            new_state = migrator.apply_tested_migration(
+                ('main_app', '0001_initial'),
+            )
 
             assert isinstance(old_state, ProjectState)
             assert isinstance(new_state, ProjectState)
@@ -55,8 +57,10 @@ def migrator(migrator_factory):  # noqa: WPS442
 
         @pytest.mark.django_db
         def test_migration(migrator):
-            old_state = migrator.before(('main_app', None))
-            new_state = migrator.after(('main_app', '0001_initial'))
+            old_state = migrator.apply_initial_migration(('main_app', None))
+            new_state = migrator.apply_tested_migration(
+                ('main_app', '0001_initial'),
+            )
 
             assert isinstance(old_state, ProjectState)
             assert isinstance(new_state, ProjectState)

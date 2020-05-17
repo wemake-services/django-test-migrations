@@ -53,12 +53,13 @@ To test all migrations we have a [`Migrator`](https://github.com/wemake-services
 
 It has three methods to work with:
 
-- `.before()` which takes app and migration names to generate a state
-  before the actual migration happens.
-  It creates the `before state` by applying all migrations up to and including
-  the one passed as an argument.
+- `.apply_initial_migration()` which takes app and migration names to generate
+  a state before the actual migration happens. It creates the `before state`
+  by applying all migrations up to and including the ones passed as an argument.
 
-- `.after()` which takes app and migration names to perform the actual migration
+- `.apply_tested_migration()` which takes app and migration names to perform the
+  actual migration
+
 - `.reset()` to clean everything up after we are done with testing
 
 So, here's an example:
@@ -71,11 +72,11 @@ migrator = Migrator(database='default')
 # Initial migration, currently our model has only a single string field:
 # Note:
 # We are testing migration `0002_someitem_is_clean`, so we are specifying
-# the name of the previous migration (`0001_initial`) in the .before()
-# method in order to prepare a state of the database before applying
-# the migration we are going to test.
+# the name of the previous migration (`0001_initial`) in the
+# .apply_initial_migration() method in order to prepare a state of the database
+# before applying the migration we are going to test.
 #
-old_state = migrator.before(('main_app', '0001_initial'))
+old_state = migrator.apply_initial_migration(('main_app', '0001_initial'))
 SomeItem = old_state.apps.get_model('main_app', 'SomeItem')
 
 # Let's create a model with just a single field specified:
@@ -83,7 +84,9 @@ SomeItem.objects.create(string_field='a')
 assert len(SomeItem._meta.get_fields()) == 2  # id + string_field
 
 # Now this migration will add `is_clean` field to the model:
-new_state = migrator.after(('main_app', '0002_someitem_is_clean'))
+new_state = migrator.apply_tested_migration(
+    ('main_app', '0002_someitem_is_clean'),
+)
 SomeItem = new_state.apps.get_model('main_app', 'SomeItem')
 
 # We can now test how our migration worked, new field is there:
@@ -105,14 +108,16 @@ Nothing really changes except migration names that you pass and your logic:
 migrator = Migrator()
 
 # Currently our model has two field, but we need a rollback:
-old_state = migrator.before(('main_app', '0002_someitem_is_clean'))
+old_state = migrator.apply_initial_migration(
+    ('main_app', '0002_someitem_is_clean'),
+)
 SomeItem = old_state.apps.get_model('main_app', 'SomeItem')
 
 # Create some data to illustrate your cases:
 # ...
 
 # Now this migration will drop `is_clean` field:
-new_state = migrator.after(('main_app', '0001_initial'))
+new_state = migrator.apply_tested_migration(('main_app', '0001_initial'))
 
 # Assert the results:
 # ...
@@ -170,13 +175,13 @@ import pytest
 @pytest.mark.django_db
 def test_pytest_plugin_initial(migrator):
     """Ensures that the initial migration works."""
-    old_state = migrator.before(('main_app', None))
+    old_state = migrator.apply_initial_migration(('main_app', None))
 
     with pytest.raises(LookupError):
         # Models does not yet exist:
         old_state.apps.get_model('main_app', 'SomeItem')
 
-    new_state = migrator.after(('main_app', '0001_initial'))
+    new_state = migrator.apply_tested_migration(('main_app', '0001_initial'))
     # After the initial migration is done, we can use the model state:
     SomeItem = new_state.apps.get_model('main_app', 'SomeItem')
     assert SomeItem.objects.filter(string_field='').count() == 0
