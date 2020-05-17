@@ -62,9 +62,9 @@ class Migrator(object):
         self._database: str = database
         self._executor = MigrationExecutor(connections[self._database])
 
-    def before(self, migrate_from: MigrationSpec) -> ProjectState:
+    def apply_initial_migration(self, targets: MigrationSpec) -> ProjectState:
         """Reverse back to the original migration."""
-        migrate_from = normalize(migrate_from)
+        targets = normalize(targets)
 
         style = no_style()
         # start from clean database state
@@ -77,17 +77,17 @@ class Migrator(object):
             self._executor.loader.graph.leaf_nodes(),
             clean_start=True,
         )
-        plan = truncate_plan(migrate_from, full_plan)
+        plan = truncate_plan(targets, full_plan)
 
         # apply all migrations from generated plan on clean database
         # (only forward, so any unexpected migration won't be applied)
         # to restore database state before tested migration
-        return self._migrate(migrate_from, plan=plan)
+        return self._migrate(targets, plan=plan)
 
-    def after(self, migrate_to: MigrationSpec) -> ProjectState:
+    def apply_tested_migration(self, targets: MigrationSpec) -> ProjectState:
         """Apply the next migration."""
         self._executor.loader.build_graph()  # reload
-        return self._migrate(normalize(migrate_to))
+        return self._migrate(normalize(targets))
 
     def reset(self) -> None:
         """Reset the state to the most recent one."""

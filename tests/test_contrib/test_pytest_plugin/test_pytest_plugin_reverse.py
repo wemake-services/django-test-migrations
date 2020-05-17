@@ -12,12 +12,14 @@ from django.core.exceptions import FieldError
 @pytest.mark.django_db
 def test_pytest_plugin0001(migrator):
     """Ensures that the first migration works."""
-    old_state = migrator.before(('main_app', '0002_someitem_is_clean'))
+    old_state = migrator.apply_initial_migration(
+        ('main_app', '0002_someitem_is_clean'),
+    )
     SomeItem = old_state.apps.get_model('main_app', 'SomeItem')
 
     assert SomeItem.objects.filter(is_clean=True).count() == 0
 
-    new_state = migrator.after(('main_app', '0001_initial'))
+    new_state = migrator.apply_tested_migration(('main_app', '0001_initial'))
     SomeItem = new_state.apps.get_model('main_app', 'SomeItem')
 
     with pytest.raises(FieldError):
@@ -27,7 +29,9 @@ def test_pytest_plugin0001(migrator):
 @pytest.mark.django_db
 def test_pytest_plugin0002(migrator):
     """Ensures that the second migration works."""
-    old_state = migrator.before(('main_app', '0003_update_is_clean'))
+    old_state = migrator.apply_initial_migration(
+        ('main_app', '0003_update_is_clean'),
+    )
     SomeItem = old_state.apps.get_model('main_app', 'SomeItem')
     SomeItem.objects.create(string_field='a', is_clean=True)
     SomeItem.objects.create(string_field='a b', is_clean=False)
@@ -35,7 +39,9 @@ def test_pytest_plugin0002(migrator):
     assert SomeItem.objects.count() == 2
     assert SomeItem.objects.filter(is_clean=True).count() == 1
 
-    new_state = migrator.after(('main_app', '0002_someitem_is_clean'))
+    new_state = migrator.apply_tested_migration(
+        ('main_app', '0002_someitem_is_clean'),
+    )
     SomeItem = new_state.apps.get_model('main_app', 'SomeItem')
 
     assert SomeItem.objects.count() == 2
