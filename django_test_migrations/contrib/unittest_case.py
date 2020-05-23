@@ -1,6 +1,7 @@
 from typing import ClassVar, Optional
 
 from django.db.migrations.state import ProjectState
+from django.db.models.signals import post_migrate
 from django.test import TransactionTestCase
 
 from django_test_migrations.migrator import Migrator
@@ -48,3 +49,13 @@ class MigratorTestCase(TransactionTestCase):
         """Used to clean mess up after each test."""
         self._migrator.reset()
         super().tearDown()
+
+    def _pre_setup(self):
+        self._post_migrate_receivers, post_migrate.receivers = (  # noqa: WPS414
+            post_migrate.receivers, [],
+        )
+        super()._pre_setup()
+
+    def _post_teardown(self):
+        super()._post_teardown()
+        post_migrate.receivers = self._post_migrate_receivers

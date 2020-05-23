@@ -158,6 +158,10 @@ and apps that depend on each other will be executed in the correct order.
 We support several test frameworks as first-class citizens.
 That's a testing tool after all!
 
+Note that the Django `post_migrate` signal's receiver list is cleared at
+the start of tests and restored afterwards. If you need to test your
+own `post_migrate` signals then attach/remove them during a test.
+
 ### pytest
 
 We ship `django-test-migrations` with a `pytest` plugin

@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from typing import Optional
 
 from django.core.management import call_command
@@ -6,35 +5,11 @@ from django.core.management.color import no_style
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.executor import MigrationExecutor
 from django.db.migrations.state import ProjectState
-from django.db.models.signals import post_migrate, pre_migrate
 
 from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
 from django_test_migrations.plan import truncate_plan
 from django_test_migrations.types import MigrationPlan, MigrationSpec
-
-
-@contextmanager
-def _mute_migrate_signals():
-    """
-    Mutes post_migrate and pre_migrate signals that breaks during testing.
-
-    This context manager just turns them off temporarly.
-
-    Related:
-    https://github.com/wemake-services/django-test-migrations/issues/11
-    """
-    restore_post, post_migrate.receivers = (  # noqa: WPS414
-        post_migrate.receivers, [],
-    )
-    restore_pre, pre_migrate.receivers = (  # noqa: WPS414
-        pre_migrate.receivers, [],
-    )
-
-    yield
-
-    post_migrate.receivers = restore_post
-    pre_migrate.receivers = restore_pre
 
 
 class Migrator(object):
@@ -98,5 +73,4 @@ class Migrator(object):
         migration_targets: MigrationSpec,
         plan: Optional[MigrationPlan] = None,
     ) -> ProjectState:
-        with _mute_migrate_signals():
-            return self._executor.migrate(migration_targets, plan=plan)
+        return self._executor.migrate(migration_targets, plan=plan)
