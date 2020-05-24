@@ -20,9 +20,10 @@ def _disconnect_receivers():
     post_migrate.disconnect(sender=main_app_config, dispatch_uid=DISPATCH_UID)
 
 
-def test_post_migrate_muted(migrator):
-    """Ensure ``post_migrate`` signal has been muted."""
-    assert not post_migrate.receivers
+@pytest.mark.parametrize('signal', [pre_migrate, post_migrate])
+def test_migrate_signal_muted(migrator, signal):
+    """Ensure migrate signal has been muted."""
+    assert not signal.receivers
 
 
 @pytest.mark.parametrize('signal', [pre_migrate, post_migrate])

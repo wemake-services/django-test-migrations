@@ -1,7 +1,7 @@
 from typing import ClassVar, Optional
 
 from django.db.migrations.state import ProjectState
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, pre_migrate
 from django.test import TransactionTestCase
 
 from django_test_migrations.migrator import Migrator
@@ -51,6 +51,9 @@ class MigratorTestCase(TransactionTestCase):
         super().tearDown()
 
     def _pre_setup(self):
+        self._pre_migrate_receivers, pre_migrate.receivers = (  # noqa: WPS414
+            pre_migrate.receivers, [],
+        )
         self._post_migrate_receivers, post_migrate.receivers = (  # noqa: WPS414
             post_migrate.receivers, [],
         )
@@ -58,4 +61,5 @@ class MigratorTestCase(TransactionTestCase):
 
     def _post_teardown(self):
         super()._post_teardown()
+        pre_migrate.receivers = self._pre_migrate_receivers
         post_migrate.receivers = self._post_migrate_receivers

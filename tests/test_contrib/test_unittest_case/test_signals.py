@@ -14,6 +14,11 @@ class TestSignalMuting(MigratorTestCase):
     migrate_from = ('main_app', '0002_someitem_is_clean')
     migrate_to = ('main_app', '0001_initial')
 
+    def test_pre_migrate_muted(self):
+        """Ensure ``pre_migrate`` signal has been muted."""
+        assert not pre_migrate.receivers
+        assert self._pre_migrate_receivers
+
     def test_post_migrate_muted(self):
         """Ensure ``post_migrate`` signal has been muted."""
         assert not post_migrate.receivers

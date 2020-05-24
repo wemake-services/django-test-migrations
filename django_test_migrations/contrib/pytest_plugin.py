@@ -2,7 +2,7 @@ from typing import Optional
 
 import pytest
 from django.db import DEFAULT_DB_ALIAS
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, pre_migrate
 
 
 @pytest.fixture()
@@ -47,10 +47,14 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
 
 @pytest.fixture()
 def _mute_migration_signals():
+    restore_pre, pre_migrate.receivers = (  # noqa: WPS414
+        pre_migrate.receivers, [],
+    )
     restore_post, post_migrate.receivers = (  # noqa: WPS414
         post_migrate.receivers, [],
     )
     yield
+    pre_migrate.receivers = restore_pre
     post_migrate.receivers = restore_post
 
 
