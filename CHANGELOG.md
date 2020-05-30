@@ -2,6 +2,30 @@
 
 We follow Semantic Versions since the `0.1.0` release.
 
+## Version 1.0.0
+
+### Breaking Changes
+
+- Rename following `Migrator` methods (#83):
+
+  + `before` to `apply_initial_migration`
+  + `after` to `apply_tested_migration`
+
+- Improves databases setup and teardown for migrations tests (#76)
+  Currently `Migrator.reset` uses `migrate` management command and all logic
+  related to migrations tests setup is moved to
+  `Migrator.apply_tested_migration`.
+
+### Bugfixes
+
+- Fixes `pre_migrate` and `post_migrate` signals muting (#87)
+- Adds missing `typing_extension` dependency (#86)
+
+### Misc
+
+- Refactor tests (#79)
+- Return `django` installed from `master` branch to testing matrix (#77)
+
 
 ## Version 0.3.0
 
