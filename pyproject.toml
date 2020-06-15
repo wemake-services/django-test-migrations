@@ -66,7 +66,7 @@ nitpick = "^0.22"
 safety = "^1.9"
 
 pytest = "^5.4"
-pytest-cov = "^2.9"
+pytest-cov = "^2.10"
 pytest-randomly = "^3.4"
 pytest-django = "^3.9"
 pytest-pythonpath = "^0.7"
