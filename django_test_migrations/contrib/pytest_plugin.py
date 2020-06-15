@@ -40,7 +40,7 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
 
     def factory(database_name: Optional[str] = None) -> Migrator:
         migrator = Migrator(database_name)
-        request.addfinalizer(migrator.reset)
+        request.addfinalizer(migrator.reset)  # noqa: PT021
         return migrator
     return factory
 
