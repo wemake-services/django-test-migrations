@@ -4,6 +4,7 @@
 [![Build status](https://github.com/wemake-services/django-test-migrations/workflows/test/badge.svg?branch=master&event=push)](https://github.com/wemake-services/django-test-migrations/actions?query=workflow%3Atest)
 [![codecov](https://codecov.io/gh/wemake-services/django-test-migrations/branch/master/graph/badge.svg)](https://codecov.io/gh/wemake-services/django-test-migrations)
 [![Python Version](https://img.shields.io/pypi/pyversions/django-test-migrations.svg)](https://pypi.org/project/django-test-migrations/)
+![PyPI - Django Version](https://img.shields.io/pypi/djversions/django-test-migrations)
 [![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
 
 
@@ -29,7 +30,6 @@ pip install django-test-migrations
 We support several `django` versions:
 
 - `1.11`
-- `2.1`
 - `2.2`
 - `3.0`
 
