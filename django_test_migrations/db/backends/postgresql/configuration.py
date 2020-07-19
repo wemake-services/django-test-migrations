@@ -15,7 +15,7 @@ class DatabaseConfiguration(BaseDatabaseConfiguration):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 (
-                    'SELECT setting FROM pg_settings ' +
+                    'SELECT setting FROM pg_settings ' +  # noqa: S608
                     'WHERE name = %s;'  # noqa: WPS323
                 ),
                 (name,),
