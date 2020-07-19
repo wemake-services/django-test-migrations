@@ -78,7 +78,7 @@ def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
                         "or if it's from a third party app, add to " +
                         _SETTINGS_NAME
                     ),
-                    id='{0}.E001'.format(CHECK_NAME),
+                    id='{0}.W001'.format(CHECK_NAME),
                 ),
             )
     return messages
