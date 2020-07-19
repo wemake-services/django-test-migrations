@@ -46,7 +46,21 @@ class AutoNames(AppConfig):
 
 
 class DatabaseConfiguration(AppConfig):
-    """Class to install this check into ``INSTALLED_APPS`` in ``django``."""
+    """Class to install this check into ``INSTALLED_APPS`` in ``django``.
+
+    Database configuration checks are made with aim to help/guide developers
+    set the most appropriate values for some database settings according to
+    best practices.
+    Currently supported database settings:
+
+    * statement timeout (timout queries that execution take too long):
+        * `postgresql` via `statement_timeout` - https://bit.ly/2ZFjaRM
+        * `mysql` via `max_execution_time` - https://bit.ly/399TBvk
+
+    See:
+        https://github.com/wemake-services/wemake-django-template/issues/1064
+
+    """
 
     #: Part of Django API.
     name = DATABASE_CHECK_NAME

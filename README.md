@@ -221,7 +221,14 @@ class TestDirectMigration(MigratorTestCase):
 ```
 
 
-## Testing migration names
+## Django Checks
+
+`django_test_migrations` comes with 2 groups of Django's checks for:
+
++ detecting migrations scripts automatically generated names
++ validating some subset of database settings
+
+### Testing migration names
 
 `django` generates migration names for you when you run `makemigrations`.
 And these names are bad ([read more](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/) about why it is bad)!
@@ -276,6 +283,22 @@ DTM_IGNORED_MIGRATIONS = {
     ('another_dependency_app', '*'),
 }
 ```
+
+### Database configuration
+
+Add our check to `INSTALLED_APPS`:
+
+```python
+INSTALLED_APPS = [
+    # ...
+
+    # Our custom check:
+    'django_test_migrations.contrib.django_checks.DatabaseConfiguration',
+]
+```
+
+Then just run `check` management command in your CI like listed in section
+above.
 
 
 ## Credits
