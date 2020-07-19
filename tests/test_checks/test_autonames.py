@@ -1,7 +1,10 @@
 import pytest
 from django.core.checks import WARNING
 
-from django_test_migrations.autonames import CHECK_NAME, check_migration_names
+from django_test_migrations.checks.autonames import (
+    CHECK_NAME,
+    check_migration_names,
+)
 
 
 @pytest.mark.django_db

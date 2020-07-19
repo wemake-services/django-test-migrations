@@ -1,9 +1,7 @@
 from django.apps import AppConfig
 from django.core import checks
 
-from django_test_migrations.autonames import CHECK_NAME, check_migration_names
-from django_test_migrations.db.checks import CHECKS
-from django_test_migrations.db.checks import NAME as DATABASE_CHECK_NAME
+from django_test_migrations.checks import autonames, database_configuration
 
 
 class AutoNames(AppConfig):
@@ -38,11 +36,12 @@ class AutoNames(AppConfig):
     """
 
     #: Part of Django API.
-    name = CHECK_NAME
+    name = autonames.CHECK_NAME
 
     def ready(self):
         """That's how we register our check when apps are ready."""
-        checks.register(check_migration_names, checks.Tags.compatibility)
+        for check in autonames.CHECKS:
+            checks.register(check, checks.Tags.compatibility)
 
 
 class DatabaseConfiguration(AppConfig):
@@ -63,9 +62,9 @@ class DatabaseConfiguration(AppConfig):
     """
 
     #: Part of Django API.
-    name = DATABASE_CHECK_NAME
+    name = database_configuration.CHECK_NAME
 
     def ready(self):
         """Register database configuration checks."""
-        for check in CHECKS:
+        for check in database_configuration.CHECKS:
             checks.register(check, checks.Tags.database)

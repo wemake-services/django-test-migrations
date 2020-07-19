@@ -13,7 +13,7 @@ from django_test_migrations.logic.datetime import timedelta_to_miliseconds
 from django_test_migrations.types import AnyConnection
 
 #: We use this value as a unique identifier of databases related check.
-CHECK_NAME: Final = 'django_test_migrations.db.checks'
+CHECK_NAME: Final = 'django_test_migrations.checks.database_configuration'
 STATEMENT_TIMEOUT_MINUTES_UPPER_LIMIT: Final = 30
 
 
