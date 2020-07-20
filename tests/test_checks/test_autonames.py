@@ -1,5 +1,5 @@
 import pytest
-from django.core.checks import WARNING
+from django.core.checks import ERROR
 
 from django_test_migrations.checks.autonames import (
     CHECK_NAME,
@@ -15,7 +15,7 @@ def test_autonames():
 
     assert len(warnings) == 2
 
-    assert [warnings[0].level, warnings[1].level] == [WARNING, WARNING]
+    assert [warnings[0].level, warnings[1].level] == [ERROR, ERROR]
     assert all(
         [
             warnings[0].id.startswith(CHECK_NAME),

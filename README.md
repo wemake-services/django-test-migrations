@@ -239,7 +239,7 @@ What does this migration do? What changes does it have?
 One can also pass `--name` attribute when creating migrations, but it is easy to forget.
 
 We offer an automated solution: `django` check
-that produces a warning for each badly named migration.
+that produces an error for each badly named migration.
 
 Add our check into your `INSTALLED_APPS`:
 
@@ -255,7 +255,7 @@ INSTALLED_APPS = [
 And then in your CI run:
 
 ```bash
-python manage.py check --deploy --fail-level WARNING
+python manage.py check --deploy
 ```
 
 This way you will be safe from wrong names in your migrations.

@@ -35,17 +35,17 @@ def test_correct_statement_timeout(mocker, connection_mock_factory, vendor):
 
 @pytest.mark.parametrize('vendor', ['postgresql', 'mysql'])
 def test_statement_timeout_not_set(mocker, connection_mock_factory, vendor):
-    """Ensure W001 is returned in list when ``statement_timeout`` not set."""
+    """Ensure E001 is returned in list when ``statement_timeout`` not set."""
     connection_mock = connection_mock_factory(vendor, (0,))
     mocker.patch(ALL_CONNECTIONS_MOCK_PATH, return_value=[connection_mock])
     check_messages = check_statement_timeout_setting()
     assert len(check_messages) == 1
-    assert check_messages[0].id.endswith('W001')
+    assert check_messages[0].id.endswith('E001')
 
 
 @pytest.mark.parametrize('vendor', ['postgresql', 'mysql'])
 def test_statement_timeout_too_high(mocker, connection_mock_factory, vendor):
-    """Ensure I001 is returned in list when ``statement_timeout`` too high."""
+    """Ensure W001 is returned in list when ``statement_timeout`` too high."""
     connection_mock = connection_mock_factory(
         vendor,
         (timedelta_to_miliseconds(datetime.timedelta(hours=2)),),
@@ -53,7 +53,7 @@ def test_statement_timeout_too_high(mocker, connection_mock_factory, vendor):
     mocker.patch(ALL_CONNECTIONS_MOCK_PATH, return_value=[connection_mock])
     check_messages = check_statement_timeout_setting()
     assert len(check_messages) == 1
-    assert check_messages[0].id.endswith('I001')
+    assert check_messages[0].id.endswith('W001')
 
 
 def test_unsupported_vendors(mocker):
@@ -89,7 +89,7 @@ def test_multiple_connections(mocker, connection_mock_factory):
     mocker.patch(ALL_CONNECTIONS_MOCK_PATH, return_value=connections_mocks)
     check_messages = check_statement_timeout_setting()
     expected_messages_ids = [
+        '{0}.E001'.format(CHECK_NAME),
         '{0}.W001'.format(CHECK_NAME),
-        '{0}.I001'.format(CHECK_NAME),
     ]
     assert expected_messages_ids == [message.id for message in check_messages]
