@@ -52,7 +52,7 @@ class DatabaseConfiguration(AppConfig):
     best practices.
     Currently supported database settings:
 
-    * statement timeout (timout queries that execution take too long):
+    * statement timeout (timeout queries that execution take too long):
         * `postgresql` via `statement_timeout` - https://bit.ly/2ZFjaRM
         * `mysql` via `max_execution_time` - https://bit.ly/399TBvk
 
