@@ -2,7 +2,7 @@ from fnmatch import fnmatch
 from typing import FrozenSet, List, Tuple
 
 from django.conf import settings
-from django.core.checks import CheckMessage, Error
+from django.core.checks import CheckMessage, Warning
 from typing_extensions import Final
 
 _IgnoreAppSpec = FrozenSet[str]
@@ -69,7 +69,7 @@ def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
 
         if fnmatch(migration_name, '????_auto_*'):
             messages.append(
-                Error(
+                Warning(
                     'Migration {0}.{1} has an automatic name.'.format(
                         app_label, migration_name,
                     ),
@@ -78,7 +78,7 @@ def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
                         "or if it's from a third party app, add to " +
                         _SETTINGS_NAME
                     ),
-                    id='{0}.E001'.format(CHECK_NAME),
+                    id='{0}.W001'.format(CHECK_NAME),
                 ),
             )
     return messages

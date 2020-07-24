@@ -1,7 +1,7 @@
 import datetime
 from typing import List
 
-from django.core.checks import CheckMessage, Error, Warning
+from django.core.checks import CheckMessage, Warning
 from django.db import connections
 from typing_extensions import Final
 
@@ -62,7 +62,7 @@ def _ensure_statement_timeout_is_set(
 ) -> None:
     if not setting_value:
         messages.append(
-            Error(
+            Warning(
                 '{0}: statement timeout "{1}" setting is not set.'.format(
                     database_configuration.connection.alias,
                     database_configuration.statement_timeout,
@@ -70,7 +70,7 @@ def _ensure_statement_timeout_is_set(
                 hint=(
                     'Set "{0}" database setting to some reasonable value.'
                 ).format(database_configuration.statement_timeout),
-                id='{0}.E001'.format(CHECK_NAME),
+                id='{0}.W001'.format(CHECK_NAME),
             ),
         )
 
@@ -99,6 +99,6 @@ def _ensure_statement_timeout_not_too_high(
                     'reasonable value, but remember it should not be ' +
                     'too high.'
                 ).format(database_configuration.statement_timeout),
-                id='{0}.W001'.format(CHECK_NAME),
+                id='{0}.W002'.format(CHECK_NAME),
             ),
         )
