@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 from django.core import checks
 
-from django_test_migrations.autonames import CHECK_NAME, check_migration_names
+from django_test_migrations.checks import autonames, database_configuration
 
 
 class AutoNames(AppConfig):
@@ -36,8 +36,35 @@ class AutoNames(AppConfig):
     """
 
     #: Part of Django API.
-    name = CHECK_NAME
+    name = autonames.CHECK_NAME
 
     def ready(self):
         """That's how we register our check when apps are ready."""
-        checks.register(checks.Tags.compatibility)(check_migration_names)
+        for check in autonames.CHECKS:
+            checks.register(check, checks.Tags.compatibility)
+
+
+class DatabaseConfiguration(AppConfig):
+    """Class to install this check into ``INSTALLED_APPS`` in ``django``.
+
+    Database configuration checks are made with aim to help/guide developers
+    set the most appropriate values for some database settings according to
+    best practices.
+    Currently supported database settings:
+
+    * statement timeout (timeout queries that execution take too long):
+        * `postgresql` via `statement_timeout` - https://bit.ly/2ZFjaRM
+        * `mysql` via `max_execution_time` - https://bit.ly/399TBvk
+
+    See:
+        https://github.com/wemake-services/wemake-django-template/issues/1064
+
+    """
+
+    #: Part of Django API.
+    name = database_configuration.CHECK_NAME
+
+    def ready(self):
+        """Register database configuration checks."""
+        for check in database_configuration.CHECKS:
+            checks.register(check, checks.Tags.database)

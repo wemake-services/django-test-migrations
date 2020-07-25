@@ -1,5 +1,7 @@
 from typing import List, Optional, Tuple, Union
 
+from django.db import DefaultConnectionProxy
+from django.db.backends.base.base import BaseDatabaseWrapper
 from django.db.migrations import Migration
 
 # Migration target: (app_name, migration_name)
@@ -9,3 +11,7 @@ MigrationTarget = Tuple[str, Optional[str]]
 MigrationSpec = Union[MigrationTarget, List[MigrationTarget]]
 
 MigrationPlan = List[Tuple[Migration, bool]]
+
+AnyConnection = Union[DefaultConnectionProxy, BaseDatabaseWrapper]
+
+DatabaseSettingValue = Union[str, int]

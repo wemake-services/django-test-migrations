@@ -13,7 +13,7 @@ _IgnoreMigrationSpec = FrozenSet[Tuple[str, str]]
 _IgnoreSpec = Tuple[_IgnoreAppSpec, _IgnoreMigrationSpec]
 
 #: We use this value as a unique identifier of this check.
-CHECK_NAME: Final = 'django_test_migrations.autonames'
+CHECK_NAME: Final = 'django_test_migrations.checks.autonames'
 
 #: Settings name for this check to ignore some migrations.
 _SETTINGS_NAME: Final = 'DTM_IGNORED_MIGRATIONS'
@@ -78,7 +78,10 @@ def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
                         "or if it's from a third party app, add to " +
                         _SETTINGS_NAME
                     ),
-                    id='{0}.E001'.format(CHECK_NAME),
+                    id='{0}.W001'.format(CHECK_NAME),
                 ),
             )
     return messages
+
+
+CHECKS: Final = (check_migration_names,)

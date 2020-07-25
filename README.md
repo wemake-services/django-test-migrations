@@ -221,7 +221,14 @@ class TestDirectMigration(MigratorTestCase):
 ```
 
 
-## Testing migration names
+## Django Checks
+
+`django_test_migrations` comes with 2 groups of Django's checks for:
+
++ detecting migrations scripts automatically generated names
++ validating some subset of database settings
+
+### Testing migration names
 
 `django` generates migration names for you when you run `makemigrations`.
 And these names are bad ([read more](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/) about why it is bad)!
@@ -232,7 +239,7 @@ What does this migration do? What changes does it have?
 One can also pass `--name` attribute when creating migrations, but it is easy to forget.
 
 We offer an automated solution: `django` check
-that produces a warning for each badly named migration.
+that produces an error for each badly named migration.
 
 Add our check into your `INSTALLED_APPS`:
 
@@ -248,7 +255,7 @@ INSTALLED_APPS = [
 And then in your CI run:
 
 ```bash
-python manage.py check --deploy --fail-level WARNING
+python manage.py check --deploy
 ```
 
 This way you will be safe from wrong names in your migrations.
@@ -276,6 +283,22 @@ DTM_IGNORED_MIGRATIONS = {
     ('another_dependency_app', '*'),
 }
 ```
+
+### Database configuration
+
+Add our check to `INSTALLED_APPS`:
+
+```python
+INSTALLED_APPS = [
+    # ...
+
+    # Our custom check:
+    'django_test_migrations.contrib.django_checks.DatabaseConfiguration',
+]
+```
+
+Then just run `check` management command in your CI like listed in section
+above.
 
 
 ## Credits
