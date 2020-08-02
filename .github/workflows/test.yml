@@ -13,6 +13,7 @@ jobs:
           'Django~=1.11.0',
           'Django~=2.2.0',
           'Django~=3.0.0',
+          'Django~=3.1rc1',
         ]
         continue-on-error: [false]
 
