@@ -57,7 +57,7 @@ python = "^3.6"
 typing_extensions = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
-django = "^2.2"
+django = "^3.0"
 
 mypy = "^0.782"
 wemake-python-styleguide = "^0.14"
