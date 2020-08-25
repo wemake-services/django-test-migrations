@@ -22,5 +22,8 @@ def test_drop_models_table_table_detected(mocker):
     ]
     connections_mock = mocker.patch('django.db.connections._connections')
     connections_mock.test = testing_connection_mock
+    execute_sql_flush_mock = mocker.patch(
+        'django_test_migrations.sql.get_execute_sql_flush_for',
+    )
     sql.drop_models_tables(TESTING_DATABASE_NAME)
-    testing_connection_mock.ops.execute_sql_flush.assert_called_once()
+    execute_sql_flush_mock(testing_connection_mock).assert_called_once()

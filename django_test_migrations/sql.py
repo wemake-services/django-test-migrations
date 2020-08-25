@@ -1,6 +1,7 @@
 from functools import partial
 from typing import Callable, Dict, List, Optional, Union
 
+import django
 from django.core.management.color import Style, no_style
 from django.db import DefaultConnectionProxy, connections, transaction
 from django.db.backends.base.base import BaseDatabaseWrapper
@@ -29,7 +30,7 @@ def drop_models_tables(
         for table in tables
     ]
     if sql_drop_tables:
-        get_execute_sql_flush_for(connection)(database_name, sql_drop_tables)
+        get_execute_sql_flush_for(connection)(sql_drop_tables)
 
 
 def flush_django_migrations_table(
@@ -46,16 +47,12 @@ def flush_django_migrations_table(
     """
     style = style or no_style()
     connection = connections[database_name]
-    django_migrations_sequences = get_django_migrations_table_sequences(
-        connection,
-    )
     execute_sql_flush = get_execute_sql_flush_for(connection)
+    sql_flush = get_sql_flush_with_sequences_for(connection)
     execute_sql_flush(
-        database_name,
-        connection.ops.sql_flush(
+        sql_flush(
             style,
             [DJANGO_MIGRATIONS_TABLE_NAME],
-            django_migrations_sequences,
             allow_cascade=False,
         ),
     )
@@ -80,20 +77,36 @@ def get_django_migrations_table_sequences(
     return [{'table': DJANGO_MIGRATIONS_TABLE_NAME, 'column': 'id'}]
 
 
+def get_sql_flush_with_sequences_for(
+    connection: _Connection,
+):
+    """Harmonizes sql_flush accross Django versions."""
+    if django.VERSION >= (3, 1):
+        return partial(connection.ops.sql_flush, reset_sequences=True)
+    return partial(
+        connection.ops.sql_flush,
+        sequences=get_django_migrations_table_sequences(connection),
+    )
+
+
 def get_execute_sql_flush_for(
     connection: _Connection,
-) -> Callable[[str, List[str]], None]:
-    """Return ``execute_sql_flush`` callable for given connection."""
-    return getattr(
-        connection.ops,
-        'execute_sql_flush',
-        partial(execute_sql_flush, connection),
-    )
+) -> Callable[[List[str]], None]:
+    """Return ``execute_sql_flush`` callable for given connection.
+
+    This function also harmonizes the signature of `execute_sql_flush`
+    to match Django 3.1 with `sql_list` as the only argument.
+
+    """
+    if django.VERSION >= (3, 1):
+        return connection.ops.execute_sql_flush
+    if django.VERSION >= (2, 0):
+        return partial(connection.ops.execute_sql_flush, connection.alias)
+    return partial(execute_sql_flush, connection)
 
 
 def execute_sql_flush(
     connection: _Connection,
-    using: str,
     sql_list: List[str],
 ) -> None:  # pragma: no cover
     """Execute a list of SQL statements to flush the database.
@@ -105,7 +118,7 @@ def execute_sql_flush(
 
     """
     with transaction.atomic(
-        using=using,
+        using=str(connection.alias),
         savepoint=connection.features.can_rollback_ddl,
     ):
         with connection.cursor() as cursor:
