@@ -80,7 +80,7 @@ def get_django_migrations_table_sequences(
 def get_sql_flush_with_sequences_for(
     connection: _Connection,
 ):
-    """Harmonizes sql_flush accross Django versions."""
+    """Harmonizes ``sql_flush`` accross Django versions."""
     if django.VERSION >= (3, 1):
         return partial(connection.ops.sql_flush, reset_sequences=True)
     return partial(
@@ -94,8 +94,8 @@ def get_execute_sql_flush_for(
 ) -> Callable[[List[str]], None]:
     """Return ``execute_sql_flush`` callable for given connection.
 
-    This function also harmonizes the signature of `execute_sql_flush`
-    to match Django 3.1 with `sql_list` as the only argument.
+    This function also harmonizes the signature of ``execute_sql_flush``
+    to match Django 3.1 with ``sql_list`` as the only argument.
 
     """
     if django.VERSION >= (3, 1):

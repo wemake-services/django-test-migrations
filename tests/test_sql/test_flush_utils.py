@@ -9,7 +9,7 @@ from django_test_migrations import sql
 
 @contextmanager
 def simulate_django_version(version):
-    """Context manager that changes the django VERSION to test compatibility."""
+    """Context manager that changes ``django.VERSION`` to test compatibility."""
     current_django_version = django.VERSION
     django.VERSION = version
     yield version
@@ -55,10 +55,10 @@ def test_flush_django_migrations_table(mocker):
 
 
 class TestGetSqlFlushWithSequences(object):
-    """Ensure we call `sql_flush` rightly accross Django versions."""
+    """Ensure we call ``sql_flush`` rightly accross Django versions."""
 
     def test_for_django31(self, mocker):
-        """Ensure we are calling sql_flush with `reset_sequences`."""
+        """Ensure we call ``sql_flush`` with ``reset_sequences``."""
         connection_mock = mocker.Mock()
         connection_mock.ops.sql_flush = _fake_sql_flush
         with simulate_django_version((3, 1, 'final', 0)):
@@ -67,7 +67,7 @@ class TestGetSqlFlushWithSequences(object):
         assert sql_flush.keywords == {'reset_sequences': True}
 
     def test_for_django22(self, mocker):
-        """Ensure we are calling sql_flush with the positionnal `sequences`."""
+        """Ensure we call ``sql_flush`` with the positionnal ``sequences``."""
         connection_mock = mocker.MagicMock()
         connection_mock.ops.sql_flush.return_value = _fake_sql_flush
         connection_mock.introspection.get_sequences.return_value = []
@@ -78,10 +78,10 @@ class TestGetSqlFlushWithSequences(object):
 
 
 class TestGetExecuteSqlFlush(object):
-    """Ensure we call `execute_sql_flush` rightly accross Django versions."""
+    """Ensure we call ``execute_sql_flush`` rightly accross Django versions."""
 
     def test_for_django31(self, mocker):
-        """Ensure we are getting execute_sql_flush directly."""
+        """Ensure we are getting ``execute_sql_flush`` directly."""
         connection_mock = mocker.Mock()
         connection_mock.ops.execute_sql_flush = _fake_execute_sql_flush
         with simulate_django_version((3, 1, 'final', 0)):
@@ -89,7 +89,7 @@ class TestGetExecuteSqlFlush(object):
         assert execute_sql_flush == _fake_execute_sql_flush
 
     def test_for_django20(self, mocker):
-        """Ensure we call execute_sql_flush with the database name."""
+        """Ensure we call ``execute_sql_flush`` with the database name."""
         connection_mock = mocker.Mock()
         connection_mock.alias = 'test'
         connection_mock.ops.execute_sql_flush = _fake_execute_sql_flush
