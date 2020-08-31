@@ -2,6 +2,7 @@ from contextlib import contextmanager
 from functools import partial
 
 import django
+import pytest
 from django.core.management.color import Style
 
 from django_test_migrations import sql
@@ -16,17 +17,21 @@ def simulate_django_version(version):
     django.VERSION = current_django_version
 
 
-def test_flush_django_migrations_table(mocker):
+class TestFlushDjangoMigrationTable(object):
     """Ensure ``connection.ops`` methods are called with expected args."""
-    style = Style()
-    testing_connection_mock = mocker.MagicMock()
-    testing_connection_mock.introspection.get_sequences.return_value = []
-    connections_mock = mocker.patch('django.db.connections._connections')
-    connections_mock.test = testing_connection_mock
-    sql.flush_django_migrations_table('test', style)
-    if django.VERSION >= (3, 1):
+
+    _style = Style()
+
+    @pytest.mark.skipif(
+        django.VERSION < (3, 1),
+        reason='requires `Django>=3.1`',
+    )
+    def test_django31_calls(self, mocker):
+        """Check that the calls are right on Django 3.1."""
+        testing_connection_mock = self._mock_connection(mocker)
+        sql.flush_django_migrations_table('test', self._style)
         testing_connection_mock.ops.sql_flush.assert_called_once_with(
-            style,
+            self._style,
             [sql.DJANGO_MIGRATIONS_TABLE_NAME],
             reset_sequences=True,
             allow_cascade=False,
@@ -34,9 +39,17 @@ def test_flush_django_migrations_table(mocker):
         testing_connection_mock.ops.execute_sql_flush.assert_called_once_with(
             mocker.ANY,
         )
-    elif django.VERSION >= (2, 0):
+
+    @pytest.mark.skipif(
+        django.VERSION < (2, 0) or django.VERSION >= (3, 1),
+        reason='requires `2.0<=Django<3.1`',
+    )
+    def test_django20_calls(self, mocker):
+        """Check that the calls are right on Django 2.0 - 3.0."""
+        testing_connection_mock = self._mock_connection(mocker)
+        sql.flush_django_migrations_table('test', self._style)
         testing_connection_mock.ops.sql_flush.assert_called_once_with(
-            style,
+            self._style,
             [sql.DJANGO_MIGRATIONS_TABLE_NAME],
             sequences=[],
             allow_cascade=False,
@@ -45,13 +58,29 @@ def test_flush_django_migrations_table(mocker):
             mocker.ANY,
             mocker.ANY,
         )
-    else:
+
+    @pytest.mark.skipif(
+        django.VERSION >= (2, 0),
+        reason='requires `Django<2.0`',
+    )
+    def test_django1_11_calls(self, mocker):
+        """Check that the calls are right on Django < 2.0."""
+        testing_connection_mock = self._mock_connection(mocker)
+        sql.flush_django_migrations_table('test', self._style)
         testing_connection_mock.ops.sql_flush.assert_called_once_with(
-            style,
+            self._style,
             [sql.DJANGO_MIGRATIONS_TABLE_NAME],
             sequences=[],
             allow_cascade=False,
         )
+
+    def _mock_connection(self, mocker):
+        """Mock Django connections to check the methods called."""
+        testing_connection_mock = mocker.MagicMock()
+        testing_connection_mock.introspection.get_sequences.return_value = []
+        connections_mock = mocker.patch('django.db.connections._connections')
+        connections_mock.test = testing_connection_mock
+        return testing_connection_mock
 
 
 class TestGetSqlFlushWithSequences(object):
