@@ -17,6 +17,16 @@ def simulate_django_version(version):
     django.VERSION = current_django_version
 
 
+@pytest.fixture()
+def testing_connection_mock(mocker):
+    """Mock Django connections to check the methods called."""
+    testing_connection_mock = mocker.MagicMock()
+    testing_connection_mock.introspection.get_sequences.return_value = []
+    connections_mock = mocker.patch('django.db.connections._connections')
+    connections_mock.test = testing_connection_mock
+    return testing_connection_mock
+
+
 class TestFlushDjangoMigrationTable(object):
     """Ensure ``connection.ops`` methods are called with expected args."""
 
@@ -26,9 +36,8 @@ class TestFlushDjangoMigrationTable(object):
         django.VERSION < (3, 1),
         reason='requires `Django>=3.1`',
     )
-    def test_django31_calls(self, mocker):
+    def test_django31_calls(self, mocker, testing_connection_mock):
         """Check that the calls are right on Django 3.1."""
-        testing_connection_mock = self._mock_connection(mocker)
         sql.flush_django_migrations_table('test', self._style)
         testing_connection_mock.ops.sql_flush.assert_called_once_with(
             self._style,
@@ -44,9 +53,8 @@ class TestFlushDjangoMigrationTable(object):
         django.VERSION < (2, 0) or django.VERSION >= (3, 1),
         reason='requires `2.0<=Django<3.1`',
     )
-    def test_django20_calls(self, mocker):
+    def test_django20_calls(self, mocker, testing_connection_mock):
         """Check that the calls are right on Django 2.0 - 3.0."""
-        testing_connection_mock = self._mock_connection(mocker)
         sql.flush_django_migrations_table('test', self._style)
         testing_connection_mock.ops.sql_flush.assert_called_once_with(
             self._style,
@@ -63,9 +71,8 @@ class TestFlushDjangoMigrationTable(object):
         django.VERSION >= (2, 0),
         reason='requires `Django<2.0`',
     )
-    def test_django1_11_calls(self, mocker):
+    def test_django1_11_calls(self, testing_connection_mock):
         """Check that the calls are right on Django < 2.0."""
-        testing_connection_mock = self._mock_connection(mocker)
         sql.flush_django_migrations_table('test', self._style)
         testing_connection_mock.ops.sql_flush.assert_called_once_with(
             self._style,
@@ -73,14 +80,6 @@ class TestFlushDjangoMigrationTable(object):
             sequences=[],
             allow_cascade=False,
         )
-
-    def _mock_connection(self, mocker):
-        """Mock Django connections to check the methods called."""
-        testing_connection_mock = mocker.MagicMock()
-        testing_connection_mock.introspection.get_sequences.return_value = []
-        connections_mock = mocker.patch('django.db.connections._connections')
-        connections_mock.test = testing_connection_mock
-        return testing_connection_mock
 
 
 class TestGetSqlFlushWithSequences(object):
