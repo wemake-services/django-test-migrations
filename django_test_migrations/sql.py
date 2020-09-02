@@ -80,7 +80,7 @@ def get_django_migrations_table_sequences(
 def get_sql_flush_with_sequences_for(
     connection: _Connection,
 ):
-    """Harmonizes ``sql_flush`` accross Django versions."""
+    """Harmonizes ``sql_flush`` across Django versions."""
     if django.VERSION >= (3, 1):
         return partial(connection.ops.sql_flush, reset_sequences=True)
     return partial(

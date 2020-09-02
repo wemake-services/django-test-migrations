@@ -83,7 +83,7 @@ class TestFlushDjangoMigrationTable(object):
 
 
 class TestGetSqlFlushWithSequences(object):
-    """Ensure we call ``sql_flush`` rightly accross Django versions."""
+    """Ensure we call ``sql_flush`` rightly across Django versions."""
 
     def test_for_django31(self, mocker):
         """Ensure we call ``sql_flush`` with ``reset_sequences``."""
@@ -106,7 +106,7 @@ class TestGetSqlFlushWithSequences(object):
 
 
 class TestGetExecuteSqlFlush(object):
-    """Ensure we call ``execute_sql_flush`` rightly accross Django versions."""
+    """Ensure we call ``execute_sql_flush`` rightly across Django versions."""
 
     def test_for_django31(self, mocker):
         """Ensure we are getting ``execute_sql_flush`` directly."""
