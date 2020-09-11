@@ -1,11 +1,18 @@
 ---
 name: test
-on: [push, pull_request]
+'on': [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.continue-on-error }}
+    env:
+      DJANGO_DATABASE_ENGINE: "${{ matrix.env.DJANGO_DATABASE_ENGINE || 'django.db.backends.sqlite3' }}"
+      DJANGO_DATABASE_USER: django
+      DJANGO_DATABASE_PASSWORD: passwd123
+      DJANGO_DATABASE_NAME: db
+      DJANGO_DATABASE_HOST: 127.0.0.1
+      DJANGO_DATABASE_PORT: "${{ matrix.env.DJANGO_DATABASE_PORT }}"
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
@@ -15,12 +22,30 @@ jobs:
           'Django~=3.0.0',
           'Django~=3.1.0',
         ]
+        services: ['']
+        additional-dependencies: ['']
         continue-on-error: [false]
 
         include:
           - python-version: 3.8
             django-version: 'https://github.com/django/django/archive/master.zip'
             continue-on-error: true
+          - python-version: 3.8
+            django-version: 'Django~=3.0.0'
+            services: postgresql-db
+            additional-dependencies: psycopg2
+            env:
+              DJANGO_DATABASE_ENGINE: django.db.backends.postgresql
+              DJANGO_DATABASE_PORT: 5432
+            continue-on-error: false
+          - python-version: 3.8
+            django-version: 'Django~=3.0.0'
+            services: mysql-db
+            additional-dependencies: mysqlclient
+            env:
+              DJANGO_DATABASE_ENGINE: django.db.backends.mysql
+              DJANGO_DATABASE_PORT: 3306
+            continue-on-error: false
 
     steps:
       - uses: actions/checkout@v2
@@ -39,12 +64,23 @@ jobs:
         with:
           path: .venv
           key: venv-${{ matrix.python-version }}-${{ matrix.django-version }}-${{ hashFiles('poetry.lock') }}
+
       - name: Install dependencies
         run: |
           source "$HOME/.poetry/env"
           poetry config virtualenvs.in-project true
           poetry install
-          pip install -U "${{ matrix.django-version }}"
+          poetry run pip install \
+            --upgrade \
+          "${{ matrix.django-version }}" \
+          ${{ matrix.additional-dependencies }}
+
+      - name: Pull and build docker-compose services
+        if: ${{ matrix.services }}
+        run: |
+          docker-compose pull ${{ matrix.services }}
+          docker-compose up --detach ${{ matrix.services }}
+          # TODO: wait with some predefined timeout for services
 
       - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
         run: |
@@ -55,3 +91,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           file: ./coverage.xml
+
+      - name: Stop docker-compose services
+        if: ${{ always() && matrix.services }}
+        run: docker-compose down || true
