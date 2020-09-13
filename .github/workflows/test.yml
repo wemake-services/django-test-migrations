@@ -22,7 +22,7 @@ jobs:
           'Django~=3.0.0',
           'Django~=3.1.0',
         ]
-        services: ['']
+        docker-compose-services: ['']
         additional-dependencies: ['']
         continue-on-error: [false]
 
@@ -32,7 +32,7 @@ jobs:
             continue-on-error: true
           - python-version: 3.8
             django-version: 'Django~=3.0.0'
-            services: postgresql-db
+            docker-compose-services: postgresql-db
             additional-dependencies: psycopg2
             env:
               DJANGO_DATABASE_ENGINE: django.db.backends.postgresql
@@ -40,7 +40,7 @@ jobs:
             continue-on-error: false
           - python-version: 3.8
             django-version: 'Django~=3.0.0'
-            services: mysql-db
+            docker-compose-services: mysql-db
             additional-dependencies: mysqlclient
             env:
               DJANGO_DATABASE_ENGINE: django.db.backends.mysql
@@ -76,10 +76,10 @@ jobs:
           ${{ matrix.additional-dependencies }}
 
       - name: Pull and build docker-compose services
-        if: ${{ matrix.services }}
+        if: ${{ matrix.docker-compose-services }}
         run: |
-          docker-compose pull ${{ matrix.services }}
-          docker-compose up --detach ${{ matrix.services }}
+          docker-compose pull ${{ matrix.docker-compose-services }}
+          docker-compose up --detach ${{ matrix.docker-compose-services }}
           # TODO: wait with some predefined timeout for services
 
       - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
@@ -93,5 +93,5 @@ jobs:
           file: ./coverage.xml
 
       - name: Stop docker-compose services
-        if: ${{ always() && matrix.services }}
+        if: ${{ always() && matrix.docker-compose-services }}
         run: docker-compose down || true
