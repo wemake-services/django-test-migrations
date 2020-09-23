@@ -9,6 +9,7 @@ from django.db.migrations.state import ProjectState
 from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
 from django_test_migrations.plan import truncate_plan
+from django_test_migrations.signals import mute_migrate_signals
 from django_test_migrations.types import MigrationPlan, MigrationSpec
 
 
@@ -65,7 +66,12 @@ class Migrator(object):
         return self._migrate(normalize(targets))
 
     def reset(self) -> None:
-        """Reset the state to the most recent one."""
+        """
+        Reset the state to the most recent one.
+
+        Notably, signals are not muted here to avoid
+        https://github.com/wemake-services/django-test-migrations/issues/128
+        """
         call_command('migrate', verbosity=0, database=self._database)
 
     def _migrate(
@@ -73,4 +79,5 @@ class Migrator(object):
         migration_targets: MigrationSpec,
         plan: Optional[MigrationPlan] = None,
     ) -> ProjectState:
-        return self._executor.migrate(migration_targets, plan=plan)
+        with mute_migrate_signals():
+            return self._executor.migrate(migration_targets, plan=plan)

@@ -47,6 +47,8 @@ class MigratorTestCase(TransactionTestCase):
 
     def tearDown(self) -> None:
         """Used to clean mess up after each test."""
+        pre_migrate.receivers = self._pre_migrate_receivers
+        post_migrate.receivers = self._post_migrate_receivers
         self._migrator.reset()
         super().tearDown()
 
@@ -58,8 +60,3 @@ class MigratorTestCase(TransactionTestCase):
             post_migrate.receivers, [],
         )
         super()._pre_setup()
-
-    def _post_teardown(self):
-        super()._post_teardown()
-        pre_migrate.receivers = self._pre_migrate_receivers
-        post_migrate.receivers = self._post_migrate_receivers
