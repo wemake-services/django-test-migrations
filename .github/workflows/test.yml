@@ -33,6 +33,8 @@ jobs:
         run: |
           curl -sSL \
             "https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py" | python
+          # add `poetry` to `${PATH}`
+          echo "${HOME}/.poetry/bin" >> ${GITHUB_PATH}
 
       - name: Set up cache
         uses: actions/cache@v1
