@@ -17,12 +17,10 @@ class TestSignalMuting(MigratorTestCase):
     def test_pre_migrate_muted(self):
         """Ensure ``pre_migrate`` signal has been muted."""
         assert not pre_migrate.receivers
-        assert self._pre_migrate_receivers
 
     def test_post_migrate_muted(self):
         """Ensure ``post_migrate`` signal has been muted."""
         assert not post_migrate.receivers
-        assert self._post_migrate_receivers
 
 
 class TestSignalConnectInTest(MigratorTestCase):
