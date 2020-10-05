@@ -235,7 +235,8 @@ with slower migrations tests.
 To run only migrations test, use `-m` option:
 
 ```bash
-pytest -m migration_test
+pytest -m migration_test  # runs only migraion tests
+pytest -m "not migration_test"  # runs all except migraion tests
 ```
 
 #### unittest
@@ -246,7 +247,8 @@ to every `MigratorTestCase` subclass.
 To run only migrations tests, use `--tag` option:
 
 ```bash
-python mange.py test --tag=migration_test
+python mange.py test --tag=migration_test  # runs only migraion tests
+python mange.py test --exclude-tag=migration_test  # runs all except migraion tests
 ```
 
 
