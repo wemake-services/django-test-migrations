@@ -71,6 +71,7 @@ class Migrator(object):
 
         Notably, signals are not muted here to avoid
         https://github.com/wemake-services/django-test-migrations/issues/128
+
         """
         call_command('migrate', verbosity=0, database=self._database)
 
