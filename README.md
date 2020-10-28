@@ -221,6 +221,36 @@ class TestDirectMigration(MigratorTestCase):
         assert SomeItem.objects.filter(is_clean=True).count() == 1
 ```
 
+### Choosing only migrations tests
+
+In CI systems it is important to get instant feedback. Running tests that
+apply database migration can slow down tests execution, so it is often a good
+idea to run standard, fast, regular unit tests without migrations in parallel
+with slower migrations tests.
+
+#### pytest
+
+`django_test_migrations` adds `migration_test` marker to each test using
+`migrator_factory` or `migrator` fixture.
+To run only migrations test, use `-m` option:
+
+```bash
+pytest -m migration_test  # runs only migraion tests
+pytest -m "not migration_test"  # runs all except migraion tests
+```
+
+#### unittest
+
+`django_test_migrations` adds `migration_test`
+[tag](https://docs.djangoproject.com/en/3.0/topics/testing/tools/#tagging-tests)
+to every `MigratorTestCase` subclass.
+To run only migrations tests, use `--tag` option:
+
+```bash
+python mange.py test --tag=migration_test  # runs only migraion tests
+python mange.py test --exclude-tag=migration_test  # runs all except migraion tests
+```
+
 
 ## Django Checks
 

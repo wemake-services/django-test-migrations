@@ -1,3 +1,4 @@
+from django_test_migrations.constants import MIGRATION_TEST_MARKER
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
 
 
@@ -38,3 +39,9 @@ class TestBackwardMigration(MigratorTestCase):
         SomeItem = self.new_state.apps.get_model('main_app', 'SomeItem')
 
         assert SomeItem.objects.count() == 2
+
+
+def test_migration_test_marker_tag():
+    """Ensure ``MigratorTestCase`` sublasses are properly tagged."""
+    assert MIGRATION_TEST_MARKER in TestDirectMigration.tags
+    assert MIGRATION_TEST_MARKER in TestBackwardMigration.tags
