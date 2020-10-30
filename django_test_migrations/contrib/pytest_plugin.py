@@ -3,6 +3,30 @@ from typing import Optional
 import pytest
 from django.db import DEFAULT_DB_ALIAS
 
+from django_test_migrations.constants import MIGRATION_TEST_MARKER
+
+
+def pytest_load_initial_conftests(early_config):
+    """Register pytest's markers."""
+    early_config.addinivalue_line(
+        'markers',
+        "{0}: mark the test as a Django's migration test.".format(
+            MIGRATION_TEST_MARKER,
+        ),
+    )
+
+
+def pytest_collection_modifyitems(session, items):  # noqa: WPS110
+    """Mark all tests using ``migrator_factory`` fixture with proper marks.
+
+    Add ``MIGRATION_TEST_MARKER`` marker to all items using
+    ``migrator_factory`` fixture.
+
+    """
+    for pytest_item in items:
+        if 'migrator_factory' in getattr(pytest_item, 'fixturenames', []):
+            pytest_item.add_marker(MIGRATION_TEST_MARKER)
+
 
 @pytest.fixture()
 def migrator_factory(request, transactional_db, django_db_use_migrations):
