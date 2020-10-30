@@ -2,12 +2,14 @@ from typing import ClassVar, Optional
 
 from django.db.migrations.state import ProjectState
 from django.db.models.signals import post_migrate, pre_migrate
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, tag
 
+from django_test_migrations.constants import MIGRATION_TEST_MARKER
 from django_test_migrations.migrator import Migrator
 from django_test_migrations.types import MigrationSpec
 
 
+@tag(MIGRATION_TEST_MARKER)
 class MigratorTestCase(TransactionTestCase):
     """Used when using raw ``unitest`` library for test."""
 
@@ -47,6 +49,8 @@ class MigratorTestCase(TransactionTestCase):
 
     def tearDown(self) -> None:
         """Used to clean mess up after each test."""
+        pre_migrate.receivers = self._pre_migrate_receivers
+        post_migrate.receivers = self._post_migrate_receivers
         self._migrator.reset()
         super().tearDown()
 
@@ -58,8 +62,3 @@ class MigratorTestCase(TransactionTestCase):
             post_migrate.receivers, [],
         )
         super()._pre_setup()
-
-    def _post_teardown(self):
-        super()._post_teardown()
-        pre_migrate.receivers = self._pre_migrate_receivers
-        post_migrate.receivers = self._post_migrate_receivers

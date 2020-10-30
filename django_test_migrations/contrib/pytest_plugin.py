@@ -2,7 +2,30 @@ from typing import Optional
 
 import pytest
 from django.db import DEFAULT_DB_ALIAS
-from django.db.models.signals import post_migrate, pre_migrate
+
+from django_test_migrations.constants import MIGRATION_TEST_MARKER
+
+
+def pytest_load_initial_conftests(early_config):
+    """Register pytest's markers."""
+    early_config.addinivalue_line(
+        'markers',
+        "{0}: mark the test as a Django's migration test.".format(
+            MIGRATION_TEST_MARKER,
+        ),
+    )
+
+
+def pytest_collection_modifyitems(session, items):  # noqa: WPS110
+    """Mark all tests using ``migrator_factory`` fixture with proper marks.
+
+    Add ``MIGRATION_TEST_MARKER`` marker to all items using
+    ``migrator_factory`` fixture.
+
+    """
+    for pytest_item in items:
+        if 'migrator_factory' in getattr(pytest_item, 'fixturenames', []):
+            pytest_item.add_marker(MIGRATION_TEST_MARKER)
 
 
 @pytest.fixture()
@@ -46,20 +69,7 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
 
 
 @pytest.fixture()
-def _mute_migration_signals():
-    restore_pre, pre_migrate.receivers = (  # noqa: WPS414
-        pre_migrate.receivers, [],
-    )
-    restore_post, post_migrate.receivers = (  # noqa: WPS414
-        post_migrate.receivers, [],
-    )
-    yield
-    pre_migrate.receivers = restore_pre
-    post_migrate.receivers = restore_post
-
-
-@pytest.fixture()
-def migrator(_mute_migration_signals, migrator_factory):  # noqa: WPS442
+def migrator(migrator_factory):  # noqa: WPS442
     """
     Useful alias for ``'default'`` database in ``django``.
 

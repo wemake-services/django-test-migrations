@@ -5,10 +5,17 @@ from django.db import DEFAULT_DB_ALIAS
 from django.db.models.signals import post_migrate, pre_migrate
 from typing_extensions import Final
 
+from django_test_migrations.signals import mute_migrate_signals
+
 # value for ``dispatch_uid`` is needed to disconnect signal receiver
 # registered for testing purposes to which we do not have any reference
 # outside of test function
 DISPATCH_UID: Final = 'test_migrate_signals'
+
+
+# Dummy signal receiver function
+def _my_callback(sender, **kwargs):
+    return None
 
 
 @pytest.fixture()
@@ -21,9 +28,14 @@ def _disconnect_receivers():
 
 
 @pytest.mark.parametrize('signal', [pre_migrate, post_migrate])
-def test_migrate_signal_muted(migrator, signal):
-    """Ensure migrate signal has been muted."""
-    assert not signal.receivers
+def test_migrate_signal_muted(signal):
+    """Ensure the context manager does indeed silences the signals."""
+    signal.connect(_my_callback)
+    assert signal.receivers
+    with mute_migrate_signals():
+        assert not signal.receivers
+    assert signal.receivers
+    signal.disconnect(_my_callback)
 
 
 @pytest.mark.parametrize('signal', [pre_migrate, post_migrate])
