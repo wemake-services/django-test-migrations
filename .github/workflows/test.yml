@@ -48,7 +48,7 @@ jobs:
           source "$HOME/.poetry/env"
           poetry config virtualenvs.in-project true
           poetry install
-          pip install -U "${{ matrix.django-version }}"
+          poetry run pip install -U "${{ matrix.django-version }}"
 
       - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
         run: |
