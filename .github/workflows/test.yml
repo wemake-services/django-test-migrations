@@ -20,12 +20,11 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
-        django-version: [
-          'Django~=1.11.0',
-          'Django~=2.2.0',
-          'Django~=3.0.0',
-          'Django~=3.1.0',
-        ]
+        django-version:
+          - 'Django~=1.11.0'
+          - 'Django~=2.2.0'
+          - 'Django~=3.0.0'
+          - 'Django~=3.1.0'
         docker-compose-services: ['']
         additional-dependencies: ['']
         continue-on-error: [false]
