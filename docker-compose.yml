@@ -1,0 +1,27 @@
+---
+version: '3.8'
+
+services:
+  postgresql-db:
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=passwd123
+      - POSTGRES_DB=db
+
+  mysql-db:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_USER=django
+      - MYSQL_PASSWORD=passwd123
+      # NOTE: MySQL container entrypoint gives user `${MYSQL_USER}` access
+      # only to `${MYSQL_DATABASE}` database, so we are setting
+      # `${MYSQL_DATABASE}` to Django default test database's name to avoid
+      # overriding `ENTRYPOINT` or `CMD`.
+      - MYSQL_DATABASE=test_db
+      - MYSQL_ROOT_PASSWORD=superpasswd123
+    command: --default-authentication-plugin=mysql_native_password
