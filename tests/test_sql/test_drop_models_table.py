@@ -27,3 +27,24 @@ def test_drop_models_table_table_detected(mocker):
     )
     sql.drop_models_tables(TESTING_DATABASE_NAME)
     execute_sql_flush_mock(testing_connection_mock).assert_called_once()
+
+
+def test_drop_models_table_on_mysql(mocker):
+    """Ensure queries disabling/enabling `FOREIGN_KEY_CHECKS` are executed."""
+    testing_connection_mock = mocker.MagicMock(vendor='mysql')
+    testing_connection_mock.introspection.django_table_names.return_value = [
+        'foo_bar',
+        'foo_baz',
+    ]
+    connections_mock = mocker.patch('django.db.connections._connections')
+    connections_mock.test = testing_connection_mock
+    execute_sql_flush_mock = mocker.patch(
+        'django_test_migrations.sql.get_execute_sql_flush_for',
+    )
+    sql.drop_models_tables(TESTING_DATABASE_NAME)
+    execute_sql_flush_mock(testing_connection_mock).assert_called_once_with([
+        'SET FOREIGN_KEY_CHECKS = 0;',
+        mocker.ANY,
+        mocker.ANY,
+        'SET FOREIGN_KEY_CHECKS = 1;',
+    ])

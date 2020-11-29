@@ -84,8 +84,18 @@ WSGI_APPLICATION = 'django_test_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.environ.get(
+            'DJANGO_DATABASE_ENGINE',
+            default='django.db.backends.sqlite3',
+        ),
+        'USER': os.environ.get('DJANGO_DATABASE_USER', default=''),
+        'PASSWORD': os.environ.get('DJANGO_DATABASE_PASSWORD', default=''),
+        'NAME': os.environ.get(
+            'DJANGO_DATABASE_NAME',
+            default=os.path.join(BASE_DIR, 'db.sqlite3'),
+        ),
+        'PORT': os.environ.get('DJANGO_DATABASE_PORT', default=''),
+        'HOST': os.environ.get('DJANGO_DATABASE_HOST', default=''),
     },
 }
 
