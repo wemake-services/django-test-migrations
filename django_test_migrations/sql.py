@@ -30,6 +30,12 @@ def drop_models_tables(
         for table in tables
     ]
     if sql_drop_tables:
+        if connection.vendor == 'mysql':
+            sql_drop_tables = [
+                'SET FOREIGN_KEY_CHECKS = 0;',
+                *sql_drop_tables,
+                'SET FOREIGN_KEY_CHECKS = 1;',
+            ]
         get_execute_sql_flush_for(connection)(sql_drop_tables)
 
 
