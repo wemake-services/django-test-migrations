@@ -1,13 +1,12 @@
 from functools import partial
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional
 
 import django
 from django.core.management.color import Style, no_style
-from django.db import DefaultConnectionProxy, connections, transaction
-from django.db.backends.base.base import BaseDatabaseWrapper
+from django.db import connections, transaction
 from typing_extensions import Final
 
-_Connection = Union[DefaultConnectionProxy, BaseDatabaseWrapper]
+from django_test_migrations.types import AnyConnection
 
 DJANGO_MIGRATIONS_TABLE_NAME: Final = 'django_migrations'
 
@@ -65,7 +64,7 @@ def flush_django_migrations_table(
 
 
 def get_django_migrations_table_sequences(
-    connection: _Connection,
+    connection: AnyConnection,
 ) -> List[Dict[str, str]]:
     """`django_migrations` table introspected sequences.
 
@@ -84,7 +83,7 @@ def get_django_migrations_table_sequences(
 
 
 def get_sql_flush_with_sequences_for(
-    connection: _Connection,
+    connection: AnyConnection,
 ):
     """Harmonizes ``sql_flush`` across Django versions."""
     if django.VERSION >= (3, 1):
@@ -96,7 +95,7 @@ def get_sql_flush_with_sequences_for(
 
 
 def get_execute_sql_flush_for(
-    connection: _Connection,
+    connection: AnyConnection,
 ) -> Callable[[List[str]], None]:
     """Return ``execute_sql_flush`` callable for given connection.
 
@@ -112,7 +111,7 @@ def get_execute_sql_flush_for(
 
 
 def execute_sql_flush(
-    connection: _Connection,
+    connection: AnyConnection,
     sql_list: List[str],
 ) -> None:  # pragma: no cover
     """Execute a list of SQL statements to flush the database.
