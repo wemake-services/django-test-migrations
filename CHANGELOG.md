@@ -2,6 +2,24 @@
 
 We follow Semantic Versions since the `0.1.0` release.
 
+## Version 1.1.0
+
+### Features
+
++ Adds Django 3.1 support (#123, #154)
++ Adds markers/tags to migration tests (#138)
++ Adds database configuration checks (#91)
+
+### Bugfixes
+
++ Fixes tables dropping on MySQL by disabling foreign keys checks (#149)
++ Fixes migrate signals muting when running migrations tests (#133)
+
+### Misc
+
++ Runs tests against PostgreSQL and MySQL database engines (#129)
+
+
 ## Version 1.0.0
 
 ### Breaking Changes
