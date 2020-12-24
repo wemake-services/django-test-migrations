@@ -1,9 +1,11 @@
 from django.apps import AppConfig
 from django.core import checks
+from typing_extensions import final
 
 from django_test_migrations.checks import autonames, database_configuration
 
 
+@final
 class AutoNames(AppConfig):
     """
     Class to install this check into ``INSTALLED_APPS`` in ``django``.
@@ -44,6 +46,7 @@ class AutoNames(AppConfig):
             checks.register(check, checks.Tags.compatibility)
 
 
+@final
 class DatabaseConfiguration(AppConfig):
     """Class to install this check into ``INSTALLED_APPS`` in ``django``.
 
