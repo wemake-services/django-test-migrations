@@ -18,5 +18,4 @@ class Migration(migrations.Migration):
         ('main_app', '0004_auto_20191119_2125'),
     ]
 
-    operations = [
-    ]
+    operations = []
