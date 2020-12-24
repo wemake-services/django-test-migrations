@@ -332,6 +332,14 @@ Then just run `check` management command in your CI like listed in section
 above.
 
 
+## Related projects
+
+You might also like:
+
+- [django-migration-linter](https://github.com/3YOURMIND/django-migration-linter) - Detect backward incompatible migrations for your django project.
+- [wemake-django-template](https://github.com/wemake-services/wemake-django-template/) - Bleeding edge django template focused on code quality and security with both `django-test-migrations` and `django-migration-linter` on board.
+
+
 ## Credits
 
 This project is based on work of other awesome people:
