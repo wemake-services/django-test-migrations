@@ -14,6 +14,7 @@
 - Allows to test both forward and rollback migrations
 - Allows to test the migrations order
 - Allows to test migration names
+- Allows to test database configuration
 - Fully typed with annotations and checked with `mypy`, [PEP561 compatible](https://www.python.org/dev/peps/pep-0561/)
 - Easy to start: has lots of docs, tests, and tutorials
 
