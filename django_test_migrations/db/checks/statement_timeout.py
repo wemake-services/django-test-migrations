@@ -3,7 +3,6 @@ from typing import List
 
 from django.core.checks import CheckMessage, Warning
 from django.db import connections
-from typing_extensions import Final
 
 from django_test_migrations.db.backends import exceptions, registry
 from django_test_migrations.db.backends.base.configuration import (
@@ -11,6 +10,8 @@ from django_test_migrations.db.backends.base.configuration import (
 )
 from django_test_migrations.logic.datetime import timedelta_to_miliseconds
 from django_test_migrations.types import AnyConnection
+from django_test_migrations.typing_compat import Final
+
 
 #: We use this value as a unique identifier of databases related check.
 CHECK_NAME: Final = 'django_test_migrations.checks.database_configuration'

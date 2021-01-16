@@ -4,9 +4,9 @@ from typing import Callable, Dict, List, Optional
 import django
 from django.core.management.color import Style, no_style
 from django.db import connections, transaction
-from typing_extensions import Final
 
 from django_test_migrations.types import AnyConnection
+from django_test_migrations.typing_compat import Final
 
 DJANGO_MIGRATIONS_TABLE_NAME: Final = 'django_migrations'
 

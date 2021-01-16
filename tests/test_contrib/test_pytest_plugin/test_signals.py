@@ -3,9 +3,10 @@ from django.apps import apps
 from django.core.management import call_command
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models.signals import post_migrate, pre_migrate
-from typing_extensions import Final
 
+from django_test_migrations.typing_compat import Final
 from django_test_migrations.signals import mute_migrate_signals
+
 
 # value for ``dispatch_uid`` is needed to disconnect signal receiver
 # registered for testing purposes to which we do not have any reference

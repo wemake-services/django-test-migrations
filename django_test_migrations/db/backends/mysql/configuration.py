@@ -1,9 +1,8 @@
-from typing_extensions import final
-
 from django_test_migrations.db.backends.base.configuration import (
     BaseDatabaseConfiguration,
 )
 from django_test_migrations.types import DatabaseSettingValue
+from django_test_migrations.typing_compat import final
 
 
 @final

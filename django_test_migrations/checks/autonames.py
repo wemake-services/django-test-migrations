@@ -3,7 +3,8 @@ from typing import FrozenSet, List, Tuple
 
 from django.conf import settings
 from django.core.checks import CheckMessage, Warning
-from typing_extensions import Final
+
+from django_test_migrations.typing_compat import Final
 
 _IgnoreAppSpec = FrozenSet[str]
 

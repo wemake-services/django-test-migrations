@@ -1,11 +1,11 @@
 from typing import MutableMapping, Type
 
-from typing_extensions import TYPE_CHECKING
 
 from django_test_migrations.db.backends.exceptions import (
     DatabaseConfigurationNotFound,
 )
 from django_test_migrations.types import AnyConnection
+from django_test_migrations.typing_compat import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from django_test_migrations.db.backends.base.configuration import (
