@@ -10,6 +10,8 @@ services:
       - POSTGRES_USER=django
       - POSTGRES_PASSWORD=passwd123
       - POSTGRES_DB=db
+    volumes:
+      - type=tmpfs,destination=/var/lib/postgresql/data/
 
   mysql-db:
     image: mysql:8
@@ -25,3 +27,5 @@ services:
       - MYSQL_DATABASE=test_db
       - MYSQL_ROOT_PASSWORD=superpasswd123
     command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - type=tmpfs,destination=/var/lib/mysql
