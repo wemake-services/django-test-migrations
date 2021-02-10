@@ -138,8 +138,8 @@ class TestGetExecuteSqlFlush(object):
 
 
 def _fake_execute_sql_flush(sql_list):
-    return None
+    """Fake function to use as `execute_sql_flush` dummy replacement."""
 
 
 def _fake_sql_flush():
-    return None
+    """Fake function to use as `sql_flush` dummy replacement."""
