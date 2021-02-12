@@ -34,5 +34,4 @@ def get_database_configuration(
         database_configuration_class = database_configuration_registry[vendor]
     except KeyError as exc:
         raise DatabaseConfigurationNotFound(vendor) from exc
-    else:
-        return database_configuration_class(connection)
+    return database_configuration_class(connection)

@@ -138,8 +138,8 @@ class TestGetExecuteSqlFlush(object):
 
 
 def _fake_execute_sql_flush(sql_list):
-    return None
+    """Mock that does nothing."""
 
 
 def _fake_sql_flush():
-    return None
+    """Mock that does nothing."""

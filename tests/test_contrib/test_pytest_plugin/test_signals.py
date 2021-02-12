@@ -15,7 +15,7 @@ DISPATCH_UID: Final = 'test_migrate_signals'
 
 # Dummy signal receiver function
 def _my_callback(sender, **kwargs):
-    return None
+    """Mock that does nothing."""
 
 
 @pytest.fixture()

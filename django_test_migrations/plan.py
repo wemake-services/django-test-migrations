@@ -125,9 +125,7 @@ def _get_index(target: MigrationTarget, plan: MigrationPlan) -> int:
         )
     except StopIteration:
         raise MigrationNotInPlan(target)
-    else:
-        # exclude target app from migrations plan
-        return index - (target[1] is None)
+    return index - (target[1] is None)
 
 
 def _filter_predicate(target: MigrationTarget, migration: Migration) -> bool:
