@@ -35,7 +35,7 @@ jobs:
 
         include:
           - python-version: 3.8
-            django-version: 'https://github.com/django/django/archive/master.zip'
+            django-version: 'https://github.com/django/django/archive/main.zip'
             continue-on-error: true
           - python-version: 3.8
             django-version: 'Django~=3.0.0'
