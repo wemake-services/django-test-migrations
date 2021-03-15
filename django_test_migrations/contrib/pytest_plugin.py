@@ -37,7 +37,7 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
 
     .. code:: python
 
-        @pytest.mark.django_db
+        @pytest.mark.django_db()
         def test_migration(migrator_factory):
             migrator = migrator_factory('custom_db_alias')
             old_state = migrator.apply_initial_migration(('main_app', None))
@@ -79,7 +79,7 @@ def migrator(migrator_factory):  # noqa: WPS442
 
     .. code:: python
 
-        @pytest.mark.django_db
+        @pytest.mark.django_db()
         def test_migration(migrator):
             old_state = migrator.apply_initial_migration(('main_app', None))
             new_state = migrator.apply_tested_migration(

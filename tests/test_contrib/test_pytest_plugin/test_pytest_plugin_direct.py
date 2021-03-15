@@ -9,7 +9,7 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_pytest_plugin_initial(migrator):
     """Ensures that the initial migration works."""
     old_state = migrator.apply_initial_migration(('main_app', None))
@@ -24,7 +24,7 @@ def test_pytest_plugin_initial(migrator):
     assert SomeItem.objects.filter(string_field='').count() == 0
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_pytest_plugin0001(migrator):
     """Ensures that the first migration works."""
     old_state = migrator.apply_initial_migration(('main_app', '0001_initial'))
@@ -41,7 +41,7 @@ def test_pytest_plugin0001(migrator):
     assert SomeItem.objects.filter(is_clean=True).count() == 0
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_pytest_plugin0002(migrator):
     """Ensures that the second migration works."""
     old_state = migrator.apply_initial_migration(
@@ -63,7 +63,7 @@ def test_pytest_plugin0002(migrator):
     assert SomeItem.objects.filter(is_clean=True).count() == 1
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_pytest_plugin0003(migrator):
     """Ensures that the third migration works."""
     old_state = migrator.apply_initial_migration(

@@ -9,7 +9,7 @@ import pytest
 from django.core.exceptions import FieldError
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_pytest_plugin0001(migrator):
     """Ensures that the first migration works."""
     old_state = migrator.apply_initial_migration(
@@ -26,7 +26,7 @@ def test_pytest_plugin0001(migrator):
         SomeItem.objects.filter(is_clean=True)
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_pytest_plugin0002(migrator):
     """Ensures that the second migration works."""
     old_state = migrator.apply_initial_migration(

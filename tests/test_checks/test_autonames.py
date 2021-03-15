@@ -7,7 +7,7 @@ from django_test_migrations.checks.autonames import (
 )
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_autonames():
     """Here we check that bad migrations do produce warnings."""
     warnings = check_migration_names()
@@ -28,7 +28,7 @@ def test_autonames():
     }
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_autonames_with_ignore(settings):
     """Here we check that some migrations can be ignored."""
     # patch settings to ignore two bad migrations
@@ -41,7 +41,7 @@ def test_autonames_with_ignore(settings):
     assert not warnings
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_autonames_with_ignore_all_app_migrations(settings):
     """Here we check that all migrations ignored inside app."""
     # patch settings to ignore all migrations in the app

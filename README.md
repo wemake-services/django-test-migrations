@@ -178,7 +178,7 @@ That's how it can be used:
 ```python
 import pytest
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_pytest_plugin_initial(migrator):
     """Ensures that the initial migration works."""
     old_state = migrator.apply_initial_migration(('main_app', None))

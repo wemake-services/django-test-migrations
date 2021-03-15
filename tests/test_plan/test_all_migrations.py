@@ -3,7 +3,7 @@ import pytest
 from django_test_migrations.plan import all_migrations, nodes_to_tuples
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_all_migrations_main():
     """Testing migrations for a single app only."""
     main_migrations = all_migrations('default', ['main_app'])
@@ -17,21 +17,21 @@ def test_all_migrations_main():
     ]
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_all_migrations_missing():
     """Testing migrations for a missing app."""
     with pytest.raises(LookupError):
         all_migrations('default', ['missing_app'])
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_all_migrations_auth():
     """Testing migrations for a builtin app."""
     auth_migrations = all_migrations('default', ['auth'])
     assert len(auth_migrations) >= 10
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_all_migrations_all():
     """Testing migrations for all apps."""
     assert len(all_migrations()) >= 17  # noqa: WPS432
