@@ -27,8 +27,8 @@ jobs:
         django-version:
           - 'Django~=1.11.0'
           - 'Django~=2.2.0'
-          - 'Django~=3.0.0'
           - 'Django~=3.1.0'
+          - 'Django~=3.2.0'
         docker-compose-services: ['']
         additional-dependencies: ['']
         continue-on-error: [false]
@@ -38,19 +38,19 @@ jobs:
             django-version: 'https://github.com/django/django/archive/main.zip'
             continue-on-error: true
           - python-version: 3.8
-            django-version: 'Django~=3.0.0'
+            django-version: 'Django~=3.2.0'
             docker-compose-services: postgresql-db
             additional-dependencies: psycopg2
             env:
-              DJANGO_DATABASE_ENGINE: django.db.backends.postgresql
+              DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
               DJANGO_DATABASE_PORT: 5432
             continue-on-error: false
           - python-version: 3.8
-            django-version: 'Django~=3.0.0'
+            django-version: 'Django~=3.2.0'
             docker-compose-services: mysql-db
             additional-dependencies: mysqlclient
             env:
-              DJANGO_DATABASE_ENGINE: django.db.backends.mysql
+              DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
               DJANGO_DATABASE_PORT: 3306
             continue-on-error: false
 
