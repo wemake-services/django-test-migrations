@@ -6,16 +6,6 @@ updates:
     interval: daily
     time: "02:00"
   open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: flake8-pytest-style
-    versions:
-    - 1.4.0
-  - dependency-name: nitpick
-    versions:
-    - 0.24.0
-  - dependency-name: wemake-python-styleguide
-    versions:
-    - 0.15.0
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
