@@ -16,12 +16,12 @@ unit:
 package:
 	poetry check
 	poetry run pip check
-  # vulnerability 40637 is ignored because we need to run tests against
-  # vulnerable `Django~=1.11.0`
+	# vulnerability 40637 is ignored because we need to run tests against
+	# vulnerable `Django~=1.11.0`
 	poetry run safety check \
-    --bare \
-    --full-report \
-    --ignore 40637
+		--bare \
+		--full-report \
+		--ignore 40637
 
 .PHONY: test
 test: lint unit package
