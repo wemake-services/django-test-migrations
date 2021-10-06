@@ -19,7 +19,6 @@ package:
 	# vulnerability 40637 is ignored because we need to run tests against
 	# vulnerable `Django~=1.11.0`
 	poetry run safety check \
-		--bare \
 		--full-report \
 		--ignore 40637
 
