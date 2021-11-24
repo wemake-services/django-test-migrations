@@ -69,7 +69,7 @@ jobs:
           echo "${HOME}/.poetry/bin" >> ${GITHUB_PATH}
 
       - name: Set up cache
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: .venv
           key: venv-${{ matrix.python-version }}-${{ matrix.django-version }}-${{ hashFiles('poetry.lock') }}
