@@ -817,7 +817,7 @@ testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtuale
 
 [[package]]
 name = "pytest-django"
-version = "4.5.0"
+version = "4.5.1"
 description = "A Django plugin for pytest."
 category = "dev"
 optional = false
@@ -1521,8 +1521,8 @@ pytest-cov = [
     {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6"},
 ]
 pytest-django = [
-    {file = "pytest-django-4.5.0.tar.gz", hash = "sha256:4b1120c364404cfa9f54e2229b5c39151821bb17819e4bcf357e0f62a3e925a0"},
-    {file = "pytest_django-4.5.0-py3-none-any.whl", hash = "sha256:10cb6e5baacd56ca1f0134ce448b050c31824ba4e480eb7e0fa3832f3a0f8b4c"},
+    {file = "pytest-django-4.5.1.tar.gz", hash = "sha256:01fe1242e706375d7c942d206a30826bd9c0dffde99bfac627050cdc91f0d792"},
+    {file = "pytest_django-4.5.1-py3-none-any.whl", hash = "sha256:13a956a0016cd37f889d5d3a8a36c0c90da44d6fdc7704e4e13f08d2f76f78f7"},
 ]
 pytest-mock = [
     {file = "pytest-mock-3.6.1.tar.gz", hash = "sha256:40217a058c52a63f1042f0784f62009e976ba824c418cced42e88d5f40ab0e62"},
