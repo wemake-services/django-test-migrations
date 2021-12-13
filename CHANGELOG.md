@@ -3,10 +3,12 @@
 We follow Semantic Versions since the `0.1.0` release.
 
 
-## Version 1.1.1
+## Version 1.2.0
 
-### Misc
+### Features
 
+- Adds Python 3.10
+- Adds Django 4.0 support 
 - Updates `typing_extensions` to `>=3.6,<5`
 
 

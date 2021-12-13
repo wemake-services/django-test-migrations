@@ -9,7 +9,7 @@ style = "https://raw.githubusercontent.com/wemake-services/wemake-python-stylegu
 
 [tool.poetry]
 name = "django-test-migrations"
-version = "1.1.0"
+version = "1.2.0"
 description = "Test django schema and data migrations, including ordering"
 license = "MIT"
 
