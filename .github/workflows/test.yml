@@ -27,8 +27,8 @@ jobs:
         django-version:
           - 'Django~=1.11.0'
           - 'Django~=2.2.0'
-          - 'Django~=3.1.0'
           - 'Django~=3.2.0'
+          - 'Django~=4.0.0'
         docker-compose-services: ['']
         additional-dependencies: ['']
         continue-on-error: [false]
