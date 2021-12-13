@@ -81,8 +81,8 @@ jobs:
           poetry install
           poetry run pip install \
             --upgrade \
-          "${{ matrix.django-version }}" \
-          ${{ matrix.additional-dependencies }}
+            "${{ matrix.django-version }}" \
+            ${{ matrix.additional-dependencies }}
 
       - name: Pull and build docker-compose services
         if: ${{ matrix.docker-compose-services }}
@@ -104,9 +104,7 @@ jobs:
             -timeout "30s"
 
       - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
-        run: |
-          source "$HOME/.poetry/env"
-          make test
+        run: make test
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
