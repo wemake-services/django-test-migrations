@@ -36,6 +36,7 @@ jobs:
         include:
           - python-version: 3.6
             django-version: 'Django~=1.11.0'
+            continue-on-error: false
           - python-version: 3.8
             django-version: 'https://github.com/django/django/archive/main.zip'
             continue-on-error: true
