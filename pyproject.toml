@@ -54,7 +54,7 @@ django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
 [tool.poetry.dependencies]
 python = "^3.6"
-typing_extensions = "^4.0"
+typing_extensions = ">=3.6,<5"
 
 [tool.poetry.dev-dependencies]
 django = "^3.2"
