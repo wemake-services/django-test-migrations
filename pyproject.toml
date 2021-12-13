@@ -54,13 +54,13 @@ django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
 [tool.poetry.dependencies]
 python = "^3.6"
-typing_extensions = "^3.7"
+typing_extensions = "^4.0"
 
 [tool.poetry.dev-dependencies]
 django = "^3.2"
 
 mypy = "^0.910"
-wemake-python-styleguide = "^0.15"
+wemake-python-styleguide = "^0.16"
 flake8-pytest-style = "^1.5"
 nitpick = "^0.29"
 
