@@ -23,9 +23,8 @@ jobs:
       DOCKERIZE_VERSION: v0.6.1
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: ['3.8', '3.9', '3.10']
         django-version:
-          - 'Django~=1.11.0'
           - 'Django~=2.2.0'
           - 'Django~=3.2.0'
           - 'Django~=4.0.0'
@@ -36,6 +35,9 @@ jobs:
         include:
           - python-version: 3.6
             django-version: 'Django~=1.11.0'
+            continue-on-error: false
+          - python-version: 3.7
+            django-version: 'Django~=2.2.0'
             continue-on-error: false
           - python-version: 3.8
             django-version: 'https://github.com/django/django/archive/main.zip'
