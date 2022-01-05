@@ -53,7 +53,7 @@ classifiers = [
 django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 typing_extensions = ">=3.6,<5"
 
 [tool.poetry.dev-dependencies]
