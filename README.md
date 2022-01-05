@@ -30,7 +30,6 @@ pip install django-test-migrations
 
 We support several `django` versions:
 
-- `1.11`
 - `2.2`
 - `3.1`
 - `3.2`
