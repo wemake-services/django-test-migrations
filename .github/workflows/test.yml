@@ -33,9 +33,6 @@ jobs:
         continue-on-error: [false]
 
         include:
-          - python-version: 3.6
-            django-version: 'Django~=1.11.0'
-            continue-on-error: false
           - python-version: 3.7
             django-version: 'Django~=2.2.0'
             continue-on-error: false
