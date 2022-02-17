@@ -824,17 +824,6 @@ pytest = ">=5.0"
 dev = ["pre-commit", "tox", "pytest-asyncio"]
 
 [[package]]
-name = "pytest-pythonpath"
-version = "0.7.3"
-description = "pytest plugin for adding to the PYTHONPATH from command line or configs."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-pytest = ">=2.5.2"
-
-[[package]]
 name = "pytest-randomly"
 version = "3.11.0"
 description = "Pytest plugin to randomly order tests and control random.seed."
@@ -1124,7 +1113,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "2e7bf86ea6b262e02e19b5e65addc7f78f713e44d38f38bc675104e1ec80d94f"
+content-hash = "73f5ef30b565dacd7bfee5f7f7891b1b52413c0b6091681a0f8f05ef584c4232"
 
 [metadata.files]
 asgiref = [
@@ -1453,9 +1442,6 @@ pytest-django = [
 pytest-mock = [
     {file = "pytest-mock-3.7.0.tar.gz", hash = "sha256:5112bd92cc9f186ee96e1a92efc84969ea494939c3aead39c50f421c4cc69534"},
     {file = "pytest_mock-3.7.0-py3-none-any.whl", hash = "sha256:6cff27cec936bf81dc5ee87f07132b807bcda51106b5ec4b90a04331cba76231"},
-]
-pytest-pythonpath = [
-    {file = "pytest-pythonpath-0.7.3.tar.gz", hash = "sha256:63fc546ace7d2c845c1ee289e8f7a6362c2b6bae497d10c716e58e253e801d62"},
 ]
 pytest-randomly = [
     {file = "pytest-randomly-3.11.0.tar.gz", hash = "sha256:9f013b8c1923130f3d0a286fde56e1fc52cfb3547b8eedf2765c460cee979c7f"},
