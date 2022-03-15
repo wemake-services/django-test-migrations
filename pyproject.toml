@@ -59,7 +59,7 @@ typing_extensions = ">=3.6,<5"
 [tool.poetry.dev-dependencies]
 django = "^3.2"
 
-mypy = "^0.940"
+mypy = "^0.941"
 wemake-python-styleguide = "^0.16"
 flake8-pytest-style = "^1.5"
 nitpick = "^0.31"
