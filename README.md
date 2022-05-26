@@ -38,7 +38,7 @@ We support several `django` versions:
 Other versions might work too, but they are not officially supported.
 
 
-## Testing django migrations
+## Testing Django migrations
 
 Testing migrations is not a frequent thing in `django` land.
 But, sometimes it is totally required. When?
@@ -46,7 +46,7 @@ But, sometimes it is totally required. When?
 When we do complex schema or data changes
 and what to be sure that existing data won't be corrupted.
 We might also want to be sure that all migrations can be safely rolled back.
-And as a final touch we want to be sure that migrations
+And as a final touch, we want to be sure that migrations
 are in the correct order and have correct dependencies.
 
 ### Testing forward migrations
@@ -130,8 +130,8 @@ migrator.reset()
 
 ### Testing migrations ordering
 
-Sometimes we also want to be sure that our migrations are in the correct order.
-And all our `dependecies = [...]` are correct.
+Sometimes we also want to be sure that our migrations are in the correct order
+and that all our `dependencies = [...]` are correct.
 
 To achieve that we have [`plan.py`](https://github.com/wemake-services/django-test-migrations/blob/master/django_test_migrations/plan.py) module.
 
@@ -167,7 +167,7 @@ own `post_migrate` signals then attach/remove them during a test.
 ### pytest
 
 We ship `django-test-migrations` with a `pytest` plugin
-that provides two convinient fixtures:
+that provides two convenient fixtures:
 
 - `migrator_factory` that gives you an opportunity
   to create `Migrator` classes for any database
@@ -184,7 +184,7 @@ def test_pytest_plugin_initial(migrator):
     old_state = migrator.apply_initial_migration(('main_app', None))
 
     with pytest.raises(LookupError):
-        # Models does not yet exist:
+        # Model does not yet exist:
         old_state.apps.get_model('main_app', 'SomeItem')
 
     new_state = migrator.apply_tested_migration(('main_app', '0001_initial'))
@@ -236,8 +236,8 @@ with slower migrations tests.
 To run only migrations test, use `-m` option:
 
 ```bash
-pytest -m migration_test  # runs only migraion tests
-pytest -m "not migration_test"  # runs all except migraion tests
+pytest -m migration_test  # Runs only migration tests
+pytest -m "not migration_test"  # Runs all except migration tests
 ```
 
 #### unittest
@@ -248,8 +248,8 @@ to every `MigratorTestCase` subclass.
 To run only migrations tests, use `--tag` option:
 
 ```bash
-python mange.py test --tag=migration_test  # runs only migraion tests
-python mange.py test --exclude-tag=migration_test  # runs all except migraion tests
+python mange.py test --tag=migration_test  # Runs only migration tests
+python mange.py test --exclude-tag=migration_test  # Runs all except migration tests
 ```
 
 
@@ -263,7 +263,7 @@ python mange.py test --exclude-tag=migration_test  # runs all except migraion te
 ### Testing migration names
 
 `django` generates migration names for you when you run `makemigrations`.
-And these names are bad ([read more](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/) about why it is bad)!
+These names are bad ([read more](https://adamj.eu/tech/2020/02/24/how-to-disallow-auto-named-django-migrations/) about why it is bad)!
 Just look at this: `0004_auto_20191119_2125.py`
 
 What does this migration do? What changes does it have?
@@ -284,7 +284,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-And then in your CI run:
+Then in your CI run:
 
 ```bash
 python manage.py check --deploy
@@ -303,7 +303,7 @@ DTM_IGNORED_MIGRATIONS = {
 }
 ```
 
-And we won't complain about them.
+Then we won't complain about them.
 
 Or you can completely ignore entire app:
 
