@@ -844,7 +844,7 @@ testing = ["django", "django-configurations (>=2.0)"]
 
 [[package]]
 name = "pytest-mock"
-version = "3.7.0"
+version = "3.8.1"
 description = "Thin-wrapper around the mock package for easier use with pytest"
 category = "dev"
 optional = false
@@ -1197,7 +1197,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "a0d7f1808693dd974bd068898ab547aaf463a9b682c517ec5e45573c927e8643"
+content-hash = "adcb058fe2873b0ed808f7845889b30cbbd285f2c7daaf5f4722bc42fd429d53"
 
 [metadata.files]
 appdirs = [
@@ -1539,8 +1539,8 @@ pytest-django = [
     {file = "pytest_django-4.5.2-py3-none-any.whl", hash = "sha256:c60834861933773109334fe5a53e83d1ef4828f2203a1d6a0fa9972f4f75ab3e"},
 ]
 pytest-mock = [
-    {file = "pytest-mock-3.7.0.tar.gz", hash = "sha256:5112bd92cc9f186ee96e1a92efc84969ea494939c3aead39c50f421c4cc69534"},
-    {file = "pytest_mock-3.7.0-py3-none-any.whl", hash = "sha256:6cff27cec936bf81dc5ee87f07132b807bcda51106b5ec4b90a04331cba76231"},
+    {file = "pytest-mock-3.8.1.tar.gz", hash = "sha256:2c6d756d5d3bf98e2e80797a959ca7f81f479e7d1f5f571611b0fdd6d1745240"},
+    {file = "pytest_mock-3.8.1-py3-none-any.whl", hash = "sha256:d989f11ca4a84479e288b0cd1e6769d6ad0d3d7743dcc75e460d1416a5f2135a"},
 ]
 pytest-randomly = [
     {file = "pytest-randomly-3.12.0.tar.gz", hash = "sha256:d60c2db71ac319aee0fc6c4110a7597d611a8b94a5590918bfa8583f00caccb2"},
