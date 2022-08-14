@@ -95,7 +95,7 @@ class TestGetSqlFlushWithSequences(object):
         assert sql_flush.keywords == {'reset_sequences': True}
 
     def test_for_django22(self, mocker):
-        """Ensure we call ``sql_flush`` with the positionnal ``sequences``."""
+        """Ensure we call ``sql_flush`` with the positional ``sequences``."""
         connection_mock = mocker.MagicMock()
         connection_mock.ops.sql_flush.return_value = _fake_sql_flush
         connection_mock.introspection.get_sequences.return_value = []

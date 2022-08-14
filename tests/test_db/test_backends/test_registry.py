@@ -22,7 +22,7 @@ def test_abc_subclasses_are_not_registered():
     registered.
     """
     vendor = 'abstract_subclass'
-    # creates abstract subclasss
+    # creates abstract subclass
     type('DatabaseConfiguration', (BaseDatabaseConfiguration,), {
         'vendor': vendor,
     })

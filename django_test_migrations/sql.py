@@ -44,7 +44,7 @@ def flush_django_migrations_table(
 ) -> None:
     """Flush `django_migrations` table.
 
-    Ensures compability with all supported Django versions.
+    Ensures compatibility with all supported Django versions.
     `django_migrations` is not "regular" Django model, so its not returned
     by ``ConnectionRouter.get_migratable_models`` which is used e.g. to
     implement sequences reset in ``Django==1.11``.
