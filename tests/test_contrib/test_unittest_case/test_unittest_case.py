@@ -42,6 +42,6 @@ class TestBackwardMigration(MigratorTestCase):
 
 
 def test_migration_test_marker_tag():
-    """Ensure ``MigratorTestCase`` sublasses are properly tagged."""
+    """Ensure ``MigratorTestCase`` subclasses are properly tagged."""
     assert MIGRATION_TEST_MARKER in TestDirectMigration.tags
     assert MIGRATION_TEST_MARKER in TestBackwardMigration.tags
