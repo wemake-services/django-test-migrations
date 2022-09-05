@@ -9,7 +9,7 @@ from django_test_migrations.db.backends import exceptions, registry
 from django_test_migrations.db.backends.base.configuration import (
     BaseDatabaseConfiguration,
 )
-from django_test_migrations.logic.datetime import timedelta_to_miliseconds
+from django_test_migrations.logic.datetime import timedelta_to_milliseconds
 from django_test_migrations.types import AnyConnection
 
 #: We use this value as a unique identifier of databases related check.
@@ -80,7 +80,7 @@ def _ensure_statement_timeout_not_too_high(
     setting_value: int,
     messages: List[CheckMessage],
 ) -> None:
-    upper_limit = timedelta_to_miliseconds(
+    upper_limit = timedelta_to_milliseconds(
         datetime.timedelta(minutes=STATEMENT_TIMEOUT_MINUTES_UPPER_LIMIT),
     )
     if setting_value > upper_limit:
