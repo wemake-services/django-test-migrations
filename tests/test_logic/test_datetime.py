@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from django_test_migrations.logic.datetime import timedelta_to_miliseconds
+from django_test_migrations.logic.datetime import timedelta_to_milliseconds
 
 
 @pytest.mark.parametrize(('timedelta', 'expected_result'), [
@@ -18,6 +18,6 @@ from django_test_migrations.logic.datetime import timedelta_to_miliseconds
         7.4 * 60 * 1000 + 47 * 1000,
     ),
 ])
-def test_timedelta_to_miliseconds(timedelta, expected_result):
+def test_timedelta_to_milliseconds(timedelta, expected_result):
     """Ensure expected value is returned."""
-    assert timedelta_to_miliseconds(timedelta) == expected_result
+    assert timedelta_to_milliseconds(timedelta) == expected_result

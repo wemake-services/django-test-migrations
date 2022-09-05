@@ -6,7 +6,7 @@ from django_test_migrations.db.checks.statement_timeout import (
     CHECK_NAME,
     check_statement_timeout_setting,
 )
-from django_test_migrations.logic.datetime import timedelta_to_miliseconds
+from django_test_migrations.logic.datetime import timedelta_to_milliseconds
 
 ALL_CONNECTIONS_MOCK_PATH = (
     'django_test_migrations.db.checks.statement_timeout.connections.all'
@@ -48,7 +48,7 @@ def test_statement_timeout_too_high(mocker, connection_mock_factory, vendor):
     """Ensure W002 is returned in list when ``statement_timeout`` too high."""
     connection_mock = connection_mock_factory(
         vendor,
-        (timedelta_to_miliseconds(datetime.timedelta(hours=2)),),
+        (timedelta_to_milliseconds(datetime.timedelta(hours=2)),),
     )
     mocker.patch(ALL_CONNECTIONS_MOCK_PATH, return_value=[connection_mock])
     check_messages = check_statement_timeout_setting()
@@ -83,7 +83,7 @@ def test_multiple_connections(mocker, connection_mock_factory):
         connection_mock_factory('postgresql', (0,)),
         connection_mock_factory(
             'mysql',
-            (timedelta_to_miliseconds(datetime.timedelta(hours=2)),),
+            (timedelta_to_milliseconds(datetime.timedelta(hours=2)),),
         ),
     ]
     mocker.patch(ALL_CONNECTIONS_MOCK_PATH, return_value=connections_mocks)
