@@ -17,15 +17,15 @@ class BaseDatabaseConfiguration(abc.ABC):
     vendor: ClassVar[str]
     statement_timeout: ClassVar[str]
 
-    def __init__(self, connection: AnyConnection) -> None:
-        """Bind database ``connection`` used to retrieve settings values."""
-        self.connection = connection
-
     @classmethod
     def __init_subclass__(cls, **kwargs) -> None:
         """Register ``BaseDatabaseConfiguration`` subclass of db ``vendor``."""
         if not inspect.isabstract(cls):
             database_configuration_registry.setdefault(cls.vendor, cls)
+
+    def __init__(self, connection: AnyConnection) -> None:
+        """Bind database ``connection`` used to retrieve settings values."""
+        self.connection = connection
 
     @abc.abstractmethod
     def get_setting_value(self, name: str) -> DatabaseSettingValue:
