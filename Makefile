@@ -17,7 +17,7 @@ package:
 	poetry check
 	poetry run pip check
 
-.PHONY: package
+.PHONY: safety
 safety:
 	# Is not run by default, is a separate command.
 	poetry run safety check --full-report
