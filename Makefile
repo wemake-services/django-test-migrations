@@ -16,13 +16,11 @@ unit:
 package:
 	poetry check
 	poetry run pip check
-	# vulnerabilities 40637, 49733, 50454 are ignored because we need to run
-	# tests against vulnerable `Django<3.2.15`
-	poetry run safety check \
-		--full-report \
-		--ignore 40637 \
-		--ignore 49733 \
-		--ignore 50454
+
+.PHONY: safety
+safety:
+	# Is not run by default, is a separate command.
+	poetry run safety check --full-report
 
 .PHONY: test
 test: lint unit package
