@@ -154,6 +154,28 @@ assert nodes_to_tuples(main_migrations) == [
 This way you can be sure that migrations
 and apps that depend on each other will be executed in the correct order.
 
+### `factory_boy` integration
+
+If you use factories to create models, you can replace their respective
+`.build()` or `.create()` calls with methods of `factory` and pass the
+model name and factory class as arguments:
+
+```python
+import factory
+
+old_state = migrator.apply_initial_migration(
+    ('main_app', '0002_someitem_is_clean'),
+)
+SomeItem = old_state.apps.get_model('main_app', 'SomeItem')
+
+# instead of
+# item = SomeItemFactory.create()
+# use this:
+factory.create(SomeItem, FACTORY_CLASS=SomeItemFactory)
+
+# ...
+```
+
 
 ## Test framework integrations 🐍
 
