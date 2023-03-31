@@ -32,7 +32,7 @@ jobs:
           poetry install
       - name: "Run safety"
         run: make safety
-      
+
   build:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.continue-on-error }}
@@ -48,7 +48,6 @@ jobs:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
         django-version:
-          - 'Django~=2.2.0'
           - 'Django~=3.2.0'
           - 'Django~=4.0.0'
         docker-compose-services: ['']
