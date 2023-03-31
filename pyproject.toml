@@ -43,17 +43,16 @@ classifiers = [
   "Topic :: Internet :: WWW/HTTP",
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
   "Framework :: Django",
-  "Framework :: Django :: 1.11",
-  "Framework :: Django :: 2.2",
-  "Framework :: Django :: 3.0",
-  "Framework :: Django :: 3.1",
+  "Framework :: Django :: 3.2",
+  "Framework :: Django :: 4.0",
+  "Framework :: Django :: 4.1",
 ]
 
 [tool.poetry.plugins.pytest11]
 django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 typing_extensions = ">=3.6,<5"
 
 [tool.poetry.dev-dependencies]
