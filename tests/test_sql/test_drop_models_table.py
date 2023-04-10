@@ -1,4 +1,4 @@
-from django_test_migrations import sql
+from django_test_migrations.sql import drop_models_tables
 
 TESTING_DATABASE_NAME = 'test'
 
@@ -9,7 +9,9 @@ def test_drop_models_table_no_tables_detected(mocker):
     testing_connection_mock.introspection.django_table_names.return_value = []
     connections_mock = mocker.patch('django.db.connections._connections')
     connections_mock.test = testing_connection_mock
-    sql.drop_models_tables(TESTING_DATABASE_NAME)
+
+    drop_models_tables(TESTING_DATABASE_NAME)
+
     testing_connection_mock.ops.execute_sql_flush.assert_not_called()
 
 
@@ -22,11 +24,10 @@ def test_drop_models_table_table_detected(mocker):
     ]
     connections_mock = mocker.patch('django.db.connections._connections')
     connections_mock.test = testing_connection_mock
-    execute_sql_flush_mock = mocker.patch(
-        'django_test_migrations.sql.get_execute_sql_flush_for',
-    )
-    sql.drop_models_tables(TESTING_DATABASE_NAME)
-    execute_sql_flush_mock(testing_connection_mock).assert_called_once()
+
+    drop_models_tables(TESTING_DATABASE_NAME)
+
+    testing_connection_mock.ops.execute_sql_flush.assert_called_once()
 
 
 def test_drop_models_table_on_mysql(mocker):
@@ -38,11 +39,10 @@ def test_drop_models_table_on_mysql(mocker):
     ]
     connections_mock = mocker.patch('django.db.connections._connections')
     connections_mock.test = testing_connection_mock
-    execute_sql_flush_mock = mocker.patch(
-        'django_test_migrations.sql.get_execute_sql_flush_for',
-    )
-    sql.drop_models_tables(TESTING_DATABASE_NAME)
-    execute_sql_flush_mock(testing_connection_mock).assert_called_once_with([
+
+    drop_models_tables(TESTING_DATABASE_NAME)
+
+    testing_connection_mock.ops.execute_sql_flush.assert_called_once_with([
         'SET FOREIGN_KEY_CHECKS = 0;',
         mocker.ANY,
         mocker.ANY,
