@@ -536,14 +536,14 @@ flake8 = "*"
 
 [[package]]
 name = "flake8-pytest-style"
-version = "1.6.0"
+version = "1.7.2"
 description = "A flake8 plugin checking common style issues or inconsistencies with pytest-based tests."
 category = "dev"
 optional = false
-python-versions = ">=3.6.2,<4.0.0"
+python-versions = ">=3.7.2,<4.0.0"
 files = [
-    {file = "flake8-pytest-style-1.6.0.tar.gz", hash = "sha256:c1175713e9e11b78cd1a035ed0bca0d1e41d09c4af329a952750b61d4194ddac"},
-    {file = "flake8_pytest_style-1.6.0-py3-none-any.whl", hash = "sha256:5fedb371a950e9fe0e0e6bfc854be7d99151271208f34cd2cc517681ece27780"},
+    {file = "flake8_pytest_style-1.7.2-py3-none-any.whl", hash = "sha256:f5d2aa3219163a052dd92226589d45fab8ea027a3269922f0c4029f548ea5cd1"},
+    {file = "flake8_pytest_style-1.7.2.tar.gz", hash = "sha256:b924197c99b951315949920b0e5547f34900b1844348432e67a44ab191582109"},
 ]
 
 [package.dependencies]
@@ -1710,4 +1710,4 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "27ddbd89bf6e0d34fb15be169ac5789d8761b488c262baa1be6b7d13546b7265"
+content-hash = "a409daa64bc3652fe264effa7393286fe36e019f4f146db64330204dfab0514e"
