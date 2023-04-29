@@ -10,6 +10,7 @@ We follow Semantic Versions since the `0.1.0` release.
 - Adds Python 3.11 support
 - Drops Python 3.7 support
 - Adds Django 4.1 support
+- Adds Django 4.2 support
 - Drops Django 2.2 support
 
 
