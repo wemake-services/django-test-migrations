@@ -49,8 +49,8 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11']
         django-version:
           - 'Django~=3.2.0'
-          - 'Django~=4.0.0'
           - 'Django~=4.1.0'
+          - 'Django~=4.2.0'
         docker-compose-services: ['']
         additional-dependencies: ['']
         continue-on-error: [false]
