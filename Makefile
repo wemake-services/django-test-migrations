@@ -8,7 +8,7 @@ lint:
 .PHONY: unit
 unit:
 	# We need one more test run to make sure that `--nomigrations` work:
-	poetry run pytest --nomigrations --cov-fail-under=0
+	poetry run pytest -p no:cov -o addopts="" --nomigrations
 	# Real `pytest` execution:
 	poetry run pytest
 
