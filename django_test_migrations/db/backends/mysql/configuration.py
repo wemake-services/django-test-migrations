@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from typing_extensions import final
 
 from django_test_migrations.db.backends.base.configuration import (
@@ -11,7 +13,6 @@ class DatabaseConfiguration(BaseDatabaseConfiguration):
     """Interact with MySQL database configuration."""
 
     vendor = 'mysql'
-    statement_timeout = 'MAX_EXECUTION_TIME'
 
     def get_setting_value(self, name: str) -> DatabaseSettingValue:
         """Retrieve value of MySQL database's setting with ``name``."""
@@ -23,3 +24,15 @@ class DatabaseConfiguration(BaseDatabaseConfiguration):
             if not setting_value:
                 return super().get_setting_value(name)
             return setting_value[0]
+
+    @cached_property
+    def version(self) -> str:
+        """Get MySQL DB server version."""
+        return str(self.get_setting_value('VERSION'))
+
+    @property
+    def statement_timeout(self) -> str:
+        """Get `STATEMENT TIMEOUT` setting name based on DB server version."""
+        if 'mariadb' in self.version.lower():
+            return 'MAX_STATEMENT_TIME'
+        return 'MAX_EXECUTION_TIME'

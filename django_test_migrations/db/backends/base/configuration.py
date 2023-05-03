@@ -15,7 +15,6 @@ class BaseDatabaseConfiguration(abc.ABC):
     """Interact with database's settings."""
 
     vendor: ClassVar[str]
-    statement_timeout: ClassVar[str]
 
     @classmethod
     def __init_subclass__(cls, **kwargs) -> None:
@@ -26,6 +25,11 @@ class BaseDatabaseConfiguration(abc.ABC):
     def __init__(self, connection: AnyConnection) -> None:
         """Bind database ``connection`` used to retrieve settings values."""
         self.connection = connection
+
+    @property
+    @abc.abstractmethod
+    def statement_timeout(self) -> str:
+        """Get `STATEMENT TIMEOUT` setting name."""
 
     @abc.abstractmethod
     def get_setting_value(self, name: str) -> DatabaseSettingValue:

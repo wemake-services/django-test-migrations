@@ -2,6 +2,12 @@
 
 We follow Semantic Versions since the `0.1.0` release.
 
+## Version
+
+### Fixes
+
+- Fix getting the `statement_timeout` setting name on MariaDB servers
+
 
 ## Version 1.3.0
 
