@@ -15,6 +15,7 @@ services:
     image: mysql:8
     ports:
       - "3306:3306"
+    restart: unless-stopped
     environment:
       - MYSQL_USER=django
       - MYSQL_PASSWORD=passwd123
@@ -24,4 +25,20 @@ services:
       # overriding `ENTRYPOINT` or `CMD`.
       - MYSQL_DATABASE=test_db
       - MYSQL_ROOT_PASSWORD=superpasswd123
+    command: --default-authentication-plugin=mysql_native_password
+
+  maria-db:
+    image: mariadb:10
+    ports:
+      - "3307:3306"
+    restart: unless-stopped
+    environment:
+      - MARIADB_USER=django
+      - MARIADB_PASSWORD=passwd123
+      # NOTE: MySQL container entrypoint gives user `${MYSQL_USER}` access
+      # only to `${MYSQL_DATABASE}` database, so we are setting
+      # `${MYSQL_DATABASE}` to Django default test database's name to avoid
+      # overriding `ENTRYPOINT` or `CMD`.
+      - MARIADB_DATABASE=test_db
+      - MARIADB_ROOT_PASSWORD=superpasswd123
     command: --default-authentication-plugin=mysql_native_password
