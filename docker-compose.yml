@@ -15,7 +15,7 @@ services:
     image: mysql:8
     ports:
       - "3306:3306"
-    restart: always
+    restart: unless-stopped
     environment:
       - MYSQL_USER=django
       - MYSQL_PASSWORD=passwd123
@@ -31,7 +31,7 @@ services:
     image: mariadb:10
     ports:
       - "3307:3306"
-    restart: always
+    restart: unless-stopped
     environment:
       - MARIADB_USER=django
       - MARIADB_PASSWORD=passwd123
