@@ -88,6 +88,34 @@ jobs:
             continue-on-error: false
             integration-test-setup-script: >-
               ./.dev/scripts/ci-mysql-setup-integration-tests.sh
+          - python-version: '3.10'
+            django-version: 'Django~=5.0.0'
+            docker-compose-services: ''
+            additional-dependencies: ''
+            env: {}
+            continue-on-error: false
+            integration-test-setup-script: ''
+          - python-version: '3.11'
+            django-version: 'Django~=5.0.0'
+            docker-compose-services: ''
+            additional-dependencies: ''
+            env: {}
+            continue-on-error: false
+            integration-test-setup-script: ''
+          - python-version: '3.12'
+            django-version: 'Django~=4.2.8'
+            docker-compose-services: ''
+            additional-dependencies: ''
+            env: {}
+            continue-on-error: false
+            integration-test-setup-script: ''
+          - python-version: '3.12'
+            django-version: 'Django~=5.0.0'
+            docker-compose-services: ''
+            additional-dependencies: ''
+            env: {}
+            continue-on-error: false
+            integration-test-setup-script: ''
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
