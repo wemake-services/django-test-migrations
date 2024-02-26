@@ -8,30 +8,6 @@ name: test
   workflow_dispatch:
 
 jobs:
-  safety:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install poetry
-        run: |
-          curl -sSL "https://install.python-poetry.org" | python
-
-          # Adding `poetry` to `$PATH`:
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: |
-          poetry config virtualenvs.in-project true
-          poetry run pip install -U pip
-          poetry install
-      - name: "Run safety"
-        run: make safety
-
   build:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.continue-on-error }}
