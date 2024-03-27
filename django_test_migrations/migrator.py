@@ -81,4 +81,6 @@ class Migrator(object):
         plan: Optional[MigrationPlan] = None,
     ) -> ProjectState:
         with mute_migrate_signals():
-            return self._executor.migrate(migration_targets, plan=plan)
+            project_state = self._executor.migrate(migration_targets, plan=plan)
+            project_state.clear_delayed_apps_cache()
+            return project_state
