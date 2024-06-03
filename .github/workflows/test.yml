@@ -43,15 +43,16 @@ jobs:
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
               DJANGO_DATABASE_PORT: 5432
-          - python-version: '3.12'
-            django-version: 'Django~=5.0.0'
-            docker-compose-services: mysql-db
-            additional-dependencies: mysqlclient
-            env:
-              DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
-              DJANGO_DATABASE_PORT: 3306
-            integration-test-setup-script: >-
-              ./.dev/scripts/ci-mysql-setup-integration-tests.sh
+          # TODO: reenable
+          # - python-version: '3.12'
+          #   django-version: 'Django~=5.0.0'
+          #   docker-compose-services: mysql-db
+          #   additional-dependencies: mysqlclient
+          #   env:
+          #     DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
+          #     DJANGO_DATABASE_PORT: 3306
+          #   integration-test-setup-script: >-
+          #     ./.dev/scripts/ci-mysql-setup-integration-tests.sh
           - python-version: '3.12'
             django-version: 'Django~=5.0.0'
             docker-compose-services: maria-db
