@@ -107,9 +107,7 @@ jobs:
 
       - name: Run no-migrations test
         if: "!(${{ matrix.docker-compose-services }})"
-        run: |
-        	# We need one more test run to make sure that `--nomigrations` work:
-	        poetry run pytest -p no:cov -o addopts="" --nomigrations
+        run: poetry run pytest -p no:cov -o addopts="" --nomigrations
 
       - name: >-
           Run integration tests for python ${{ matrix.python-version }}
