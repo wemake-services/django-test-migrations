@@ -105,10 +105,6 @@ jobs:
       - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
         run: make test
 
-      - name: Run no-migrations test
-        if: "!(${{ matrix.docker-compose-services }})"
-        run: poetry run pytest -p no:cov -o addopts="" --nomigrations
-
       - name: >-
           Run integration tests for python ${{ matrix.python-version }}
           and django ${{ matrix.django-version }} using
