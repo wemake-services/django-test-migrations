@@ -7,6 +7,8 @@ lint:
 
 .PHONY: unit
 unit:
+  # We need one more test run to make sure that `--nomigrations` work:
+  poetry run pytest -p no:cov -o addopts="" --nomigrations
 	poetry run pytest
 
 .PHONY: package
