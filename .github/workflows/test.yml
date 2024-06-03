@@ -10,7 +10,6 @@ name: test
 jobs:
   build:
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.continue-on-error }}
     env:
       DJANGO_DATABASE_ENGINE: "${{ matrix.env.DJANGO_DATABASE_ENGINE || 'django.db.backends.sqlite3' }}"
       DJANGO_DATABASE_USER: django
@@ -18,8 +17,8 @@ jobs:
       DJANGO_DATABASE_NAME: db
       DJANGO_DATABASE_HOST: 127.0.0.1
       DJANGO_DATABASE_PORT: "${{ matrix.env.DJANGO_DATABASE_PORT }}"
-      DOCKERIZE_VERSION: v0.6.1
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12']
         django-version:
@@ -96,15 +95,12 @@ jobs:
       - name: Wait for docker-compose services
         if: ${{ matrix.docker-compose-services }}
         run: |
-          wget \
-            https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-          && tar -C . -xzvf dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-          && rm dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-          && chmod +x dockerize
-          ./dockerize \
-            -wait "tcp://localhost:${{ matrix.env.DJANGO_DATABASE_PORT }}" \
-            -wait-retry-interval "1s" \
-            -timeout "30s"
+          apt install -y wait-for-it
+          wait-for-it \
+            --host='localhost' \
+            --port="${{ matrix.env.DJANGO_DATABASE_PORT }}" \
+            --timeout=30 \
+            --strict
 
       - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
         run: make test
