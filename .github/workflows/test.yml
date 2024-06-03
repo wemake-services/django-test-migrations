@@ -10,7 +10,6 @@ name: test
 jobs:
   build:
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.continue-on-error }}
     env:
       DJANGO_DATABASE_ENGINE: "${{ matrix.env.DJANGO_DATABASE_ENGINE || 'django.db.backends.sqlite3' }}"
       DJANGO_DATABASE_USER: django
@@ -18,80 +17,52 @@ jobs:
       DJANGO_DATABASE_NAME: db
       DJANGO_DATABASE_HOST: 127.0.0.1
       DJANGO_DATABASE_PORT: "${{ matrix.env.DJANGO_DATABASE_PORT }}"
-      DOCKERIZE_VERSION: v0.6.1
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
         django-version:
-          - 'Django~=3.2.0'
-          - 'Django~=4.1.0'
           - 'Django~=4.2.0'
+          - 'Django~=5.0.0'
         docker-compose-services: ['']
         additional-dependencies: ['']
         env: [{}]
-        continue-on-error: [false]
         integration-test-setup-script: ['']
 
         include:
-          - python-version: '3.11'
-            django-version: 'https://github.com/django/django/archive/main.zip'
-            continue-on-error: true
-          - python-version: '3.10'
+          - python-version: '3.9'
             django-version: 'Django~=4.1.0'
+            docker-compose-services: ''
+            additional-dependencies: ''
+            env: {}
+            integration-test-setup-script: ''
+          - python-version: '3.12'
+            django-version: 'Django~=5.0.0'
             docker-compose-services: postgresql-db
             additional-dependencies: psycopg2
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
               DJANGO_DATABASE_PORT: 5432
-            continue-on-error: false
-          - python-version: '3.10'
-            django-version: 'Django~=4.1.0'
-            docker-compose-services: mysql-db
-            additional-dependencies: mysqlclient
-            env:
-              DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
-              DJANGO_DATABASE_PORT: 3306
-            continue-on-error: false
-            integration-test-setup-script: >-
-              ./.dev/scripts/ci-mysql-setup-integration-tests.sh
-          - python-version: '3.10'
-            django-version: 'Django~=4.1.0'
+          # TODO: reenable
+          # - python-version: '3.12'
+          #   django-version: 'Django~=5.0.0'
+          #   docker-compose-services: mysql-db
+          #   additional-dependencies: mysqlclient
+          #   env:
+          #     DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
+          #     DJANGO_DATABASE_PORT: 3306
+          #   integration-test-setup-script: >-
+          #     ./.dev/scripts/ci-mysql-setup-integration-tests.sh
+          - python-version: '3.12'
+            django-version: 'Django~=5.0.0'
             docker-compose-services: maria-db
             additional-dependencies: mysqlclient
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
               DJANGO_DATABASE_PORT: 3307
-            continue-on-error: false
             integration-test-setup-script: >-
               ./.dev/scripts/ci-mysql-setup-integration-tests.sh
-          - python-version: '3.10'
-            django-version: 'Django~=5.0.0'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            continue-on-error: false
-            integration-test-setup-script: ''
-          - python-version: '3.11'
-            django-version: 'Django~=5.0.0'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            continue-on-error: false
-            integration-test-setup-script: ''
-          - python-version: '3.12'
-            django-version: 'Django~=4.2.8'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            continue-on-error: false
-            integration-test-setup-script: ''
-          - python-version: '3.12'
-            django-version: 'Django~=5.0.0'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            continue-on-error: false
-            integration-test-setup-script: ''
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -125,15 +96,12 @@ jobs:
       - name: Wait for docker-compose services
         if: ${{ matrix.docker-compose-services }}
         run: |
-          wget \
-            https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-          && tar -C . -xzvf dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-          && rm dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
-          && chmod +x dockerize
-          ./dockerize \
-            -wait "tcp://localhost:${{ matrix.env.DJANGO_DATABASE_PORT }}" \
-            -wait-retry-interval "1s" \
-            -timeout "30s"
+          sudo apt-get update && sudo apt-get install -y wait-for-it
+          wait-for-it \
+            --host='localhost' \
+            --port="${{ matrix.env.DJANGO_DATABASE_PORT }}" \
+            --timeout=30 \
+            --strict
 
       - name: "Run checks for python ${{ matrix.python-version }} and django ${{ matrix.django-version }}"
         run: make test

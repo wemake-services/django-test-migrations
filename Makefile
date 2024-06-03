@@ -7,20 +7,14 @@ lint:
 
 .PHONY: unit
 unit:
-	# We need one more test run to make sure that `--nomigrations` work:
-	poetry run pytest -p no:cov -o addopts="" --nomigrations
-	# Real `pytest` execution:
+  # We need one more test run to make sure that `--nomigrations` work:
+  poetry run pytest -p no:cov -o addopts="" --nomigrations
 	poetry run pytest
 
 .PHONY: package
 package:
 	poetry check
 	poetry run pip check
-
-.PHONY: safety
-safety:
-	# Is not run by default, is a separate command.
-	poetry run safety check --full-report
 
 .PHONY: test
 test: lint unit package
