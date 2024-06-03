@@ -95,7 +95,7 @@ jobs:
       - name: Wait for docker-compose services
         if: ${{ matrix.docker-compose-services }}
         run: |
-          apt install -y wait-for-it
+          apt-get update && apt-get install -y wait-for-it
           wait-for-it \
             --host='localhost' \
             --port="${{ matrix.env.DJANGO_DATABASE_PORT }}" \
