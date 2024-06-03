@@ -21,77 +21,48 @@ jobs:
       DOCKERIZE_VERSION: v0.6.1
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
         django-version:
-          - 'Django~=3.2.0'
-          - 'Django~=4.1.0'
           - 'Django~=4.2.0'
+          - 'Django~=5.0.0'
         docker-compose-services: ['']
         additional-dependencies: ['']
         env: [{}]
-        continue-on-error: [false]
         integration-test-setup-script: ['']
 
         include:
-          - python-version: '3.11'
-            django-version: 'https://github.com/django/django/archive/main.zip'
-            continue-on-error: true
-          - python-version: '3.10'
+          - python-version: '3.9'
             django-version: 'Django~=4.1.0'
+            docker-compose-services: ''
+            additional-dependencies: ''
+            env: {}
+            integration-test-setup-script: ''
+          - python-version: '3.12'
+            django-version: 'Django~=5.0.0'
             docker-compose-services: postgresql-db
             additional-dependencies: psycopg2
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
               DJANGO_DATABASE_PORT: 5432
-            continue-on-error: false
-          - python-version: '3.10'
-            django-version: 'Django~=4.1.0'
+          - python-version: '3.12'
+            django-version: 'Django~=5.0.0'
             docker-compose-services: mysql-db
             additional-dependencies: mysqlclient
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
               DJANGO_DATABASE_PORT: 3306
-            continue-on-error: false
             integration-test-setup-script: >-
               ./.dev/scripts/ci-mysql-setup-integration-tests.sh
-          - python-version: '3.10'
-            django-version: 'Django~=4.1.0'
+          - python-version: '3.12'
+            django-version: 'Django~=5.0.0'
             docker-compose-services: maria-db
             additional-dependencies: mysqlclient
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
               DJANGO_DATABASE_PORT: 3307
-            continue-on-error: false
             integration-test-setup-script: >-
               ./.dev/scripts/ci-mysql-setup-integration-tests.sh
-          - python-version: '3.10'
-            django-version: 'Django~=5.0.0'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            continue-on-error: false
-            integration-test-setup-script: ''
-          - python-version: '3.11'
-            django-version: 'Django~=5.0.0'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            continue-on-error: false
-            integration-test-setup-script: ''
-          - python-version: '3.12'
-            django-version: 'Django~=4.2.8'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            continue-on-error: false
-            integration-test-setup-script: ''
-          - python-version: '3.12'
-            django-version: 'Django~=5.0.0'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            continue-on-error: false
-            integration-test-setup-script: ''
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
