@@ -4,7 +4,7 @@ from django.db.migrations.state import ProjectState
 from django_test_migrations.migrator import Migrator
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_migrator(transactional_db):
     """We only need this test for coverage."""
     migrator = Migrator()
@@ -16,7 +16,7 @@ def test_migrator(transactional_db):
     assert migrator.reset() is None
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_migrator_list(transactional_db):
     """We only need this test for coverage."""
     migrator = Migrator()

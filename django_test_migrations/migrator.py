@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from django.core.management import call_command
 from django.core.management.color import no_style
@@ -10,10 +10,14 @@ from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
 from django_test_migrations.plan import truncate_plan
 from django_test_migrations.signals import mute_migrate_signals
-from django_test_migrations.types import MigrationPlan, MigrationSpec
+from django_test_migrations.types import (
+    MigrationPlan,
+    MigrationSpec,
+    MigrationTarget,
+)
 
 
-class Migrator(object):
+class Migrator:
     """
     Class to manage your migrations and app state.
 
@@ -40,7 +44,7 @@ class Migrator(object):
 
     def apply_initial_migration(self, targets: MigrationSpec) -> ProjectState:
         """Reverse back to the original migration."""
-        targets = normalize(targets)
+        migration_targets = normalize(targets)
 
         style = no_style()
         # start from clean database state
@@ -53,12 +57,12 @@ class Migrator(object):
             self._executor.loader.graph.leaf_nodes(),
             clean_start=True,
         )
-        plan = truncate_plan(targets, full_plan)
+        plan = truncate_plan(migration_targets, full_plan)
 
         # apply all migrations from generated plan on clean database
         # (only forward, so any unexpected migration won't be applied)
         # to restore database state before tested migration
-        return self._migrate(targets, plan=plan)
+        return self._migrate(migration_targets, plan=plan)
 
     def apply_tested_migration(self, targets: MigrationSpec) -> ProjectState:
         """Apply the next migration."""
@@ -77,7 +81,7 @@ class Migrator(object):
 
     def _migrate(
         self,
-        migration_targets: MigrationSpec,
+        migration_targets: List[MigrationTarget],
         plan: Optional[MigrationPlan] = None,
     ) -> ProjectState:
         with mute_migrate_signals():

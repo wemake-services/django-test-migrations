@@ -1,5 +1,5 @@
 from fnmatch import fnmatch
-from typing import FrozenSet, List, Tuple
+from typing import FrozenSet, Sequence, Tuple
 
 from django.conf import settings
 from django.core.checks import CheckMessage, Warning
@@ -47,7 +47,10 @@ def _build_ignores() -> _IgnoreSpec:
     return ignored_apps, ignored_migrations
 
 
-def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
+def check_migration_names(
+    *args: object,
+    **kwargs: object,
+) -> Sequence[CheckMessage]:
     """
     Finds automatic names in available migrations.
 
@@ -84,4 +87,6 @@ def check_migration_names(*args, **kwargs) -> List[CheckMessage]:
     return messages
 
 
-CHECKS: Final = (check_migration_names,)
+CHECKS: Final = (
+    check_migration_names,
+)

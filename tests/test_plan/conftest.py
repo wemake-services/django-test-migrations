@@ -2,7 +2,7 @@ import pytest
 from django.db.migrations import Migration
 
 
-@pytest.fixture()
+@pytest.fixture
 def plan():
     """Fake migrations plan for testing purposes."""
     migrations_plan = [

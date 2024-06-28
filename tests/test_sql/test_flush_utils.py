@@ -4,7 +4,7 @@ from django.core.management.color import Style
 from django_test_migrations import sql
 
 
-@pytest.fixture()
+@pytest.fixture
 def testing_connection_mock(mocker):
     """Mock Django connections to check the methods called."""
     testing_connection_mock = mocker.MagicMock()

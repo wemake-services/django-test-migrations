@@ -17,7 +17,7 @@ class BaseDatabaseConfiguration(abc.ABC):
     vendor: ClassVar[str]
 
     @classmethod
-    def __init_subclass__(cls, **kwargs) -> None:
+    def __init_subclass__(cls, **kwargs: object) -> None:
         """Register ``BaseDatabaseConfiguration`` subclass of db ``vendor``."""
         if not inspect.isabstract(cls):
             database_configuration_registry.setdefault(cls.vendor, cls)
