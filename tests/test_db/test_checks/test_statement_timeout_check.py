@@ -13,7 +13,7 @@ ALL_CONNECTIONS_MOCK_PATH = (
 )
 
 
-@pytest.fixture()
+@pytest.fixture
 def connection_mock_factory(mocker):
     """Factory of DB connection mocks."""
     def factory(vendor, fetch_one_result=None):

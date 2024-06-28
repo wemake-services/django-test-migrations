@@ -2,11 +2,20 @@
 
 We follow Semantic Versions since the `0.1.0` release.
 
-## Version
+
+## Version 1.4.0
+
+### Features
+
+- Adds Python 3.12 support
+- Drops Python 3.8 support
+- Updates `typing_extensions` to `>=4,<5`
+- Adds more typing to the project
 
 ### Fixes
 
-- Fix getting the `statement_timeout` setting name on MariaDB servers
+- Fixes getting the `statement_timeout` setting name on MariaDB servers
+- Fixes delayed apps cache
 
 
 ## Version 1.3.0

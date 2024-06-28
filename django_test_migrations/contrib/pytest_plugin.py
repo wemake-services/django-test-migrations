@@ -1,12 +1,15 @@
-from typing import Optional
+from typing import TYPE_CHECKING, List, Optional, Protocol
 
 import pytest
 from django.db import DEFAULT_DB_ALIAS
 
 from django_test_migrations.constants import MIGRATION_TEST_MARKER
 
+if TYPE_CHECKING:
+    from django_test_migrations.migrator import Migrator
 
-def pytest_load_initial_conftests(early_config):
+
+def pytest_load_initial_conftests(early_config: pytest.Config) -> None:
     """Register pytest's markers."""
     early_config.addinivalue_line(
         'markers',
@@ -16,8 +19,12 @@ def pytest_load_initial_conftests(early_config):
     )
 
 
-def pytest_collection_modifyitems(session, items):  # noqa: WPS110
-    """Mark all tests using ``migrator_factory`` fixture with proper marks.
+def pytest_collection_modifyitems(
+    session: pytest.Session,
+    items: List[pytest.Item],  # noqa: WPS110
+) -> None:
+    """
+    Mark all tests using ``migrator_factory`` fixture with proper marks.
 
     Add ``MIGRATION_TEST_MARKER`` marker to all items using
     ``migrator_factory`` fixture.
@@ -28,8 +35,19 @@ def pytest_collection_modifyitems(session, items):  # noqa: WPS110
             pytest_item.add_marker(MIGRATION_TEST_MARKER)
 
 
-@pytest.fixture()
-def migrator_factory(request, transactional_db, django_db_use_migrations):
+class MigratorFactory(Protocol):
+    """Protocol for `migrator_factory` fixture."""
+
+    def __call__(self, database_name: Optional[str] = None) -> 'Migrator':
+        """It only has a `__call__` magic method."""
+
+
+@pytest.fixture
+def migrator_factory(
+    request: pytest.FixtureRequest,
+    transactional_db: None,
+    django_db_use_migrations: bool,
+) -> MigratorFactory:
     """
     Pytest fixture to create migrators inside the pytest tests.
 
@@ -37,7 +55,7 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
 
     .. code:: python
 
-        @pytest.mark.django_db()
+        @pytest.mark.django_db
         def test_migration(migrator_factory):
             migrator = migrator_factory('custom_db_alias')
             old_state = migrator.apply_initial_migration(('main_app', None))
@@ -56,7 +74,7 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
     That's why we cannot import ``Migrator`` on a module level.
     Because it won't be caught be coverage later on.
     """
-    from django_test_migrations.migrator import Migrator  # noqa: WPS433
+    from django_test_migrations.migrator import Migrator  # noqa: WPS433, WPS474
 
     if not django_db_use_migrations:
         pytest.skip('--nomigrations was specified')
@@ -68,8 +86,8 @@ def migrator_factory(request, transactional_db, django_db_use_migrations):
     return factory
 
 
-@pytest.fixture()
-def migrator(migrator_factory):  # noqa: WPS442
+@pytest.fixture
+def migrator(migrator_factory: MigratorFactory) -> 'Migrator':
     """
     Useful alias for ``'default'`` database in ``django``.
 
@@ -79,7 +97,7 @@ def migrator(migrator_factory):  # noqa: WPS442
 
     .. code:: python
 
-        @pytest.mark.django_db()
+        @pytest.mark.django_db
         def test_migration(migrator):
             old_state = migrator.apply_initial_migration(('main_app', None))
             new_state = migrator.apply_tested_migration(

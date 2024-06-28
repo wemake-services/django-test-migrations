@@ -1,3 +1,5 @@
+from typing import cast
+
 from typing_extensions import final
 
 from django_test_migrations.db.backends.base.configuration import (
@@ -26,4 +28,4 @@ class DatabaseConfiguration(BaseDatabaseConfiguration):
             setting_value = cursor.fetchone()
             if not setting_value:
                 return super().get_setting_value(name)
-            return setting_value[0]
+            return cast(DatabaseSettingValue, setting_value[0])

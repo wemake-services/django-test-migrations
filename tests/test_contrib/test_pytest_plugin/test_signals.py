@@ -19,7 +19,7 @@ def _my_callback(sender, **kwargs):
     """Mock that does nothing."""
 
 
-@pytest.fixture()
+@pytest.fixture
 def _disconnect_receivers():
     """Disconnect testing receiver of ``pre_migrate`` or ``post_migrate``."""
     yield

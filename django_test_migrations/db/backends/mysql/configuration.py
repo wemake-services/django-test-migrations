@@ -1,4 +1,5 @@
 from functools import cached_property
+from typing import cast
 
 from typing_extensions import final
 
@@ -23,7 +24,7 @@ class DatabaseConfiguration(BaseDatabaseConfiguration):
             setting_value = cursor.fetchone()
             if not setting_value:
                 return super().get_setting_value(name)
-            return setting_value[0]
+            return cast(DatabaseSettingValue, setting_value[0])
 
     @cached_property
     def version(self) -> str:

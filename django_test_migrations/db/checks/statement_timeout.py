@@ -17,7 +17,10 @@ CHECK_NAME: Final = 'django_test_migrations.checks.database_configuration'
 STATEMENT_TIMEOUT_MINUTES_UPPER_LIMIT: Final = 30
 
 
-def check_statement_timeout_setting(*args, **kwargs) -> List[CheckMessage]:
+def check_statement_timeout_setting(
+    *args: object,
+    **kwargs: object,
+) -> List[CheckMessage]:
     """Check if statements' timeout settings is properly configured."""
     messages: List[CheckMessage] = []
     for connection in connections.all():

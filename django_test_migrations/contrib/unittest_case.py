@@ -54,11 +54,11 @@ class MigratorTestCase(TransactionTestCase):
         self._migrator.reset()
         super().tearDown()
 
-    def _pre_setup(self):
+    def _pre_setup(self) -> None:
         self._pre_migrate_receivers, pre_migrate.receivers = (  # noqa: WPS414
             pre_migrate.receivers, [],
         )
         self._post_migrate_receivers, post_migrate.receivers = (  # noqa: WPS414
             post_migrate.receivers, [],
         )
-        super()._pre_setup()
+        super()._pre_setup()  # type: ignore[misc]
