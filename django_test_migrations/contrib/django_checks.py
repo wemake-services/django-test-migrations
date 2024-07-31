@@ -43,10 +43,7 @@ class AutoNames(AppConfig):
     def ready(self) -> None:
         """That's how we register our check when apps are ready."""
         for check in autonames.CHECKS:
-            checks.register(  # type: ignore[call-overload]
-                check,
-                checks.Tags.compatibility,
-            )
+            checks.register(check, checks.Tags.compatibility)
 
 
 @final
@@ -73,7 +70,4 @@ class DatabaseConfiguration(AppConfig):
     def ready(self) -> None:
         """Register database configuration checks."""
         for check in database_configuration.CHECKS:
-            checks.register(  # type: ignore[call-overload]
-                check,
-                checks.Tags.database,
-            )
+            checks.register(check, checks.Tags.database)
