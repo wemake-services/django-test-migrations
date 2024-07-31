@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 from django.db.backends.base.base import BaseDatabaseWrapper
 from django.db.migrations import Migration
@@ -13,6 +13,6 @@ MigrationSpec: TypeAlias = Union[MigrationTarget, List[MigrationTarget]]
 
 MigrationPlan: TypeAlias = List[Tuple[Migration, bool]]
 
-AnyConnection: TypeAlias = Union[ConnectionProxy, BaseDatabaseWrapper]
+AnyConnection: TypeAlias = Union[ConnectionProxy[Any], BaseDatabaseWrapper]
 
 DatabaseSettingValue: TypeAlias = Union[str, int]

@@ -50,7 +50,7 @@ typing_extensions = ">=4.0"
 [tool.poetry.group.dev.dependencies]
 django = "^4.2"
 
-mypy = "^1.10"
+mypy = "^1.11"
 django-stubs = "^5.0"
 
 wemake-python-styleguide = "^0.19"
