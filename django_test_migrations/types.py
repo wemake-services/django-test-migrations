@@ -13,6 +13,6 @@ MigrationSpec: TypeAlias = Union[MigrationTarget, List[MigrationTarget]]
 
 MigrationPlan: TypeAlias = List[Tuple[Migration, bool]]
 
-AnyConnection: TypeAlias = Union[ConnectionProxy[Any], BaseDatabaseWrapper]
+AnyConnection: TypeAlias = Union['ConnectionProxy[Any]', BaseDatabaseWrapper]
 
 DatabaseSettingValue: TypeAlias = Union[str, int]
