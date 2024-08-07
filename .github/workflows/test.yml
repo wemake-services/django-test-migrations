@@ -94,11 +94,11 @@ jobs:
             "${{ matrix.django-version }}" \
             ${{ matrix.additional-dependencies }}
 
-      - name: Pull and build docker-compose services
+      - name: Pull and build docker compose services
         if: ${{ matrix.docker-compose-services }}
         run: |
-          docker-compose pull ${{ matrix.docker-compose-services }}
-          docker-compose up --detach ${{ matrix.docker-compose-services }}
+          docker compose pull ${{ matrix.docker-compose-services }}
+          docker compose up --detach ${{ matrix.docker-compose-services }}
 
       - name: Wait for docker-compose services
         if: ${{ matrix.docker-compose-services }}
@@ -134,4 +134,4 @@ jobs:
 
       - name: Stop docker-compose services
         if: ${{ always() && matrix.docker-compose-services }}
-        run: docker-compose down || true
+        run: docker compose down || true
