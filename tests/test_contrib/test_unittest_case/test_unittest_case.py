@@ -8,6 +8,11 @@ class TestDirectMigration(MigratorTestCase):
     migrate_from = ('main_app', '0002_someitem_is_clean')
     migrate_to = ('main_app', '0003_update_is_clean')
 
+    @classmethod
+    def setUpClass(cls):
+        # added to trigger #503
+        return super().setUpClass()
+
     def prepare(self):
         """Prepare some data before the migration."""
         SomeItem = self.old_state.apps.get_model('main_app', 'SomeItem')
