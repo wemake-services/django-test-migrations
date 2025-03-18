@@ -24,7 +24,7 @@ jobs:
       DJANGO_DATABASE_NAME: db
       DJANGO_DATABASE_HOST: 127.0.0.1
       DJANGO_DATABASE_PORT: "${{ matrix.env.DJANGO_DATABASE_PORT }}"
-      COVERAGE_FILE: ${{ github.job }}-${{ github.run_id }}.coverage
+      COVERAGE_FILE: py${{ matrix.python-version }}-${{ matrix.django-version }}-${{ matrix.env.DJANGO_DATABASE_ENGINE }}.coverage
     strategy:
       fail-fast: false
       matrix:
