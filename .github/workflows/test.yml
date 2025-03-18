@@ -157,6 +157,13 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v5
 
+      - name: Install poetry
+        run: |
+          curl -sSL "https://install.python-poetry.org" | python
+
+          # Adding `poetry` to `$PATH`:
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
       - name: Install dependencies
         run: |
           poetry config virtualenvs.in-project true
