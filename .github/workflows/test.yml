@@ -24,6 +24,7 @@ jobs:
       DJANGO_DATABASE_NAME: db
       DJANGO_DATABASE_HOST: 127.0.0.1
       DJANGO_DATABASE_PORT: "${{ matrix.env.DJANGO_DATABASE_PORT }}"
+      COVERAGE_FILE: ${{ github.job }}-${{ github.run_id }}.coverage
     strategy:
       fail-fast: false
       matrix:
@@ -136,12 +137,47 @@ jobs:
           echo "${CHECK_OUTPUT}" \
           | grep --quiet --extended-regexp '^System check identified 4 issues'
 
+      - name: Store coverage files
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.COVERAGE_FILE }}
+          path: ${{ env.COVERAGE_FILE }}
+
+      - name: Stop docker-compose services
+        if: ${{ always() && matrix.docker-compose-services }}
+        run: docker compose down || true
+
+  coverage-combine:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+
+      - name: Install dependencies
+        run: |
+          poetry config virtualenvs.in-project true
+          poetry run pip install -U pip
+          poetry install
+
+      - name: Get coverage files
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "*.coverage"
+          merge-multiple: true
+
+      - run: ls -la *.coverage
+      - run: |
+          coverage combine --keep *.coverage
+          coverage report
+          coverage xml
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           files:
             ./coverage.xml
-
-      - name: Stop docker-compose services
-        if: ${{ always() && matrix.docker-compose-services }}
-        run: docker compose down || true
+      
