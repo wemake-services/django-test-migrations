@@ -68,11 +68,11 @@ class MigratorTestCase(TransactionTestCase):
             post_migrate.receivers, [],
         )
 
-    if django.VERSION[:2] < (5, 2):  # noqa: WPS604
+    if django.VERSION[:2] < (5, 2):  # noqa: WPS604 # pragma: no cover
         def _pre_setup(self) -> None:
             self._store_receivers()
             super()._pre_setup()  # type: ignore[misc]
-    else:
+    else:  # pragma: no cover
         @classmethod
         def _pre_setup(cls) -> None:  # type: ignore[misc] # noqa: WPS614,WPS440
             cls._store_receivers()
