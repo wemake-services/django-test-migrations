@@ -178,9 +178,9 @@ jobs:
 
       - run: ls -la *.coverage
       - run: |
-          coverage combine --keep *.coverage
-          coverage report --fail-under=100
-          coverage xml
+          poetry run coverage combine --keep *.coverage
+          poetry run coverage report --fail-under=100
+          poetry run coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
