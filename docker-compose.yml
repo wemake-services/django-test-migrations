@@ -11,6 +11,15 @@ services:
       - POSTGRES_PASSWORD=passwd123
       - POSTGRES_DB=db
 
+  postgresql-db-17:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=passwd123
+      - POSTGRES_DB=db
+
   mysql-db:
     image: mysql:8
     ports:
