@@ -14,7 +14,7 @@ services:
   postgresql-db-17:
     image: postgres:17
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_USER=django
       - POSTGRES_PASSWORD=passwd123

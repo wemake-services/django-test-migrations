@@ -11,7 +11,7 @@ class TestDirectMigration(MigratorTestCase):
     @classmethod
     def setUpClass(cls):
         """Override parent's setUpClass to trigger #503."""
-        return super().setUpClass()
+        super().setUpClass()
 
     def prepare(self):
         """Prepare some data before the migration."""

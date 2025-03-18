@@ -58,7 +58,7 @@ jobs:
             additional-dependencies: psycopg
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
-              DJANGO_DATABASE_PORT: 5432
+              DJANGO_DATABASE_PORT: 5433
           # TODO: reenable
           # - python-version: '3.12'
           #   django-version: 'Django~=5.0.0'
