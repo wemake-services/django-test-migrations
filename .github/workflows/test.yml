@@ -172,7 +172,7 @@ jobs:
       - run: ls -la *.coverage
       - run: |
           coverage combine --keep *.coverage
-          coverage report
+          coverage report --fail-under=100
           coverage xml
 
       - name: Upload coverage to Codecov
@@ -180,4 +180,3 @@ jobs:
         with:
           files:
             ./coverage.xml
-      
