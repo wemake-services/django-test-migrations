@@ -27,10 +27,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
         django-version:
           - 'Django~=4.2.0'
           - 'Django~=5.0.0'
+          - 'Django==5.2b1'
         docker-compose-services: ['']
         additional-dependencies: ['']
         env: [{}]
@@ -50,6 +51,14 @@ jobs:
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
               DJANGO_DATABASE_PORT: 5432
+          
+          - python-version: '3.13'
+            django-version: 'Django==5.2b1'
+            docker-compose-services: postgresql-db-17
+            additional-dependencies: psycopg
+            env:
+              DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
+              DJANGO_DATABASE_PORT: 5433
           # TODO: reenable
           # - python-version: '3.12'
           #   django-version: 'Django~=5.0.0'
@@ -130,7 +139,8 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage.xml
+          files:
+            ./coverage.xml
 
       - name: Stop docker-compose services
         if: ${{ always() && matrix.docker-compose-services }}

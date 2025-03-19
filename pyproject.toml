@@ -1,11 +1,12 @@
-[tool.poetry]
+[project]
 name = "django-test-migrations"
 version = "1.4.0"
+requires-python = ">=3.9,<4.0"
 description = "Test django schema and data migrations, including ordering"
 license = "MIT"
-
+license-files = [ "LICENSE" ]
 authors = [
-  "sobolevn <mail@sobolevn.me>"
+  {name = "sobolevn", email = "mail@sobolevn.me"},
 ]
 
 readme = "README.md"
@@ -38,17 +39,20 @@ classifiers = [
   "Framework :: Django :: 4.1",
   "Framework :: Django :: 4.2",
   "Framework :: Django :: 5.0",
+  "Framework :: Django :: 5.1",
+  "Framework :: Django :: 5.2",
 ]
 
-[tool.poetry.plugins.pytest11]
+dependencies = [
+  "typing_extensions>=4.0"
+]
+
+[project.entry-points."pytest11"]
 django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
-[tool.poetry.dependencies]
-python = "^3.9"
-typing_extensions = ">=4.0"
 
 [tool.poetry.group.dev.dependencies]
-django = "^4.2"
+django = ">=4.2,<6.0"
 
 mypy = "^1.11"
 django-stubs = "^5.0"
@@ -65,7 +69,7 @@ pytest-mock = "^3.14"
 
 
 [build-system]
-requires = ["poetry-core>=1.9.0"]
+requires = ["poetry-core>=2.1.0"]
 build-backend = "poetry.core.masonry.api"
 
 
