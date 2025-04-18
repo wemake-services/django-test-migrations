@@ -34,4 +34,4 @@ def test_all_migrations_auth():
 @pytest.mark.django_db
 def test_all_migrations_all():
     """Testing migrations for all apps."""
-    assert len(all_migrations()) >= 17  # noqa: WPS432
+    assert len(all_migrations()) >= 17

@@ -1,15 +1,14 @@
-from typing import Optional
+from typing import Final
 
 from django.core.management.color import Style, no_style
 from django.db import connections
-from typing_extensions import Final
 
 DJANGO_MIGRATIONS_TABLE_NAME: Final = 'django_migrations'
 
 
 def drop_models_tables(
     database_name: str,
-    style: Optional[Style] = None,
+    style: Style | None = None,
 ) -> None:
     """Drop all installed Django's models tables."""
     style = style or no_style()
@@ -19,7 +18,8 @@ def drop_models_tables(
         include_views=False,
     )
     sql_drop_tables = [
-        connection.SchemaEditorClass.sql_delete_table % {
+        connection.SchemaEditorClass.sql_delete_table
+        % {
             'table': style.SQL_FIELD(connection.ops.quote_name(table)),
         }
         for table in tables
@@ -36,7 +36,7 @@ def drop_models_tables(
 
 def flush_django_migrations_table(
     database_name: str,
-    style: Optional[Style] = None,
+    style: Style | None = None,
 ) -> None:
     """Flush `django_migrations` table.
 

@@ -1,5 +1,3 @@
-from typing import List, Optional, Set, Tuple
-
 from django.apps import apps
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations import Migration
@@ -12,8 +10,8 @@ from django_test_migrations.types import MigrationPlan, MigrationTarget
 
 def all_migrations(
     database: str = DEFAULT_DB_ALIAS,
-    app_names: Optional[List[str]] = None,
-) -> List[Node]:
+    app_names: list[str] | None = None,
+) -> list[Node]:
     """
     Returns the sorted list of migrations nodes.
 
@@ -42,24 +40,19 @@ def all_migrations(
     if app_names:
         _validate_app_names(app_names)
         targets = [
-            key
-            for key in loader.graph.leaf_nodes()
-            if key[0] in app_names
+            key for key in loader.graph.leaf_nodes() if key[0] in app_names
         ]
     else:
         targets = loader.graph.leaf_nodes()
     return _generate_plan(targets, loader)
 
 
-def nodes_to_tuples(nodes: List[Node]) -> List[Tuple[str, str]]:
+def nodes_to_tuples(nodes: list[Node]) -> list[tuple[str, str]]:
     """Utility function to transform nodes to tuples."""
-    return [
-        (node[0], node[1])
-        for node in nodes
-    ]
+    return [(node[0], node[1]) for node in nodes]
 
 
-def _validate_app_names(app_names: List[str]) -> None:
+def _validate_app_names(app_names: list[str]) -> None:
     """
     Validates the provided app names.
 
@@ -70,11 +63,11 @@ def _validate_app_names(app_names: List[str]) -> None:
 
 
 def _generate_plan(
-    targets: List[Node],
+    targets: list[Node],
     loader: MigrationLoader,
-) -> List[Node]:
+) -> list[Node]:
     plan = []
-    seen: Set[Node] = set()
+    seen: set[Node] = set()
 
     # Generate the plan
     for target in targets:
@@ -87,7 +80,7 @@ def _generate_plan(
 
 
 def truncate_plan(
-    targets: List[MigrationTarget],
+    targets: list[MigrationTarget],
     plan: MigrationPlan,
 ) -> MigrationPlan:
     """Truncate migrations ``plan`` up to ``targets``.
@@ -113,18 +106,18 @@ def truncate_plan(
         return plan
 
     target_max_index = max(_get_index(target, plan) for target in targets)
-    return plan[:(target_max_index + 1)]
+    return plan[: (target_max_index + 1)]
 
 
 def _get_index(target: MigrationTarget, plan: MigrationPlan) -> int:
     try:
         index = next(
             index
-            for index, (migration, _) in enumerate(plan)  # noqa: WPS405, WPS414
+            for index, (migration, _) in enumerate(plan)
             if _filter_predicate(target, migration)
         )
     except StopIteration:
-        raise MigrationNotInPlan(target)
+        raise MigrationNotInPlan(target) from None
     return index - (target[1] is None)
 
 

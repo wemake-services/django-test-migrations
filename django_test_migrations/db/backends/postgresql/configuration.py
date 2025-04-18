@@ -9,7 +9,7 @@ from django_test_migrations.types import DatabaseSettingValue
 
 
 @final
-class DatabaseConfiguration(BaseDatabaseConfiguration):
+class PostgreSQLDatabaseConfiguration(BaseDatabaseConfiguration):
     """Interact with PostgreSQL database configuration."""
 
     vendor = 'postgresql'
@@ -20,8 +20,8 @@ class DatabaseConfiguration(BaseDatabaseConfiguration):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 (
-                    'SELECT setting FROM pg_settings ' +  # noqa: S608
-                    'WHERE name = %s;'  # noqa: WPS323
+                    'SELECT setting FROM pg_settings '  # noqa: S608
+                    + 'WHERE name = %s;'
                 ),
                 (name,),
             )

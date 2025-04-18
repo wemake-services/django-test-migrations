@@ -1,4 +1,4 @@
-from typing_extensions import Final
+from typing import Final
 
 from django_test_migrations.db.checks.statement_timeout import (
     check_statement_timeout_setting,

@@ -1,7 +1,7 @@
 from typing import ClassVar
 
 
-class BaseDatabaseConfigurationException(Exception):
+class BaseDatabaseConfigurationException(Exception):  # noqa: N818
     """Base exception for errors related to database configuration."""
 
 

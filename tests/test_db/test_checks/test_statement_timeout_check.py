@@ -16,12 +16,14 @@ ALL_CONNECTIONS_MOCK_PATH = (
 @pytest.fixture
 def connection_mock_factory(mocker):
     """Factory of DB connection mocks."""
+
     def factory(vendor, fetch_one_result=None):
         connection_mock = mocker.MagicMock(vendor=vendor)
         cursor_mock = connection_mock.cursor.return_value
-        cursor_mock = cursor_mock.__enter__.return_value  # noqa: WPS609
+        cursor_mock = cursor_mock.__enter__.return_value
         cursor_mock.fetchone.return_value = fetch_one_result
         return connection_mock
+
     return factory
 
 
@@ -89,7 +91,7 @@ def test_multiple_connections(mocker, connection_mock_factory):
     mocker.patch(ALL_CONNECTIONS_MOCK_PATH, return_value=connections_mocks)
     check_messages = check_statement_timeout_setting()
     expected_messages_ids = [
-        '{0}.W001'.format(CHECK_NAME),
-        '{0}.W002'.format(CHECK_NAME),
+        f'{CHECK_NAME}.W001',
+        f'{CHECK_NAME}.W002',
     ]
     assert expected_messages_ids == [message.id for message in check_messages]
