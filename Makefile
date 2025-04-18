@@ -7,7 +7,7 @@ format:
 
 .PHONY: lint
 lint:
-  poetry run ruff check --exit-non-zero-on-fix --diff
+	poetry run ruff check --exit-non-zero-on-fix --diff
 	poetry run ruff format --check --diff
 	poetry run mypy django_test_migrations
 	poetry run flake8 .
