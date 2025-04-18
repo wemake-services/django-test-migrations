@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from django.core.management import call_command
 from django.core.management.color import no_style
 from django.db import DEFAULT_DB_ALIAS, connections
@@ -33,7 +31,7 @@ class Migrator:
 
     def __init__(
         self,
-        database: Optional[str] = None,
+        database: str | None = None,
     ) -> None:
         """That's where we initialize all required internals."""
         if database is None:
@@ -81,8 +79,8 @@ class Migrator:
 
     def _migrate(
         self,
-        migration_targets: List[MigrationTarget],
-        plan: Optional[MigrationPlan] = None,
+        migration_targets: list[MigrationTarget],
+        plan: MigrationPlan | None = None,
     ) -> ProjectState:
         with mute_migrate_signals():
             project_state = self._executor.migrate(migration_targets, plan=plan)

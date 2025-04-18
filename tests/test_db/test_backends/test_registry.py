@@ -23,16 +23,26 @@ def test_abc_subclasses_are_not_registered():
     """
     vendor = 'abstract_subclass'
     # creates abstract subclass
-    type('DatabaseConfiguration', (BaseDatabaseConfiguration,), {
-        'vendor': vendor,
-    })
+    type(
+        'DatabaseConfiguration',
+        (BaseDatabaseConfiguration,),
+        {
+            'vendor': vendor,
+        },
+    )
     assert vendor not in registry.database_configuration_registry
 
 
-@pytest.mark.parametrize(('vendor', 'database_configuration_class'), [
-    ('postgresql', postgresql.configuration.DatabaseConfiguration),
-    ('mysql', mysql.configuration.DatabaseConfiguration),
-])
+@pytest.mark.parametrize(
+    ('vendor', 'database_configuration_class'),
+    [
+        (
+            'postgresql',
+            postgresql.configuration.PostgreSQLDatabaseConfiguration,
+        ),
+        ('mysql', mysql.configuration.MySQLDatabaseConfiguration),
+    ],
+)
 def test_get_database_configuration_vendor_registered(
     mocker,
     vendor,

@@ -10,7 +10,7 @@ from django_test_migrations.types import DatabaseSettingValue
 
 
 @final
-class DatabaseConfiguration(BaseDatabaseConfiguration):
+class MySQLDatabaseConfiguration(BaseDatabaseConfiguration):
     """Interact with MySQL database configuration."""
 
     vendor = 'mysql'
@@ -18,9 +18,8 @@ class DatabaseConfiguration(BaseDatabaseConfiguration):
     def get_setting_value(self, name: str) -> DatabaseSettingValue:
         """Retrieve value of MySQL database's setting with ``name``."""
         with self.connection.cursor() as cursor:
-            cursor.execute(
-                'SELECT @@{0};'.format(self.connection.ops.quote_name(name)),
-            )
+            quoted = self.connection.ops.quote_name(name)
+            cursor.execute(f'SELECT @@{quoted};')
             setting_value = cursor.fetchone()
             if not setting_value:
                 return super().get_setting_value(name)

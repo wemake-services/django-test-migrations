@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional, Protocol
+from typing import TYPE_CHECKING, Protocol
 
 import pytest
 from django.db import DEFAULT_DB_ALIAS
@@ -13,15 +13,13 @@ def pytest_load_initial_conftests(early_config: pytest.Config) -> None:
     """Register pytest's markers."""
     early_config.addinivalue_line(
         'markers',
-        "{0}: mark the test as a Django's migration test.".format(
-            MIGRATION_TEST_MARKER,
-        ),
+        f"{MIGRATION_TEST_MARKER}: mark the test as a Django's migration test.",
     )
 
 
 def pytest_collection_modifyitems(
     session: pytest.Session,
-    items: List[pytest.Item],  # noqa: WPS110
+    items: list[pytest.Item],  # noqa: WPS110
 ) -> None:
     """
     Mark all tests using ``migrator_factory`` fixture with proper marks.
@@ -38,7 +36,7 @@ def pytest_collection_modifyitems(
 class MigratorFactory(Protocol):
     """Protocol for `migrator_factory` fixture."""
 
-    def __call__(self, database_name: Optional[str] = None) -> 'Migrator':
+    def __call__(self, database_name: str | None = None) -> 'Migrator':
         """It only has a `__call__` magic method."""
 
 
@@ -46,7 +44,7 @@ class MigratorFactory(Protocol):
 def migrator_factory(
     request: pytest.FixtureRequest,
     transactional_db: None,
-    django_db_use_migrations: bool,
+    django_db_use_migrations: bool,  # noqa: FBT001
 ) -> MigratorFactory:
     """
     Pytest fixture to create migrators inside the pytest tests.
@@ -74,15 +72,16 @@ def migrator_factory(
     That's why we cannot import ``Migrator`` on a module level.
     Because it won't be caught be coverage later on.
     """
-    from django_test_migrations.migrator import Migrator  # noqa: WPS433, WPS474
+    from django_test_migrations.migrator import Migrator  # noqa: PLC0415
 
     if not django_db_use_migrations:
         pytest.skip('--nomigrations was specified')
 
-    def factory(database_name: Optional[str] = None) -> Migrator:
+    def factory(database_name: str | None = None) -> Migrator:
         migrator = Migrator(database_name)
-        request.addfinalizer(migrator.reset)  # noqa: PT021
+        request.addfinalizer(migrator.reset)
         return migrator
+
     return factory
 
 

@@ -10,7 +10,6 @@ def test_call_pytest_setup_plan():
         [
             'pytest',
             '--setup-plan',
-
             # We need this part because otherwise check fails with `1` code:
             '--cov-fail-under',
             '0',
@@ -42,11 +41,9 @@ def test_pytest_markers():
         [
             'pytest',
             '--collect-only',
-
             # Collect only tests marked with ``MIGRATION_TEST_MARKER`` marker
             '-m',
             MIGRATION_TEST_MARKER,
-
             # We need this part because otherwise check fails with `1` code:
             '--cov-fail-under',
             '0',

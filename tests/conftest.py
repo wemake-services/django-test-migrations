@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture(scope='session')
 def django_db_use_migrations(
     request,
-    django_db_use_migrations,  # noqa: WPS442
+    django_db_use_migrations,
 ):
     """
     Helper fixture to skip tests when ``--nomigrations`` were specified.

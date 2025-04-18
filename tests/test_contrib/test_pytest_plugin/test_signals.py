@@ -1,10 +1,11 @@
+from typing import Final
+
 import django
 import pytest
 from django.apps import apps
 from django.core.management import call_command
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models.signals import post_migrate, pre_migrate
-from typing_extensions import Final
 
 from django_test_migrations.signals import mute_migrate_signals
 

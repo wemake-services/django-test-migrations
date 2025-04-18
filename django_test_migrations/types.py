@@ -1,18 +1,17 @@
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, TypeAlias, Union
 
 from django.db.backends.base.base import BaseDatabaseWrapper
 from django.db.migrations import Migration
 from django.utils.connection import ConnectionProxy
-from typing_extensions import TypeAlias
 
 # Migration target: (app_name, migration_name)
 # Regular or rollback migration: 0001 -> 0002, or 0002 -> 0001
 # Rollback migration to initial state: 0001 -> None
-MigrationTarget: TypeAlias = Tuple[str, Optional[str]]
-MigrationSpec: TypeAlias = Union[MigrationTarget, List[MigrationTarget]]
+MigrationTarget: TypeAlias = tuple[str, str | None]
+MigrationSpec: TypeAlias = MigrationTarget | list[MigrationTarget]
 
-MigrationPlan: TypeAlias = List[Tuple[Migration, bool]]
+MigrationPlan: TypeAlias = list[tuple[Migration, bool]]
 
 AnyConnection: TypeAlias = Union['ConnectionProxy[Any]', BaseDatabaseWrapper]
 
-DatabaseSettingValue: TypeAlias = Union[str, int]
+DatabaseSettingValue: TypeAlias = str | int

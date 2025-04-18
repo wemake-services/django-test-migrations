@@ -3,6 +3,15 @@
 We follow Semantic Versions since the `0.1.0` release.
 
 
+## Version 1.5.0
+
+### Features
+
+- Adds Python 3.13 support
+- Drops Python 3.9 support
+- Adds Django 5.2 support
+
+
 ## Version 1.4.0
 
 ### Features

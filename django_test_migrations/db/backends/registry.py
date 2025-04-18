@@ -1,6 +1,5 @@
-from typing import MutableMapping, Type
-
-from typing_extensions import TYPE_CHECKING
+from collections.abc import MutableMapping
+from typing import TYPE_CHECKING
 
 from django_test_migrations.db.backends.exceptions import (
     DatabaseConfigurationNotFound,
@@ -14,7 +13,7 @@ if TYPE_CHECKING:
 
 _DatabaseConfigurationMapping = MutableMapping[
     str,
-    Type['BaseDatabaseConfiguration'],
+    type['BaseDatabaseConfiguration'],
 ]
 database_configuration_registry: _DatabaseConfigurationMapping = {}
 

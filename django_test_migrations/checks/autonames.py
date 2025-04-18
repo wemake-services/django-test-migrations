@@ -1,16 +1,17 @@
+from collections.abc import Sequence
 from fnmatch import fnmatch
-from typing import FrozenSet, Sequence, Tuple
+from typing import Final
 
 from django.conf import settings
-from django.core.checks import CheckMessage, Warning
-from typing_extensions import Final
+from django.core.checks import CheckMessage
+from django.core.checks import Warning as DjangoWarning
 
-_IgnoreAppSpec = FrozenSet[str]
+_IgnoreAppSpec = frozenset[str]
 
-_IgnoreMigrationSpec = FrozenSet[Tuple[str, str]]
+_IgnoreMigrationSpec = frozenset[tuple[str, str]]
 
 #: We use this type hint to represent ignore rules for migrations.
-_IgnoreSpec = Tuple[_IgnoreAppSpec, _IgnoreMigrationSpec]
+_IgnoreSpec = tuple[_IgnoreAppSpec, _IgnoreMigrationSpec]
 
 #: We use this value as a unique identifier of this check.
 CHECK_NAME: Final = 'django_test_migrations.checks.autonames'
@@ -23,19 +24,23 @@ _IGNORE_APP_MIGRATIONS_SPECIAL_KEY: Final = '*'
 
 
 def _is_ignored(
-    app_label: str, migration_name: str, ignored: _IgnoreSpec,
+    app_label: str,
+    migration_name: str,
+    ignored: _IgnoreSpec,
 ) -> bool:
     ignored_apps, ignored_migrations = ignored
 
     return (
-        app_label in ignored_apps or
-        (app_label, migration_name) in ignored_migrations
+        app_label in ignored_apps
+        or (app_label, migration_name) in ignored_migrations
     )
 
 
 def _build_ignores() -> _IgnoreSpec:
     ignored_migrations: _IgnoreMigrationSpec = getattr(
-        settings, _SETTINGS_NAME, frozenset(),
+        settings,
+        _SETTINGS_NAME,
+        frozenset(),
     )
 
     ignored_apps: _IgnoreAppSpec = frozenset(
@@ -58,7 +63,7 @@ def check_migration_names(
     They do raise:
     ``django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.``
     """
-    from django.db.migrations.loader import MigrationLoader  # noqa: WPS433
+    from django.db.migrations.loader import MigrationLoader  # noqa: PLC0415
 
     loader = MigrationLoader(None, ignore_no_migrations=True)
     loader.load_disk()
@@ -66,27 +71,26 @@ def check_migration_names(
     messages = []
     ignores = _build_ignores()
 
-    for app_label, migration_name in loader.disk_migrations.keys():
+    for app_label, migration_name in loader.disk_migrations:
         if _is_ignored(app_label, migration_name, ignores):
             continue
 
         if fnmatch(migration_name, '????_auto_*'):
             messages.append(
-                Warning(
-                    'Migration {0}.{1} has an automatic name.'.format(
-                        app_label, migration_name,
+                DjangoWarning(
+                    (
+                        f'Migration {app_label}.{migration_name} '
+                        'has an automatic name.'
                     ),
                     hint=(
-                        'Rename the migration to describe its contents, ' +
-                        "or if it's from a third party app, add to " +
-                        _SETTINGS_NAME
+                        'Rename the migration to describe its contents, '
+                        + "or if it's from a third party app, add to "
+                        + _SETTINGS_NAME
                     ),
-                    id='{0}.W001'.format(CHECK_NAME),
+                    id=f'{CHECK_NAME}.W001',
                 ),
             )
     return messages
 
 
-CHECKS: Final = (
-    check_migration_names,
-)
+CHECKS: Final = (check_migration_names,)

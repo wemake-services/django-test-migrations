@@ -1,7 +1,7 @@
 import typing
 
 if typing.TYPE_CHECKING:
-    from main_app.models import SomeItem  # noqa: WPS433
+    from main_app.models import SomeItem
 
 
 def is_clean_item(instance: 'SomeItem') -> bool:

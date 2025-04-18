@@ -30,30 +30,24 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
         django-version:
           - 'Django~=4.2.0'
-          - 'Django~=5.0.0'
-          - 'Django==5.2b1'
+          - 'Django~=5.1.0'
+          - 'Django~=5.2.0'
         docker-compose-services: ['']
         additional-dependencies: ['']
         env: [{}]
         integration-test-setup-script: ['']
 
         include:
-          - python-version: '3.9'
-            django-version: 'Django~=4.1.0'
-            docker-compose-services: ''
-            additional-dependencies: ''
-            env: {}
-            integration-test-setup-script: ''
           - python-version: '3.12'
-            django-version: 'Django~=5.0.0'
+            django-version: 'Django~=5.1.0'
             docker-compose-services: postgresql-db
             additional-dependencies: psycopg2
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
               DJANGO_DATABASE_PORT: 5432
-          
+
           - python-version: '3.13'
-            django-version: 'Django==5.2b1'
+            django-version: 'Django~=5.2.0'
             docker-compose-services: postgresql-db-17
             additional-dependencies: psycopg
             env:
@@ -70,7 +64,7 @@ jobs:
           #   integration-test-setup-script: >-
           #     ./.dev/scripts/ci-mysql-setup-integration-tests.sh
           - python-version: '3.12'
-            django-version: 'Django~=5.0.0'
+            django-version: 'Django~=5.2.0'
             docker-compose-services: maria-db
             additional-dependencies: mysqlclient
             env:

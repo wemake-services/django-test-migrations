@@ -1,4 +1,4 @@
-from typing import Any, ClassVar, List, Optional
+from typing import Any, ClassVar
 
 import django
 from django.db.migrations.state import ProjectState
@@ -14,7 +14,7 @@ from django_test_migrations.types import MigrationSpec
 class MigratorTestCase(TransactionTestCase):
     """Used when using raw ``unitest`` library for test."""
 
-    database_name: ClassVar[Optional[str]] = None
+    database_name: ClassVar[str | None] = None
     old_state: ProjectState
     new_state: ProjectState
 
@@ -23,8 +23,8 @@ class MigratorTestCase(TransactionTestCase):
     migrate_to: ClassVar[MigrationSpec]
 
     # hold original receivers to restore them after each test
-    _pre_migrate_receivers: List[Any]
-    _post_migrate_receivers: List[Any]
+    _pre_migrate_receivers: list[Any]
+    _post_migrate_receivers: list[Any]
 
     def setUp(self) -> None:
         """
@@ -62,18 +62,23 @@ class MigratorTestCase(TransactionTestCase):
     @classmethod
     def _store_receivers(cls) -> None:
         cls._pre_migrate_receivers, pre_migrate.receivers = (  # noqa: WPS414
-            pre_migrate.receivers, [],
+            pre_migrate.receivers,
+            [],
         )
         cls._post_migrate_receivers, post_migrate.receivers = (  # noqa: WPS414
-            post_migrate.receivers, [],
+            post_migrate.receivers,
+            [],
         )
 
-    if django.VERSION[:2] < (5, 2):  # noqa: WPS604 # pragma: no cover
+    if django.VERSION[:2] < (5, 2):  # noqa: WPS604  # pragma: no cover
+
         def _pre_setup(self) -> None:
             self._store_receivers()
             super()._pre_setup()  # type: ignore[misc]
+
     else:  # pragma: no cover
+
         @classmethod
-        def _pre_setup(cls) -> None:  # type: ignore[misc] # noqa: WPS614,WPS440
+        def _pre_setup(cls) -> None:  # type: ignore[misc]  # noqa: WPS614
             cls._store_receivers()
             super()._pre_setup()  # type: ignore[misc]
