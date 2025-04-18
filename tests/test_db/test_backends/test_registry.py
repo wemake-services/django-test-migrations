@@ -36,8 +36,11 @@ def test_abc_subclasses_are_not_registered():
 @pytest.mark.parametrize(
     ('vendor', 'database_configuration_class'),
     [
-        ('postgresql', postgresql.configuration.DatabaseConfiguration),
-        ('mysql', mysql.configuration.DatabaseConfiguration),
+        (
+            'postgresql',
+            postgresql.configuration.PostgreSQLDatabaseConfiguration,
+        ),
+        ('mysql', mysql.configuration.MySQLDatabaseConfiguration),
     ],
 )
 def test_get_database_configuration_vendor_registered(
