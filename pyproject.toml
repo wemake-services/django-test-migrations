@@ -16,8 +16,6 @@ authors = [
 
 readme = "README.md"
 
-repository = "https://github.com/wemake-services/django-test-migrations"
-
 keywords = [
   "django",
   "django-tests",
@@ -51,6 +49,11 @@ classifiers = [
 dependencies = [
   "typing_extensions>=4.0"
 ]
+
+
+[project.urls]
+repository = "https://github.com/wemake-services/django-test-migrations"
+
 
 [project.entry-points."pytest11"]
 django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
