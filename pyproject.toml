@@ -63,7 +63,7 @@ django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 django = ">=4.2,<6.0"
 
 mypy = "^1.15"
-django-stubs = "^5.1"
+django-stubs = "^5.2"
 
 wemake-python-styleguide = "^1.1"
 ruff = "^0.11"
