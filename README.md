@@ -1,7 +1,7 @@
 # django-test-migrations
 
 [![wemake.services](https://img.shields.io/badge/%20-wemake.services-green.svg?label=%20&logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC%2FxhBQAAAAFzUkdCAK7OHOkAAAAbUExURQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP%2F%2F%2F5TvxDIAAAAIdFJOUwAjRA8xXANAL%2Bv0SAAAADNJREFUGNNjYCAIOJjRBdBFWMkVQeGzcHAwksJnAPPZGOGAASzPzAEHEGVsLExQwE7YswCb7AFZSF3bbAAAAABJRU5ErkJggg%3D%3D)](https://wemake-services.github.io)
-[![Build status](https://github.com/wemake-services/django-test-migrations/workflows/test/badge.svg?branch=master&event=push)](https://github.com/wemake-services/django-test-migrations/actions?query=workflow%3Atest)
+[![test](https://github.com/wemake-services/django-test-migrations/actions/workflows/test.yml/badge.svg?branch=master&event=push)](https://github.com/wemake-services/django-test-migrations/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/wemake-services/django-test-migrations/branch/master/graph/badge.svg)](https://codecov.io/gh/wemake-services/django-test-migrations)
 [![Python Version](https://img.shields.io/pypi/pyversions/django-test-migrations.svg)](https://pypi.org/project/django-test-migrations/)
 ![PyPI - Django Version](https://img.shields.io/pypi/djversions/django-test-migrations)
