@@ -62,7 +62,7 @@ django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 [tool.poetry.group.dev.dependencies]
 django = ">=4.2,<6.0"
 
-mypy = "^1.18"
+mypy = "^1.19"
 django-stubs = "^5.2"
 
 wemake-python-styleguide = "^1.4"
