@@ -65,7 +65,7 @@ django = ">=4.2,<6.0"
 mypy = "^1.19"
 django-stubs = "^5.2"
 
-wemake-python-styleguide = "^1.4"
+wemake-python-styleguide = "^1.5"
 ruff = "^0.14"
 
 pytest = "^9.0"
