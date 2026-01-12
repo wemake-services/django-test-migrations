@@ -1,8 +1,11 @@
+from typing import Any
+
 from django.core.management import call_command
 from django.core.management.color import no_style
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.executor import MigrationExecutor
 from django.db.migrations.state import ProjectState
+from django.db.models import ManyToManyField
 
 from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
@@ -85,4 +88,50 @@ class Migrator:
         with mute_migrate_signals():
             project_state = self._executor.migrate(migration_targets, plan=plan)
             project_state.clear_delayed_apps_cache()
+            self._fix_through_fields(project_state)
             return project_state
+
+    def _fix_through_fields(self, project_state: ProjectState) -> None:
+        """Fix ``through_fields`` in many-to-many fields for ``project_state``.
+
+        This is a workaround for Django issue
+        ([Ticket #36061](https://code.djangoproject.com/ticket/36061)) where
+        ``through_fields`` is lost when building ``ProjectState`` instance.
+        Ticket #36061 was fixed in
+        [PR #19006](https://github.com/django/django/pull/19006).
+
+        """
+        for (
+            app_label,
+            model_name,
+        ), model_state in project_state.models.items():  # pragma: no cover
+            for field_name, field in model_state.fields.items():
+                self._restore_through_fields(
+                    project_state,
+                    app_label,
+                    model_name,
+                    field_name,
+                    field,
+                )
+
+    def _restore_through_fields(
+        self,
+        project_state: ProjectState,
+        app_label: str,
+        model_name: str,
+        field_name: str,
+        field: 'ManyToManyField[Any, Any]',
+    ) -> None:
+        """Restores ``through_fields`` from ``field`` to ``project_state``."""
+        through_fields = getattr(
+            field.remote_field,
+            'through_fields',
+            None,
+        )
+        if not through_fields:
+            return
+        model = project_state.apps.get_model(app_label, model_name)
+        model_field = model._meta.get_field(field_name)  # noqa: SLF001
+        model_remote = getattr(model_field, 'remote_field', None)
+        if model_remote and not getattr(model_remote, 'through_fields', None):
+            model_remote.through_fields = through_fields
