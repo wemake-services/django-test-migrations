@@ -12,7 +12,7 @@ from django_test_migrations.migrator import Migrator
 def test_fix_through_fields_regression():
     """Ensure that through_fields are preserved in the project state.
 
-    This is a regression test for https://github.com/wemake-services/django-test-migrations/issues/128
+    This is a regression test for https://github.com/wemake-services/django-test-migrations/issues/418
     (and the underlying Django issue).
 
     """
