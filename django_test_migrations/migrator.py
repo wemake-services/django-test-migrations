@@ -106,13 +106,14 @@ class Migrator:
             model_name,
         ), model_state in project_state.models.items():  # pragma: no cover
             for field_name, field in model_state.fields.items():
-                self._restore_through_fields(
-                    project_state,
-                    app_label,
-                    model_name,
-                    field_name,
-                    field,
-                )
+                if field.many_to_many:
+                    self._restore_through_fields(
+                        project_state,
+                        app_label,
+                        model_name,
+                        field_name,
+                        field,
+                    )
 
     def _restore_through_fields(
         self,

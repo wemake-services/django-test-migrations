@@ -41,6 +41,7 @@ def test_fix_through_fields_logic():
             fields={
                 'my_field': MagicMock(
                     spec=ManyToManyField,
+                    many_to_many=True,
                     remote_field=MagicMock(
                         spec=ManyToManyRel,
                         through_fields=('foo', 'bar'),
@@ -73,6 +74,7 @@ def test_fix_through_fields_logic_no_update():
             fields={
                 'my_field': MagicMock(
                     spec=ManyToManyField,
+                    many_to_many=True,
                     remote_field=MagicMock(
                         spec=ManyToManyRel,
                         through_fields=('foo', 'bar'),
@@ -98,9 +100,37 @@ def test_fix_through_fields_logic_no_source_fields():
             fields={
                 'my_field': MagicMock(
                     spec=ManyToManyField,
+                    many_to_many=True,
                     remote_field=MagicMock(
                         spec=ManyToManyRel,
                         through_fields=None,
+                    ),
+                ),
+            },
+        ),
+    }
+
+    Migrator()._fix_through_fields(mock_project_state)  # noqa: SLF001
+
+    assert not mock_remote_field.through_fields
+    mock_project_state.apps.get_model.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_fix_through_fields_logic_not_m2m():
+    """Ensure that non-many-to-many fields are ignored."""
+    mock_remote_field = MagicMock(spec=ManyToManyRel, through_fields=None)
+    mock_project_state = MagicMock(spec=ProjectState)
+    mock_project_state.models = {
+        ('my_app', 'my_model'): MagicMock(
+            spec=ModelState,
+            fields={
+                'my_field': MagicMock(
+                    spec=ManyToManyField,
+                    many_to_many=False,
+                    remote_field=MagicMock(
+                        spec=ManyToManyRel,
+                        through_fields=('foo', 'bar'),
                     ),
                 ),
             },
