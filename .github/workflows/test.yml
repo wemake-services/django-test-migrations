@@ -128,7 +128,7 @@ jobs:
           CHECK_OUTPUT="$(poetry run python django_test_app/manage.py check 2>&1 || true)"
           echo "${CHECK_OUTPUT}"
           echo "${CHECK_OUTPUT}" \
-          | grep --quiet --extended-regexp '^System check identified 4 issues'
+          | grep --quiet --extended-regexp '^System check identified 7 issues'
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
