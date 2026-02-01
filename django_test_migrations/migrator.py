@@ -95,10 +95,10 @@ class Migrator:
         """Fix ``through_fields`` in many-to-many fields for ``project_state``.
 
         This is a workaround for Django issue
-        ([Ticket #36061](https://code.djangoproject.com/ticket/36061)) where
+        https://code.djangoproject.com/ticket/36061 where
         ``through_fields`` is lost when building ``ProjectState`` instance.
         Ticket #36061 was fixed in
-        [PR #19006](https://github.com/django/django/pull/19006).
+        https://github.com/django/django/pull/19006
 
         """
         for (
