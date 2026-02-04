@@ -66,7 +66,7 @@ mypy = "^1.19"
 django-stubs = "^5.2"
 
 wemake-python-styleguide = "^1.5"
-ruff = "^0.14"
+ruff = "^0.15"
 
 pytest = "^9.0"
 pytest-cov = "^7.0"
