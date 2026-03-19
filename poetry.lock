@@ -178,19 +178,19 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-stubs"
-version = "6.0.0"
+version = "6.0.1"
 description = "Mypy stubs for Django"
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "django_stubs-6.0.0-py3-none-any.whl", hash = "sha256:747baa97fb9a5c1892ef93bf881d06b4f211f719da18e4ddfd1e74bbad71e752"},
-    {file = "django_stubs-6.0.0.tar.gz", hash = "sha256:14e7c667d2de73dbaf91ae43d117f923639107d8d3e84a2257ebc101861f18ed"},
+    {file = "django_stubs-6.0.1-py3-none-any.whl", hash = "sha256:d885044bd0876610f3eb969d6b5ed22f386002a879fdcb369cd8efa0502dbbce"},
+    {file = "django_stubs-6.0.1.tar.gz", hash = "sha256:e1ca63634221b57a55e16562b9b6d1849aeee2cabfd0fc026084dbe8aa893366"},
 ]
 
 [package.dependencies]
 django = "*"
-django-stubs-ext = ">=6.0.0"
+django-stubs-ext = ">=6.0.1"
 tomli = {version = "*", markers = "python_full_version < \"3.11.0\""}
 types-pyyaml = "*"
 typing-extensions = ">=4.11.0"
@@ -202,14 +202,14 @@ redis = ["redis", "types-redis"]
 
 [[package]]
 name = "django-stubs-ext"
-version = "6.0.0"
+version = "6.0.1"
 description = "Monkey-patching and extensions for django-stubs"
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "django_stubs_ext-6.0.0-py3-none-any.whl", hash = "sha256:6f8c29e0dd5111fd36aa72519446c8a21c3e419e48c5d7dc7f418c8eec9c43ae"},
-    {file = "django_stubs_ext-6.0.0.tar.gz", hash = "sha256:fb860210b496e75ae751cadee02a3449d5a7599de68c8db9df40c84e559d9298"},
+    {file = "django_stubs_ext-6.0.1-py3-none-any.whl", hash = "sha256:17415759b9a3f4b4da7998ac3b08c7dc5137f9a019490b918aece1a8a4c2ade4"},
+    {file = "django_stubs_ext-6.0.1.tar.gz", hash = "sha256:633b280f89c0cbb7e3ce2f2f842e0acc43d8091378e75f84921d6be675d052dc"},
 ]
 
 [package.dependencies]
