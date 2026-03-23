@@ -34,7 +34,7 @@ def test_fix_through_fields_logic():
     mock_remote_field = MagicMock(spec=ManyToManyRel, through_fields=None)
     mock_project_state = MagicMock(spec=ProjectState)
     mock_model = mock_project_state.apps.get_model.return_value
-    mock_model._meta.get_field.return_value.remote_field = mock_remote_field
+    mock_model._meta.get_field.return_value.remote_field = mock_remote_field  # noqa: SLF001
     mock_project_state.models = {
         ('my_app', 'my_model'): MagicMock(
             spec=ModelState,
