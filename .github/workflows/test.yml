@@ -75,6 +75,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
@@ -85,7 +87,7 @@ jobs:
           curl -sSL "https://install.python-poetry.org" | python
 
           # Adding `poetry` to `$PATH`:
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          echo "$HOME/.poetry/bin" >> "$GITHUB_PATH"
 
       - name: Install dependencies
         run: |

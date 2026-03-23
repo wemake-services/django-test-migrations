@@ -201,6 +201,7 @@ That's how it can be used:
 ```python
 import pytest
 
+
 @pytest.mark.django_db
 def test_pytest_plugin_initial(migrator):
     """Ensures that the initial migration works."""
@@ -224,6 +225,7 @@ Here's how it can be used:
 
 ```python
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
+
 
 class TestDirectMigration(MigratorTestCase):
     """This class is used to test direct migrations."""
@@ -301,7 +303,6 @@ Add our check into your `INSTALLED_APPS`:
 ```python
 INSTALLED_APPS = [
     # ...
-
     # Our custom check:
     'django_test_migrations.contrib.django_checks.AutoNames',
 ]
@@ -346,7 +347,6 @@ Add our check to `INSTALLED_APPS`:
 ```python
 INSTALLED_APPS = [
     # ...
-
     # Our custom check:
     'django_test_migrations.contrib.django_checks.DatabaseConfiguration',
 ]
