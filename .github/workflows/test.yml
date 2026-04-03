@@ -133,7 +133,7 @@ jobs:
           | grep --quiet --extended-regexp '^System check identified 7 issues'
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files:
             ./coverage.xml
