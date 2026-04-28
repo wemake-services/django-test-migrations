@@ -70,7 +70,7 @@ ruff = "^0.15"
 
 pytest = "^9.0"
 pytest-cov = "^7.1"
-pytest-randomly = "^4.0"
+pytest-randomly = "^4.1"
 pytest-django = "^4.12"
 pytest-mock = "^3.15"
 
