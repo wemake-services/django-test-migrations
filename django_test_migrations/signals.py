@@ -14,6 +14,8 @@ def mute_migrate_signals() -> Iterator[tuple[Any, Any]]:
     post_migrate_receivers = post_migrate.receivers
     pre_migrate.receivers = []
     post_migrate.receivers = []
-    yield pre_migrate_receivers, post_migrate_receivers
-    pre_migrate.receivers = pre_migrate_receivers
-    post_migrate.receivers = post_migrate_receivers
+    try:
+        yield pre_migrate_receivers, post_migrate_receivers
+    finally:
+        pre_migrate.receivers = pre_migrate_receivers
+        post_migrate.receivers = post_migrate_receivers
