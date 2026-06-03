@@ -60,7 +60,7 @@ django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
 
 [tool.poetry.group.dev.dependencies]
-django = ">=5.2.14,<6.0"
+django = ">=5.2.15,<6.0"
 
 mypy = "^2.0"
 django-stubs = "^6.0"
