@@ -137,6 +137,7 @@ lint.ignore = [
   "D401",
   "D404",
   "D405",
+  "D421",
   "ISC001",  # implicit string concat conflicts with `ruff format`
   "ISC003",  # prefer explicit string concat over implicit concat
   "PLC0414", # it is fine to not rename an import
