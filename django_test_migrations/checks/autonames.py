@@ -63,7 +63,9 @@ def check_migration_names(
     They do raise:
     ``django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.``
     """
-    from django.db.migrations.loader import MigrationLoader  # noqa: PLC0415
+    from django.db.migrations.loader import (
+        MigrationLoader,
+    )
 
     loader = MigrationLoader(None, ignore_no_migrations=True)
     loader.load_disk()

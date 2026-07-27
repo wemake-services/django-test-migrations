@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).parent.parent
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_dpvr*#hjgv)6v=potf%*+$na7_ck(*+^g08lw0^44zoo88)wb'  # noqa: S105
+SECRET_KEY = '_dpvr*#hjgv)6v=potf%*+$na7_ck(*+^g08lw0^44zoo88)wb'  # ruff: ignore[hardcoded-password-string]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

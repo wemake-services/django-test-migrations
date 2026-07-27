@@ -20,7 +20,7 @@ class PostgreSQLDatabaseConfiguration(BaseDatabaseConfiguration):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 (
-                    'SELECT setting FROM pg_settings '  # noqa: S608
+                    'SELECT setting FROM pg_settings '  # ruff: ignore[hardcoded-sql-expression]
                     + 'WHERE name = %s;'
                 ),
                 (name,),

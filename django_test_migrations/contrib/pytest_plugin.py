@@ -44,7 +44,7 @@ class MigratorFactory(Protocol):
 def migrator_factory(
     request: pytest.FixtureRequest,
     transactional_db: None,
-    django_db_use_migrations: bool,  # noqa: FBT001
+    django_db_use_migrations: bool,  # ruff: ignore[boolean-type-hint-positional-argument]
 ) -> MigratorFactory:
     """
     Pytest fixture to create migrators inside the pytest tests.
@@ -72,7 +72,9 @@ def migrator_factory(
     That's why we cannot import ``Migrator`` on a module level.
     Because it won't be caught be coverage later on.
     """
-    from django_test_migrations.migrator import Migrator  # noqa: PLC0415
+    from django_test_migrations.migrator import (
+        Migrator,
+    )
 
     if not django_db_use_migrations:
         pytest.skip('--nomigrations was specified')
