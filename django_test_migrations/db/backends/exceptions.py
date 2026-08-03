@@ -1,7 +1,7 @@
 from typing import ClassVar
 
 
-class BaseDatabaseConfigurationException(Exception):  # noqa: N818
+class BaseDatabaseConfigurationException(Exception):  # ruff: ignore[error-suffix-on-exception-name]
     """Base exception for errors related to database configuration."""
 
 

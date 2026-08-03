@@ -24,7 +24,7 @@ def test_fix_through_fields_regression():
     )
 
     SomeGroup = new_state.apps.get_model('main_app', 'SomeGroup')
-    members_field = SomeGroup._meta.get_field('members')  # noqa: SLF001
+    members_field = SomeGroup._meta.get_field('members')  # ruff: ignore[private-member-access]
     assert members_field.remote_field.through_fields == ('group', 'member')
 
 
@@ -34,7 +34,7 @@ def test_fix_through_fields_logic():
     mock_remote_field = MagicMock(spec=ManyToManyRel, through_fields=None)
     mock_project_state = MagicMock(spec=ProjectState)
     mock_model = mock_project_state.apps.get_model.return_value
-    mock_model._meta.get_field.return_value.remote_field = mock_remote_field  # noqa: SLF001
+    mock_model._meta.get_field.return_value.remote_field = mock_remote_field  # ruff: ignore[private-member-access]
     mock_project_state.models = {
         ('my_app', 'my_model'): MagicMock(
             spec=ModelState,
@@ -51,7 +51,7 @@ def test_fix_through_fields_logic():
         ),
     }
 
-    Migrator()._fix_through_fields(mock_project_state)  # noqa: SLF001
+    Migrator()._fix_through_fields(mock_project_state)  # ruff: ignore[private-member-access]
 
     assert mock_remote_field.through_fields == ('foo', 'bar')
     mock_project_state.apps.get_model.assert_called_with('my_app', 'my_model')
@@ -66,7 +66,7 @@ def test_fix_through_fields_logic_no_update():
     )
     mock_project_state = MagicMock(spec=ProjectState)
     mock_model = mock_project_state.apps.get_model.return_value
-    mock_field = mock_model._meta.get_field.return_value  # noqa: SLF001
+    mock_field = mock_model._meta.get_field.return_value  # ruff: ignore[private-member-access]
     mock_field.remote_field = mock_remote_field
     mock_project_state.models = {
         ('my_app', 'my_model'): MagicMock(
@@ -84,7 +84,7 @@ def test_fix_through_fields_logic_no_update():
         ),
     }
 
-    Migrator()._fix_through_fields(mock_project_state)  # noqa: SLF001
+    Migrator()._fix_through_fields(mock_project_state)  # ruff: ignore[private-member-access]
 
     assert mock_remote_field.through_fields == ('existing', 'value')
 
@@ -110,7 +110,7 @@ def test_fix_through_fields_logic_no_source_fields():
         ),
     }
 
-    Migrator()._fix_through_fields(mock_project_state)  # noqa: SLF001
+    Migrator()._fix_through_fields(mock_project_state)  # ruff: ignore[private-member-access]
 
     assert not mock_remote_field.through_fields
     mock_project_state.apps.get_model.assert_not_called()
@@ -137,7 +137,7 @@ def test_fix_through_fields_logic_not_m2m():
         ),
     }
 
-    Migrator()._fix_through_fields(mock_project_state)  # noqa: SLF001
+    Migrator()._fix_through_fields(mock_project_state)  # ruff: ignore[private-member-access]
 
     assert not mock_remote_field.through_fields
     mock_project_state.apps.get_model.assert_not_called()
