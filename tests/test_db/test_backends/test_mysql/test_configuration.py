@@ -22,7 +22,7 @@ def test_statement_timeout(
 ) -> None:
     """Ensure expected setting name is returned."""
     connection_mock = mocker.MagicMock()
-    cursor_mock = connection_mock.cursor().__enter__()  # noqa: PLC2801
+    cursor_mock = connection_mock.cursor().__enter__()  # ruff: ignore[unnecessary-dunder-call]
     cursor_mock.fetchone.return_value = (version,)
     database_configuration = mysql.configuration.MySQLDatabaseConfiguration(
         connection_mock,
@@ -42,7 +42,7 @@ def test_get_setting_value(mocker: MockerFixture) -> None:
 
     database_configuration.get_setting_value(setting_name)
 
-    cursor_mock = connection_mock.cursor().__enter__()  # noqa: PLC2801
+    cursor_mock = connection_mock.cursor().__enter__()  # ruff: ignore[unnecessary-dunder-call]
     cursor_mock.execute.assert_called_once_with(
         f'SELECT @@{setting_name};',
     )
@@ -52,7 +52,7 @@ def test_get_existing_setting_value(mocker: MockerFixture) -> None:
     """Ensure setting value is returned for existing setting."""
     expected_setting_value = 74747
     connection_mock = mocker.MagicMock()
-    cursor_mock = connection_mock.cursor().__enter__()  # noqa: PLC2801
+    cursor_mock = connection_mock.cursor().__enter__()  # ruff: ignore[unnecessary-dunder-call]
     cursor_mock.fetchone.return_value = (expected_setting_value,)
     database_configuration = mysql.configuration.MySQLDatabaseConfiguration(
         connection_mock,
@@ -66,7 +66,7 @@ def test_get_existing_setting_value(mocker: MockerFixture) -> None:
 def test_get_not_existing_setting_value(mocker: MockerFixture) -> None:
     """Ensure exception is raised when setting does not exist."""
     connection_mock = mocker.MagicMock()
-    cursor_mock = connection_mock.cursor().__enter__()  # noqa: PLC2801
+    cursor_mock = connection_mock.cursor().__enter__()  # ruff: ignore[unnecessary-dunder-call]
     cursor_mock.fetchone.return_value = None
     database_configuration = mysql.configuration.MySQLDatabaseConfiguration(
         connection_mock,

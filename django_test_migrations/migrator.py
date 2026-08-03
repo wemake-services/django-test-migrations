@@ -132,7 +132,7 @@ class Migrator:
         if not through_fields:
             return
         model = project_state.apps.get_model(app_label, model_name)
-        model_field = model._meta.get_field(field_name)  # noqa: SLF001
+        model_field = model._meta.get_field(field_name)  # ruff: ignore[private-member-access]
         model_remote = getattr(model_field, 'remote_field', None)
         if model_remote and not getattr(model_remote, 'through_fields', None):
             model_remote.through_fields = through_fields
