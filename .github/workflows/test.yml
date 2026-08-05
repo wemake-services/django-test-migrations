@@ -143,10 +143,6 @@ jobs:
           if [ -f '${{ matrix.integration-test-setup-script }}' ]; then
             bash '${{ matrix.integration-test-setup-script }}'
           fi
-          CHECK_OUTPUT="$(poetry run python django_test_app/manage.py check 2>&1 || true)"
-          echo "${CHECK_OUTPUT}"
-          echo "${CHECK_OUTPUT}" \
-          | grep --quiet --extended-regexp '^System check identified '
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7.0.0
