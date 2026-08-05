@@ -1,42 +1,31 @@
 [build-system]
-requires = ["poetry-core>=2.1.0"]
 build-backend = "poetry.core.masonry.api"
+requires = [ "poetry-core>=2.1" ]
 
 
 [project]
 name = "django-test-migrations"
 version = "1.6.0"
-requires-python = ">=3.10,<4.0"
 description = "Test django schema and data migrations, including ordering"
-license = "MIT"
-license-files = [ "LICENSE" ]
-authors = [
-  {name = "sobolevn", email = "mail@sobolevn.me"},
-]
-
 readme = "README.md"
-
 keywords = [
   "django",
-  "django-tests",
   "django-migrations",
   "django-orm",
+  "django-tests",
   "migrations",
   "orm",
-  "sql",
-  "tests",
-  "test",
   "pytest",
-  "pytest-plugin"
+  "pytest-plugin",
+  "sql",
+  "test",
+  "tests"
 ]
-
+license = "MIT"
+license-files = [ "LICENSE" ]
+requires-python = ">=3.10,<4.0"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
-  "Intended Audience :: Developers",
-  "Operating System :: OS Independent",
-  "Topic :: Software Development :: Libraries :: Python Modules",
-  "Topic :: Internet :: WWW/HTTP",
-  "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
   "Framework :: Django",
   "Framework :: Django :: 3.2",
   "Framework :: Django :: 4.1",
@@ -46,42 +35,42 @@ classifiers = [
   "Framework :: Django :: 5.2",
   "Framework :: Django :: 6.0",
   "Framework :: Django :: 6.1",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+  "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+dependencies = [ "typing-extensions>=4.16" ]
 
-dependencies = [
-  "typing_extensions>=4.16.0"
-]
+[[project.authors]]
+name = "sobolevn"
+email = "mail@sobolevn.me"
 
+[project.entry-points.pytest11]
+django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
 [project.urls]
 repository = "https://github.com/wemake-services/django-test-migrations"
 
 
-[project.entry-points."pytest11"]
-django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
-
-
 [tool.poetry.group.dev.dependencies]
 django = ">=5.2.17,<6.2"
-
-mypy = "^2.3"
 django-stubs = "^6.0"
-
-wemake-python-styleguide = "^1.7"
-ruff = "^0.16"
-
+mypy = "^2.3"
 pytest = "^9.1"
 pytest-cov = "^7.1"
-pytest-randomly = "^4.1"
 pytest-django = "^4.12"
 pytest-mock = "^3.15"
+pytest-randomly = "^4.1"
+ruff = "^0.16"
+wemake-python-styleguide = "^1.7"
 
 
 [tool.ruff]
 # Ruff config: https://docs.astral.sh/ruff/settings
 target-version = "py310"
 line-length = 80
-
 preview = true
 fix = true
 output-prefer-rule-codes = true
@@ -89,7 +78,6 @@ output-prefer-rule-codes = true
 [tool.ruff.format]
 quote-style = "single"
 docstring-code-format = true
-
 
 [tool.ruff.lint]
 select = [
@@ -134,8 +122,8 @@ select = [
   "YTT",  # flake8-2020
 ]
 ignore = [
-  "A005",   # allow to shadow stdlib and builtin module names
-  "COM812", # trailing comma, conflicts with `ruff format`
+  "A005",    # allow to shadow stdlib and builtin module names
+  "COM812",  # trailing comma, conflicts with `ruff format`
   # Different doc rules that we don't really care about:
   "D100",
   "D104",
@@ -153,9 +141,9 @@ ignore = [
   "PLR2004", # do not report magic numbers
   "PLR6301", # do not require classmethod / staticmethod when self not used
   "RUF012",  # mutable class-level defaults are fine
-  "RUF105",   # keep old `# noqa` comments style, not `# ruff` comments
-  "RUF106",   # we prefer old error codes
-  "RUF201",   # keep old rule codes instead of verbose names
+  "RUF105",  # keep old `# noqa` comments style, not `# ruff` comments
+  "RUF106",  # we prefer old error codes
+  "RUF201",  # keep old rule codes instead of verbose names
   "TRY003",  # long exception messages from `tryceratops`
 ]
 external = [ "WPS" ]
@@ -165,10 +153,10 @@ pydocstyle.convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = [
-  "S101",   # asserts
-  "S404",   # subprocess calls are for tests
-  "S603",   # do not require `shell=True`
-  "S607",   # partial executable paths
+  "S101", # asserts
+  "S404", # subprocess calls are for tests
+  "S603", # do not require `shell=True`
+  "S607", # partial executable paths
 ]
 
 
