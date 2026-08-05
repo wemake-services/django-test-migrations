@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "django-test-migrations"
-version = "1.5.0"
+version = "1.6.0"
 requires-python = ">=3.10,<4.0"
 description = "Test django schema and data migrations, including ordering"
 license = "MIT"
@@ -31,7 +31,7 @@ keywords = [
 ]
 
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Topic :: Software Development :: Libraries :: Python Modules",
@@ -44,6 +44,8 @@ classifiers = [
   "Framework :: Django :: 5.0",
   "Framework :: Django :: 5.1",
   "Framework :: Django :: 5.2",
+  "Framework :: Django :: 6.0",
+  "Framework :: Django :: 6.1",
 ]
 
 dependencies = [
@@ -60,13 +62,13 @@ django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
 
 [tool.poetry.group.dev.dependencies]
-django = ">=5.2.17,<6.0"
+django = ">=5.2.17,<6.2"
 
 mypy = "^2.3"
 django-stubs = "^6.0"
 
 wemake-python-styleguide = "^1.7"
-ruff = "^0.15"
+ruff = "^0.16"
 
 pytest = "^9.1"
 pytest-cov = "^7.1"
@@ -82,9 +84,15 @@ line-length = 80
 
 preview = true
 fix = true
-format.quote-style = "single"
-format.docstring-code-format = false
-lint.select = [
+output-prefer-rule-codes = true
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+
+[tool.ruff.lint]
+select = [
   "A",    # flake8-builtins
   "B",    # flake8-bugbear
   "C4",   # flake8-comprehensions
@@ -125,7 +133,7 @@ lint.select = [
   "W",    # pycodestyle
   "YTT",  # flake8-2020
 ]
-lint.ignore = [
+ignore = [
   "A005",   # allow to shadow stdlib and builtin module names
   "COM812", # trailing comma, conflicts with `ruff format`
   # Different doc rules that we don't really care about:
@@ -144,13 +152,16 @@ lint.ignore = [
   "PLR09",   # we have our own complexity rules
   "PLR2004", # do not report magic numbers
   "PLR6301", # do not require classmethod / staticmethod when self not used
-  "TRY003",  # long exception messages from `tryceratops`
   "RUF012",  # mutable class-level defaults are fine
+  "RUF105",   # keep old `# noqa` comments style, not `# ruff` comments
+  "RUF106",   # we prefer old error codes
+  "RUF201",   # keep old rule codes instead of verbose names
+  "TRY003",  # long exception messages from `tryceratops`
 ]
-lint.external = [ "WPS" ]
-lint.flake8-quotes.inline-quotes = "single"
-lint.mccabe.max-complexity = 6
-lint.pydocstyle.convention = "google"
+external = [ "WPS" ]
+flake8-quotes.inline-quotes = "single"
+mccabe.max-complexity = 6
+pydocstyle.convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = [
@@ -159,3 +170,12 @@ lint.pydocstyle.convention = "google"
   "S603",   # do not require `shell=True`
   "S607",   # partial executable paths
 ]
+
+
+[tool.pyproject-fmt]
+# Docs: https://pyproject-fmt.readthedocs.io/en/latest/configuration.html
+column_width = 80
+generate_python_version_classifiers = false
+table_format = "long"
+sub_table_spacing = "\n"
+separate_root_table = "\n\n"
