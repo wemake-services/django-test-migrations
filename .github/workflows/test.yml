@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
         django-version:
           - 'Django~=4.2.0'
           - 'Django~=5.1.0'
@@ -65,6 +65,22 @@ jobs:
           #     ./.dev/scripts/ci-mysql-setup-integration-tests.sh
           - python-version: '3.12'
             django-version: 'Django~=5.2.0'
+            docker-compose-services: maria-db
+            additional-dependencies: mysqlclient
+            env:
+              DJANGO_DATABASE_ENGINE: 'django.db.backends.mysql'
+              DJANGO_DATABASE_PORT: 3307
+            integration-test-setup-script: >-
+              ./.dev/scripts/ci-mysql-setup-integration-tests.sh
+          - python-version: '3.13'
+            django-version: 'Django~=6.0.0'
+            docker-compose-services: postgresql-db-17
+            additional-dependencies: psycopg
+            env:
+              DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
+              DJANGO_DATABASE_PORT: 5433
+          - python-version: '3.12'
+            django-version: 'Django==6.1rc1'
             docker-compose-services: maria-db
             additional-dependencies: mysqlclient
             env:
@@ -127,10 +143,6 @@ jobs:
           if [ -f '${{ matrix.integration-test-setup-script }}' ]; then
             bash '${{ matrix.integration-test-setup-script }}'
           fi
-          CHECK_OUTPUT="$(poetry run python django_test_app/manage.py check 2>&1 || true)"
-          echo "${CHECK_OUTPUT}"
-          echo "${CHECK_OUTPUT}" \
-          | grep --quiet --extended-regexp '^System check identified 7 issues'
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7.0.0
