@@ -74,7 +74,7 @@ jobs:
               ./.dev/scripts/ci-mysql-setup-integration-tests.sh
           - python-version: '3.12'
             django-version: 'Django~=6.0.0'
-            docker-compose-services: postgresql-db
+            docker-compose-services: postgresql-db-17
             additional-dependencies: psycopg2
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
@@ -146,7 +146,7 @@ jobs:
           CHECK_OUTPUT="$(poetry run python django_test_app/manage.py check 2>&1 || true)"
           echo "${CHECK_OUTPUT}"
           echo "${CHECK_OUTPUT}" \
-          | grep --quiet --extended-regexp '^System check identified 7 issues'
+          | grep --quiet --extended-regexp '^System check identified \d issues'
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7.0.0

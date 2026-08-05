@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'django_test_app.wsgi.application'
 
 _DATABASE_NAME = os.environ.get(
     'DJANGO_DATABASE_NAME',
-    default=BASE_DIR.joinpath('db.sqlite3'),
+    default=str(BASE_DIR.joinpath('db.sqlite3')),
 )
 DATABASES = {
     'default': {
