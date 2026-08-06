@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.conf import settings
 from django.core.management import call_command
 from django.core.management.color import no_style
 from django.db import DEFAULT_DB_ALIAS, connections
@@ -78,7 +79,24 @@ class Migrator:
         https://github.com/wemake-services/django-test-migrations/issues/128
 
         """
-        call_command('migrate', verbosity=0, database=self._database)
+        class DisableMigrations:
+            def __contains__(self, item: str) -> bool:
+                return True
+
+            def __getitem__(self, item: str) -> None:
+                return None
+
+        pre_migration_modules = settings.MIGRATION_MODULES
+        try:
+            settings.MIGRATION_MODULES = DisableMigrations()
+            call_command(
+                'migrate',
+                verbosity=0,
+                database=self._database,
+                run_syncdb=True,
+            )
+        finally:
+            settings.MIGRATION_MODULES = pre_migration_modules
 
     def _migrate(
         self,
