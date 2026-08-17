@@ -47,11 +47,11 @@ dependencies = [ "typing-extensions>=4.16" ]
 name = "sobolevn"
 email = "mail@sobolevn.me"
 
-[project.entry-points.pytest11]
-django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
-
 [project.urls]
 repository = "https://github.com/wemake-services/django-test-migrations"
+
+[project.entry-points.pytest11]
+django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 
 
 [tool.poetry.group.dev.dependencies]
