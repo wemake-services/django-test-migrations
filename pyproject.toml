@@ -79,6 +79,14 @@ output-prefer-rule-codes = true
 quote-style = "single"
 docstring-code-format = true
 
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = [
+  "S101", # asserts
+  "S404", # subprocess calls are for tests
+  "S603", # do not require `shell=True`
+  "S607", # partial executable paths
+]
+
 [tool.ruff.lint]
 select = [
   "A",    # flake8-builtins
@@ -150,14 +158,6 @@ external = [ "WPS" ]
 flake8-quotes.inline-quotes = "single"
 mccabe.max-complexity = 6
 pydocstyle.convention = "google"
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*.py" = [
-  "S101", # asserts
-  "S404", # subprocess calls are for tests
-  "S603", # do not require `shell=True`
-  "S607", # partial executable paths
-]
 
 
 [tool.pyproject-fmt]
