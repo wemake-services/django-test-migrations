@@ -29,17 +29,27 @@ jobs:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
         django-version:
-          - 'Django~=4.2.0'
-          - 'Django~=5.1.0'
           - 'Django~=5.2.0'
+          - 'Django~=6.0.0'
+          - 'Django~=6.1.0'
         docker-compose-services: ['']
         additional-dependencies: ['']
         env: [{}]
         integration-test-setup-script: ['']
 
+        exclude:
+          - python-version: '3.10'
+            django-version: 'Django~=6.0.0'
+          - python-version: '3.11'
+            django-version: 'Django~=6.0.0'
+          - python-version: '3.10'
+            django-version: 'Django~=6.1.0'
+          - python-version: '3.11'
+            django-version: 'Django~=6.1.0'
+
         include:
           - python-version: '3.12'
-            django-version: 'Django~=5.1.0'
+            django-version: 'Django~=5.2.0'
             docker-compose-services: postgresql-db
             additional-dependencies: psycopg2
             env:
@@ -80,7 +90,7 @@ jobs:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
               DJANGO_DATABASE_PORT: 5433
           - python-version: '3.12'
-            django-version: 'Django==6.1rc1'
+            django-version: 'Django~=6.1.0'
             docker-compose-services: maria-db
             additional-dependencies: mysqlclient
             env:
