@@ -52,4 +52,3 @@ services:
       # overriding `ENTRYPOINT` or `CMD`.
       - MARIADB_DATABASE=test_db
       - MARIADB_ROOT_PASSWORD=superpasswd123
-    command: --default-authentication-plugin=mysql_native_password
