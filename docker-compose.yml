@@ -1,6 +1,4 @@
 ---
-version: '3.8'
-
 services:
   postgresql-db:
     image: postgres:14
@@ -20,6 +18,10 @@ services:
       - POSTGRES_PASSWORD=passwd123
       - POSTGRES_DB=db
 
+  # TODO: currently unused (no CI job references `mysql-db`) and broken as
+  # pinned: `--default-authentication-plugin` was removed in MySQL 8.4+, so
+  # a `mysql:8` pull that resolves past 8.4 will fail to start. Fix the
+  # command/pin or drop this service before relying on it again.
   mysql-db:
     image: mysql:8
     ports:
@@ -37,7 +39,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
 
   maria-db:
-    image: mariadb:10
+    image: mariadb:11.4
     ports:
       - "3307:3306"
     restart: unless-stopped
