@@ -1,6 +1,7 @@
+from typing import final
+
 from django.apps import AppConfig
 from django.core import checks
-from typing_extensions import final
 
 from django_test_migrations.checks import autonames, database_configuration
 
