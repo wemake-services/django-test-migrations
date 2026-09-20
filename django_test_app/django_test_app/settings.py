@@ -87,8 +87,12 @@ DATABASES = {
         'TEST': {
             'NAME': (
                 _DATABASE_NAME
-                if _DATABASE_NAME.startswith('test_')
-                else f'test_{_DATABASE_NAME}'
+                if Path(_DATABASE_NAME).name.startswith('test_')
+                else str(
+                    Path(_DATABASE_NAME).with_name(
+                        f'test_{Path(_DATABASE_NAME).name}',
+                    ),
+                )
             ),
         },
     },
