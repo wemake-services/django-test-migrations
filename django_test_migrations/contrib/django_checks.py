@@ -33,7 +33,7 @@ class AutoNames(AppConfig):
     This can be easily added into your CI.
 
     See:
-        https://docs.djangoproject.com/en/3.0/ref/applications/
+        https://docs.djangoproject.com/en/stable/ref/applications/
         https://twitter.com/AdamChainz/status/1231895529686208512
 
     """
