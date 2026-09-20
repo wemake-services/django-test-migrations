@@ -3,6 +3,18 @@
 We follow Semantic Versions since the `0.1.0` release.
 
 
+## Version 1.7.0
+
+### Features
+
+- Drops Django 3.2, 4.1, 4.2, 5.0, and 5.1 support (all EOL)
+
+### Misc
+
+- Bumps `postgresql-db` test image from `13` to `14`,
+  required by Django 5.2+
+
+
 ## Version 1.6.0
 
 ### Features
