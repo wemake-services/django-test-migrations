@@ -1,6 +1,4 @@
-from typing import cast
-
-from typing_extensions import final
+from typing import cast, final
 
 from django_test_migrations.db.backends.base.configuration import (
     BaseDatabaseConfiguration,

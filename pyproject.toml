@@ -36,7 +36,7 @@ classifiers = [
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = [ "typing-extensions>=4.16" ]
+dependencies = []
 
 [[project.authors]]
 name = "sobolevn"

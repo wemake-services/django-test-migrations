@@ -15,7 +15,7 @@
 - Allows to test the migrations order
 - Allows to test migration names
 - Allows to test database configuration
-- Fully typed with annotations and checked with `mypy`, [PEP561 compatible](https://www.python.org/dev/peps/pep-0561/)
+- Fully typed with annotations and checked with `mypy`, [PEP561 compatible](https://peps.python.org/pep-0561/)
 - Easy to start: has lots of docs, tests, and tutorials
 
 Read the [announcing post](https://sobolevn.me/2019/10/testing-django-migrations).
@@ -267,7 +267,7 @@ pytest -m "not migration_test"  # Runs all except migration tests
 #### unittest
 
 `django_test_migrations` adds `migration_test`
-[tag](https://docs.djangoproject.com/en/3.0/topics/testing/tools/#tagging-tests)
+[tag](https://docs.djangoproject.com/en/stable/topics/testing/tools/#tagging-tests)
 to every `MigratorTestCase` subclass.
 To run only migrations tests, use `--tag` option:
 

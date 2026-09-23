@@ -1,7 +1,5 @@
 from unittest import mock
 
-import django
-import pytest
 from django.apps import apps
 from django.core.management import call_command
 from django.db import DEFAULT_DB_ALIAS
@@ -65,41 +63,7 @@ class TestSignalConnectInTest(MigratorTestCase):
             sender=self.main_app_config,
         )
 
-    @pytest.mark.skipif(
-        django.VERSION >= (4, 0),
-        reason='requires `Django<4.0`',
-    )
     def test_signal_receivers_added_in_tests(self):
-        """Ensure migration signals receivers connected in tests are called."""
-        verbosity = 0
-        interactive = False
-        # call `migrate` management command to trigger ``pre_migrate`` and
-        # ``post_migrate`` signals
-        call_command('migrate', verbosity=verbosity, interactive=interactive)
-
-        common_kwargs = {
-            'sender': self.main_app_config,
-            'app_config': self.main_app_config,
-            'apps': mock.ANY,  # we don't have any reference to this object
-            'using': DEFAULT_DB_ALIAS,
-            'verbosity': verbosity,
-            'interactive': interactive,
-            'plan': mock.ANY,  # not important for this test
-        }
-        self.pre_migrate_receiver_mock.assert_called_once_with(
-            **common_kwargs,
-            signal=pre_migrate,
-        )
-        self.post_migrate_receiver_mock.assert_called_once_with(
-            **common_kwargs,
-            signal=post_migrate,
-        )
-
-    @pytest.mark.skipif(
-        django.VERSION < (4, 0),
-        reason='requires `Django>=4.0`',
-    )
-    def test_signal_receivers_added_in_tests_django40(self):
         """Ensure migration signals receivers connected in tests are called."""
         verbosity = 0
         interactive = False

@@ -1,6 +1,5 @@
 from typing import Any, ClassVar
 
-import django
 from django.db.migrations.state import ProjectState
 from django.db.models.signals import post_migrate, pre_migrate
 from django.test import TransactionTestCase, tag
@@ -70,15 +69,7 @@ class MigratorTestCase(TransactionTestCase):
             [],
         )
 
-    if django.VERSION[:2] < (5, 2):  # noqa: WPS604  # pragma: no cover
-
-        def _pre_setup(self) -> None:
-            self._store_receivers()
-            super()._pre_setup()  # type: ignore[misc]
-
-    else:  # pragma: no cover
-
-        @classmethod
-        def _pre_setup(cls) -> None:  # type: ignore[misc]  # noqa: WPS614
-            cls._store_receivers()
-            super()._pre_setup()  # type: ignore[misc]
+    @classmethod
+    def _pre_setup(cls) -> None:
+        cls._store_receivers()
+        super()._pre_setup()  # type: ignore[misc]
