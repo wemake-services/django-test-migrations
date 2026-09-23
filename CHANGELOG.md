@@ -17,6 +17,8 @@ We follow Semantic Versions since the `0.1.0` release.
 
 - Bumps `postgresql-db` test image from `13` to `14`, required by Django 5.2+
 - Bumps `maria-db` test image to `mariadb:11.4` LTS
+- Fixes and enables the `mysql-db` test service (pinned to `mysql:9.7` LTS),
+  adds it to CI
 - Removes the `typing-extensions` dependency, uses stdlib `typing.final`
   instead
 - Removes dead code paths left over from dropped Django versions

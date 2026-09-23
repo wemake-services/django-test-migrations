@@ -18,12 +18,8 @@ services:
       - POSTGRES_PASSWORD=passwd123
       - POSTGRES_DB=db
 
-  # TODO: currently unused (no CI job references `mysql-db`) and broken as
-  # pinned: `--default-authentication-plugin` was removed in MySQL 8.4+, so
-  # a `mysql:8` pull that resolves past 8.4 will fail to start. Fix the
-  # command/pin or drop this service before relying on it again.
   mysql-db:
-    image: mysql:8
+    image: mysql:9.7
     ports:
       - "3306:3306"
     restart: unless-stopped
@@ -36,7 +32,8 @@ services:
       # overriding `ENTRYPOINT` or `CMD`.
       - MYSQL_DATABASE=test_db
       - MYSQL_ROOT_PASSWORD=superpasswd123
-    command: --default-authentication-plugin=mysql_native_password
+      # NOTE: unlike MariaDB, MySQL restricts `root` to localhost by default.
+      - MYSQL_ROOT_HOST=%
 
   maria-db:
     image: mariadb:11.4
