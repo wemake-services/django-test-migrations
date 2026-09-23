@@ -5,7 +5,7 @@ requires = [ "poetry-core>=2.1" ]
 
 [project]
 name = "django-test-migrations"
-version = "1.6.0"
+version = "1.7.0"
 description = "Test django schema and data migrations, including ordering"
 readme = "README.md"
 keywords = [
@@ -23,7 +23,7 @@ keywords = [
 ]
 license = "MIT"
 license-files = [ "LICENSE" ]
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: Django",

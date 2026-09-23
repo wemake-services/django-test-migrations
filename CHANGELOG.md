@@ -7,6 +7,7 @@ We follow Semantic Versions since the `0.1.0` release.
 ### Features
 
 - Drops Django 3.2, 4.1, 4.2, 5.0, and 5.1 support (all EOL)
+- Drops Python 3.10
 
 ### Fixes
 
