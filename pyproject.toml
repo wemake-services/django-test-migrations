@@ -52,7 +52,7 @@ django_test_migrations = "django_test_migrations.contrib.pytest_plugin"
 [tool.poetry.group.dev.dependencies]
 django = ">=5.2.18,<6.2"
 django-stubs = "^6.0"
-mypy = "^2.3"
+mypy = "^2.4"
 pytest = "^9.1"
 pytest-cov = "^7.1"
 pytest-django = "^4.14"
