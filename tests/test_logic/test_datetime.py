@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import pytest
 
@@ -8,15 +8,15 @@ from django_test_migrations.logic.datetime import timedelta_to_milliseconds
 @pytest.mark.parametrize(
     ('timedelta', 'expected_result'),
     [
-        (datetime.timedelta(seconds=1), 1000),
-        (datetime.timedelta(minutes=3), 3 * 60 * 1000),
-        (datetime.timedelta(hours=2.6), 2.6 * 60 * 60 * 1000),
+        (dt.timedelta(seconds=1), 1000),
+        (dt.timedelta(minutes=3), 3 * 60 * 1000),
+        (dt.timedelta(hours=2.6), 2.6 * 60 * 60 * 1000),
         (
-            datetime.timedelta(days=4),
+            dt.timedelta(days=4),
             4 * 24 * 60 * 60 * 1000,
         ),
         (
-            datetime.timedelta(minutes=7.4, seconds=47),
+            dt.timedelta(minutes=7.4, seconds=47),
             7.4 * 60 * 1000 + 47 * 1000,
         ),
     ],

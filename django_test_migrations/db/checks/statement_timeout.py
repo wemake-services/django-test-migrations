@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from typing import Final
 
 from django.core.checks import CheckMessage
@@ -89,7 +89,7 @@ def _ensure_statement_timeout_not_too_high(
     messages: list[CheckMessage],
 ) -> None:
     upper_limit = timedelta_to_milliseconds(
-        datetime.timedelta(minutes=STATEMENT_TIMEOUT_MINUTES_UPPER_LIMIT),
+        dt.timedelta(minutes=STATEMENT_TIMEOUT_MINUTES_UPPER_LIMIT),
     )
     if setting_value > upper_limit:
         messages.append(
