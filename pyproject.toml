@@ -58,7 +58,7 @@ pytest-cov = "^7.1"
 pytest-django = "^4.14"
 pytest-mock = "^3.16"
 pytest-randomly = "^5.0"
-ruff = "^0.16"
+ruff = "^0.17"
 wemake-python-styleguide = "^1.8"
 
 
