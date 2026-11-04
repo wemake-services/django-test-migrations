@@ -95,7 +95,7 @@ jobs:
               ./.dev/scripts/ci-mysql-setup-integration-tests.sh
           - python-version: '3.15'
             django-version: 'Django~=6.1.0'
-            docker-compose-services: postgresql-db
+            docker-compose-services: postgresql-db-17
             additional-dependencies: psycopg2
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
