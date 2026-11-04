@@ -4,7 +4,9 @@ from django.core.management import call_command
 from django.core.management.color import no_style
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.executor import MigrationExecutor
+from django.db.migrations.loader import MigrationLoader
 from django.db.migrations.state import ProjectState
+from django.db.migrations.migration import Migration
 from django.db.models import ManyToManyField
 
 from django_test_migrations import sql
@@ -16,6 +18,24 @@ from django_test_migrations.types import (
     MigrationSpec,
     MigrationTarget,
 )
+
+
+class SubstitutableMigrationLoader(MigrationLoader):
+    """
+    Class to allow for on-the-fly migration substitution
+    """
+    def __init__(self, *args, **kwargs):
+        self.substituted_migrations = {}
+        super().__init__(*args, **kwargs)
+
+    def substitute_migration(self, target: MigrationTarget, migration: Migration) -> None:
+        """Substitute a target migration with a given migration"""
+        self.substituted_migrations[target] = migration
+
+    def load_disk(self) -> None:
+        """Override parent method to substitute patched migrations"""
+        super().load_disk()
+        self.disk_migrations.update(self.substituted_migrations)
 
 
 class Migrator:
@@ -42,10 +62,13 @@ class Migrator:
 
         self._database: str = database
         self._executor = MigrationExecutor(connections[self._database])
+        # load=True to ensure loader.disk_migrations is populated before substitution
+        self._executor.loader = SubstitutableMigrationLoader(connections[self._database], load=True)
 
-    def apply_initial_migration(self, targets: MigrationSpec) -> ProjectState:
+    def apply_initial_migration(self, targets: MigrationSpec, before: MigrationSpec = []) -> ProjectState:
         """Reverse back to the original migration."""
         migration_targets = normalize(targets)
+        migration_before = normalize(before)
 
         style = no_style()
         # start from clean database state
@@ -53,6 +76,15 @@ class Migrator:
         sql.flush_django_migrations_table(self._database, style)
 
         # prepare as broad plan as possible based on full plan
+        # ensure migrate_to are run after migrate_from
+        for from_migration in migration_targets:
+            if from_migration in self._executor.loader.disk_migrations:  # fail silently for tests
+                migration = self._executor.loader.get_migration(*from_migration)
+                for to_migration in migration_before:
+                    if to_migration not in migration.dependencies and to_migration not in migration.run_before:
+                        migration.run_before.append(to_migration)
+                self._executor.loader.substitute_migration(from_migration, migration)
+
         self._executor.loader.build_graph()  # reload
         full_plan = self._executor.migration_plan(
             self._executor.loader.graph.leaf_nodes(),
