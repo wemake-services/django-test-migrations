@@ -96,10 +96,10 @@ jobs:
           - python-version: '3.15'
             django-version: 'Django~=6.1.0'
             docker-compose-services: postgresql-db-17
-            additional-dependencies: psycopg2
+            additional-dependencies: psycopg
             env:
               DJANGO_DATABASE_ENGINE: 'django.db.backends.postgresql'
-              DJANGO_DATABASE_PORT: 5432
+              DJANGO_DATABASE_PORT: 5433
 
     steps:
       - uses: actions/checkout@v7.0.1
