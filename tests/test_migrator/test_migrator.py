@@ -1,6 +1,5 @@
 import pytest
 from django.db.migrations.state import ProjectState
-
 from django_test_migrations.migrator import Migrator
 
 
@@ -26,3 +25,46 @@ def test_migrator_list(transactional_db):
     assert isinstance(old_state, ProjectState)
     assert isinstance(new_state, ProjectState)
     assert migrator.reset() is None
+
+
+@pytest.mark.django_db
+def test_migrator_sets_run_before_if_forward_migration(transactional_db):
+    migrator = Migrator()
+    from_migration = ('main_app', '0001_initial')
+    to_migration = ('main_app', '0002_someitem_is_clean')
+
+    migrator._set_run_before(from_migration, to_migration)
+
+    assert to_migration in migrator._executor.loader.disk_migrations[from_migration].run_before
+
+
+@pytest.mark.django_db
+def test_migrator_ignores_run_before_if_backwards_migration(transactional_db):
+    migrator = Migrator()
+    from_migration = ('main_app', '0002_someitem_is_clean')
+    to_migration = ('main_app', '0001_initial')
+
+    migrator._set_run_before(from_migration, to_migration)
+
+    assert not to_migration in migrator._executor.loader.disk_migrations[from_migration].run_before
+
+
+@pytest.mark.django_db
+def test_migrator_ignores_run_before_if_backwards_to_None(transactional_db):
+    migrator = Migrator()
+    from_migration = ('main_app', '0001_initial')
+    to_migration = ('main_app', None)
+
+    migrator.apply_initial_migration(from_migration, run_before=to_migration)
+
+    assert not to_migration in migrator._executor.loader.disk_migrations[from_migration].run_before
+
+
+@pytest.mark.django_db
+def test_migrator_ignores_run_before_if_target_None(transactional_db):
+    migrator = Migrator()
+    from_migration = ('main_app', None)
+    to_migration = ('main_app', '0001_initial')
+
+    # should run without error, no explicit assertion
+    migrator.apply_initial_migration(from_migration, run_before=to_migration)

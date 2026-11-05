@@ -39,7 +39,7 @@ class MigratorTestCase(TransactionTestCase):
         super().setUp()
         self._migrator = Migrator(self.database_name)
         self.old_state = self._migrator.apply_initial_migration(
-            self.migrate_from, before=self.migrate_to
+            self.migrate_from, run_before=self.migrate_to
         )
         self.prepare()
         self.new_state = self._migrator.apply_tested_migration(self.migrate_to)
