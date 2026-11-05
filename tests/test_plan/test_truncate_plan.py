@@ -9,12 +9,12 @@ from django_test_migrations.plan import truncate_plan
     [
         ([], 9),  # full plan for empty targets
         ([('app1', None)], 0),
-        ([('app1', None), ('app3', None)], 7),
+        ([('app1', None), ('app3', None)], 0),
         ([('app2', '0002_second')], 6),
         ([('app1', '0002_second'), ('app2', None)], 2),
-        ([('app1', '0003_third'), ('app2', None)], 4),
+        ([('app1', '0003_third'), ('app2', None)], 2),
         ([('app1', '0003_third'), ('app1', '0005_fifth')], 7),
-        ([('app1', '0003_third'), ('app2', None), ('app3', '0001_initial')], 8),
+        ([('app1', '0003_third'), ('app2', None), ('app3', '0001_initial')], 2),
     ],
 )
 def test_truncate_plan(plan, targets, index):

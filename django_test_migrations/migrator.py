@@ -91,7 +91,6 @@ class Migrator:
         # start from clean database state
         sql.drop_models_tables(self._database, style)
         sql.flush_django_migrations_table(self._database, style)
-        self._executor.loader.build_graph()  # reload
 
         # if specifying None as a target migration, add the initial migration(s)
         # for that app to run_before to ensure no migrations are applied
@@ -110,6 +109,7 @@ class Migrator:
                 self._set_run_before(not_none_targets, b)
 
         # prepare as broad plan as possible based on full plan
+        self._executor.loader.build_graph()  # reload
         full_plan = self._executor.migration_plan(
             self._executor.loader.graph.leaf_nodes(),
             clean_start=True,
