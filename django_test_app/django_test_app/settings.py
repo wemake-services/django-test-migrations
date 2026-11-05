@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django_test_migrations.contrib.django_checks.DatabaseConfiguration',
     # Custom:
     'main_app',
+    'another_app',
 ]
 
 MIDDLEWARE = [

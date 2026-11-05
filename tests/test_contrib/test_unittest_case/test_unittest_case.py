@@ -50,3 +50,17 @@ def test_migration_test_marker_tag():
     """Ensure ``MigratorTestCase`` subclasses are properly tagged."""
     assert MIGRATION_TEST_MARKER in TestDirectMigration.tags
     assert MIGRATION_TEST_MARKER in TestBackwardMigration.tags
+
+
+class TestMigrationOrdering(MigratorTestCase):
+    """Ensure we don't select migrations we intend to test as part of the initial migration"""
+    migrate_from = [('main_app', None), ('another_app', '0001_initial')]
+    migrate_to = [('main_app', '0001_initial'), ('another_app', '0002_add_field')]
+
+    def test_ensure_test_field_not_added_before(self):
+        model = self.old_state.apps.get_model('another_app', 'DummyModel')
+        assert 'test_field' not in [f.name for f in model._meta.fields]
+
+    def test_ensure_test_field_added_after(self):
+        model = self.new_state.apps.get_model('another_app', 'DummyModel')
+        assert 'test_field' in [f.name for f in model._meta.fields]
