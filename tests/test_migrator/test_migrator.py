@@ -68,3 +68,24 @@ def test_migrator_ignores_run_before_if_target_None(transactional_db):
 
     # should run without error, no explicit assertion
     migrator.apply_initial_migration(from_migration, run_before=to_migration)
+
+
+@pytest.mark.django_db
+def test_migrator_gets_roots(transactional_db):
+    migrator = Migrator()
+    target = ('main_app', None)
+    roots = [('main_app', '0001_initial')]
+
+    assert migrator._get_roots(target) == roots
+
+
+@pytest.mark.django_db
+def test_migrator_gets_only_this_app_roots(transactional_db, mocker):
+    migrator = Migrator()
+    target = ('main_app', None)
+    roots = [('main_app', '0001_initial')]
+
+    migrator._executor.loader.graph.root_nodes=lambda *args, **kwargs: roots + [('another_app', '0001_initial')]
+
+    # should exclude another_app root
+    assert migrator._get_roots(target) == roots
