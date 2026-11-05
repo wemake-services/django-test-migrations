@@ -82,6 +82,14 @@ class Migrator:
                     migration.run_before.append(to_migration)
             self._executor.loader.substitute_migration(from_migration, migration)
 
+    def _get_roots(self, migration: MigrationTarget):
+        all_roots = []
+        roots = self._executor.loader.graph.root_nodes(app=migration[0])
+        for root in roots:
+            if root[0] == migration[0] and root not in all_roots:  # only add roots from this app
+                all_roots.append(root)
+        return all_roots
+
     def apply_initial_migration(self, targets: MigrationSpec, run_before: MigrationSpec = []) -> ProjectState:
         """Reverse back to the original migration."""
         targets = normalize(targets)
@@ -97,12 +105,12 @@ class Migrator:
         # for that app to run_before to ensure no migrations are applied
         for t in targets:
             if t[1] is None:
-                roots = self._executor.loader.graph.root_nodes(app=t[0])
+                roots = self._get_roots(t)
                 for root in roots:
-                    if root not in run_before:
+                    if root not in run_before:  # only add roots from this app
                         run_before.append(root)
 
-        # ensure targets are migrated before the listed before
+        # ensure targets are migrated before the run_before
         target_plan = [(m.app_label, m.name) for m, _ in self._executor.migration_plan(targets, clean_start=True)]
         not_none_targets = [t for t in targets if t[1] is not None]
         for b in run_before: # check each individually to support mixing forward and reverse migrations in a plan
