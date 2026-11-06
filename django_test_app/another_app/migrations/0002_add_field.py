@@ -8,8 +8,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            'dummymodel',
-            'test_field',
-            models.IntegerField(default=0)
+            'dummymodel', 'test_field', models.IntegerField(default=0)
         ),
     ]

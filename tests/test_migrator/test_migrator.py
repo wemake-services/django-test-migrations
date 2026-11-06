@@ -1,5 +1,6 @@
 import pytest
 from django.db.migrations.state import ProjectState
+
 from django_test_migrations.migrator import Migrator
 
 
@@ -35,7 +36,10 @@ def test_migrator_sets_run_before_if_forward_migration(transactional_db):
 
     migrator._set_run_before(from_migration, to_migration)
 
-    assert to_migration in migrator._executor.loader.disk_migrations[from_migration].run_before
+    assert (
+        to_migration
+        in migrator._executor.loader.disk_migrations[from_migration].run_before
+    )
 
 
 @pytest.mark.django_db
@@ -46,7 +50,12 @@ def test_migrator_ignores_run_before_if_backwards_migration(transactional_db):
 
     migrator._set_run_before(from_migration, to_migration)
 
-    assert not to_migration in migrator._executor.loader.disk_migrations[from_migration].run_before
+    assert (
+        to_migration
+        not in migrator._executor.loader.disk_migrations[
+            from_migration
+        ].run_before
+    )
 
 
 @pytest.mark.django_db
@@ -57,7 +66,12 @@ def test_migrator_ignores_run_before_if_backwards_to_None(transactional_db):
 
     migrator.apply_initial_migration(from_migration, run_before=to_migration)
 
-    assert not to_migration in migrator._executor.loader.disk_migrations[from_migration].run_before
+    assert (
+        to_migration
+        not in migrator._executor.loader.disk_migrations[
+            from_migration
+        ].run_before
+    )
 
 
 @pytest.mark.django_db
@@ -85,7 +99,9 @@ def test_migrator_gets_only_this_app_roots(transactional_db, mocker):
     target = ('main_app', None)
     roots = [('main_app', '0001_initial')]
 
-    migrator._executor.loader.graph.root_nodes=lambda *args, **kwargs: roots + [('another_app', '0001_initial')]
+    migrator._executor.loader.graph.root_nodes = lambda *args, **kwargs: (
+        roots + [('another_app', '0001_initial')]
+    )
 
     # should exclude another_app root
     assert migrator._get_roots(target) == roots
