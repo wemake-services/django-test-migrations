@@ -105,8 +105,12 @@ def truncate_plan(
     if not targets or not plan:
         return plan
 
-    not_none_indexes = [_get_index(target, plan) for target in targets if target[1] is not None]
-    none_indexes = [_get_index(target, plan) for target in targets if target[1] is None]
+    not_none_indexes = [
+        _get_index(target, plan) for target in targets if target[1] is not None
+    ]
+    none_indexes = [
+        _get_index(target, plan) for target in targets if target[1] is None
+    ]
 
     max_index = len(plan) - 1
 
