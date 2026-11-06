@@ -11,7 +11,7 @@ from django.db.models import ManyToManyField
 
 from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
-from django_test_migrations.plan import truncate_plan
+from django_test_migrations.plan import truncate_plan, broad_plan
 from django_test_migrations.signals import mute_migrate_signals
 from django_test_migrations.types import (
     MigrationPlan,
@@ -138,7 +138,7 @@ class Migrator:
 
         # prepare as broad plan as possible based on full plan
         full_plan = self._executor.migration_plan(
-            self._executor.loader.graph.leaf_nodes(),
+            broad_plan(targets, self._executor.loader),
             clean_start=True,
         )
         plan = truncate_plan(targets, full_plan)

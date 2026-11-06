@@ -5,7 +5,8 @@ from django.db.migrations.graph import Node
 from django.db.migrations.loader import MigrationLoader
 
 from django_test_migrations.exceptions import MigrationNotInPlan
-from django_test_migrations.types import MigrationPlan, MigrationTarget
+from django_test_migrations.logic.migrations import normalize
+from django_test_migrations.types import MigrationPlan, MigrationTarget, MigrationSpec
 
 
 def all_migrations(
@@ -77,6 +78,36 @@ def _generate_plan(
                 plan.append(node)
                 seen.add(migration)
     return plan
+
+
+def broad_plan(targets: MigrationSpec, loader: MigrationLoader) -> list[MigrationTarget]:
+    """Generates the broadest possible plan without passing target migrations"""
+    targets = normalize(targets)
+    loader.build_graph()
+
+    leaf_nodes = loader.graph.leaf_nodes()
+    plan_nodes = set()
+
+    for leaf_node in leaf_nodes:
+        plan_node = loader.graph.node_map[leaf_node]  # default is to use this leaf
+        seen = []
+        def check_parents(node: Node) -> None:
+            # check if a given node is our target; if not, check its parents recursively
+            seen.append(node)
+            if any(_filter_predicate(target, loader.graph.nodes[node.key]) for target in targets):
+                # the starting leaf node results in a target migration being applied
+                # name the target migration as the leaf node instead
+                nonlocal plan_node
+                plan_node = node
+                return
+            else:
+                for parent in node.parents:
+                    if parent not in seen:
+                        check_parents(parent)
+        check_parents(plan_node)
+        plan_nodes.add(plan_node)
+
+    return [node.key for node in plan_nodes]
 
 
 def truncate_plan(
