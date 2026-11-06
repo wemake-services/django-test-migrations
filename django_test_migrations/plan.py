@@ -105,8 +105,23 @@ def truncate_plan(
     if not targets or not plan:
         return plan
 
-    target_max_index = max(_get_index(target, plan) for target in targets)
-    return plan[: (target_max_index + 1)]
+    not_none_indexes = [
+        _get_index(target, plan) for target in targets if target[1] is not None
+    ]
+    none_indexes = [
+        _get_index(target, plan) for target in targets if target[1] is None
+    ]
+
+    max_index = len(plan) - 1
+
+    if max(not_none_indexes or [max_index]) <= max(none_indexes or [max_index]):
+        # situation where no root migrations for None targets are applied before named targets
+        max_index = max(not_none_indexes or [max_index])
+    else:
+        # do not allow root migrations for None targets to be applied
+        max_index = min(none_indexes or [max_index])
+
+    return plan[: (max_index + 1)]
 
 
 def _get_index(target: MigrationTarget, plan: MigrationPlan) -> int:
