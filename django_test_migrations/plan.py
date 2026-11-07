@@ -113,36 +113,6 @@ def find_maximum_plan_depth(targets: MigrationSpec, plan: MigrationPlan) -> Migr
     return max_migration.app_label, max_migration.name
 
 
-def broad_plan(targets: MigrationSpec, loader: MigrationLoader) -> list[MigrationTarget]:
-    """Generates the broadest possible plan without passing target migrations"""
-    targets = normalize(targets)
-    loader.build_graph()
-
-    leaf_nodes = loader.graph.leaf_nodes()
-    plan_nodes = set()
-
-    for leaf_node in leaf_nodes:
-        plan_node = loader.graph.node_map[leaf_node]  # default is to use this leaf
-        seen = []
-        def check_parents(node: Node) -> None:
-            # check if a given node is our target; if not, check its parents recursively
-            seen.append(node)
-            if any(_filter_predicate(target, loader.graph.nodes[node.key]) for target in targets):
-                # the starting leaf node results in a target migration being applied
-                # name the target migration as the leaf node instead
-                nonlocal plan_node
-                plan_node = node
-                return
-            else:
-                for parent in node.parents:
-                    if parent not in seen:
-                        check_parents(parent)
-        check_parents(plan_node)
-        plan_nodes.add(plan_node)
-
-    return [node.key for node in plan_nodes]
-
-
 def truncate_plan(
     targets: list[MigrationTarget],
     plan: MigrationPlan,
