@@ -80,6 +80,39 @@ def _generate_plan(
     return plan
 
 
+def find_maximum_plan_depth(targets: MigrationSpec, plan: MigrationPlan) -> MigrationTarget|None:
+    """Find migration in plan at maximum depth before exceeding migration targets"""
+    targets = normalize(targets)
+    seen = {target: target[1] is None for target in targets}
+    max_index = -1
+    end = False
+
+    for index, migration in enumerate(plan):
+        for target in targets:
+            # to_check[1] = None to match against any migration in that app if already seen target
+            to_check = (target[0], None if seen[target] else target[1])
+            if _filter_predicate(to_check, migration[0]):
+                if seen[target]:
+                    # reached the next migration after one of our targets
+                    end = True
+                    break
+                else:
+                    # we have reached a target migration and can proceed until the next
+                    # migration from this app
+                    seen[target] = True
+        if end:
+            break
+        else:
+            max_index += 1
+
+    if max_index < 0:
+        # all migrations in this plan exceed targets
+        return None
+
+    max_migration = plan[max_index][0]
+    return max_migration.app_label, max_migration.name
+
+
 def broad_plan(targets: MigrationSpec, loader: MigrationLoader) -> list[MigrationTarget]:
     """Generates the broadest possible plan without passing target migrations"""
     targets = normalize(targets)
