@@ -21,11 +21,10 @@ from django_test_migrations.types import (
 
 
 class SubstitutableMigrationLoader(MigrationLoader):
-    """
-    Class to allow for on-the-fly migration substitution
-    """
+    """Class to allow for on-the-fly migration substitution."""
 
     def __init__(self, *args, **kwargs):
+        """Create required attributes."""
         self.substituted_migrations = {}
         super().__init__(*args, **kwargs)
         # initializes as None, we need a dict to apply when load=False
@@ -34,7 +33,7 @@ class SubstitutableMigrationLoader(MigrationLoader):
     def substitute_migration(
         self, target: MigrationTarget, migration: Migration
     ) -> None:
-        """Substitute a target migration with a given migration"""
+        """Substitute a target migration with a given migration."""
         self.substituted_migrations[target] = migration
         self._apply_substitutions()
 
@@ -42,7 +41,7 @@ class SubstitutableMigrationLoader(MigrationLoader):
         self.disk_migrations.update(self.substituted_migrations)
 
     def load_disk(self) -> None:
-        """Override parent method to substitute patched migrations"""
+        """Override parent method to substitute patched migrations."""
         super().load_disk()
         self._apply_substitutions()
 
@@ -71,7 +70,7 @@ class Migrator:
 
         self._database: str = database
         self._executor = MigrationExecutor(connections[self._database])
-        # load=True to ensure loader.disk_migrations is populated before substitution
+        # load=True to ensure loader.disk_migrations is populated
         self._executor.loader = SubstitutableMigrationLoader(
             connections[self._database], load=True
         )
@@ -79,10 +78,12 @@ class Migrator:
     def _set_run_before(
         self, migrations: MigrationSpec, run_before: MigrationSpec
     ) -> None:
-        """Adds migrations to the run_before attribute of target migrations"""
+        """Adds migrations to the run_before attribute of target migrations."""
         migrations = normalize(migrations)
         run_before = normalize(run_before)
         for from_migration in migrations:
+            if from_migration[1] is None:
+                continue
             migration = self._executor.loader.get_migration(*from_migration)
             for to_migration in run_before:
                 if (
@@ -95,6 +96,7 @@ class Migrator:
             )
 
     def _get_roots(self, migration: MigrationTarget):
+        """Gets the root migration(s) for the provided migration."""
         all_roots = []
         roots = self._executor.loader.graph.root_nodes(app=migration[0])
         for root in roots:
@@ -104,10 +106,24 @@ class Migrator:
                 all_roots.append(root)
         return all_roots
 
+    def _collect_run_before(
+        self, targets: list[MigrationTarget], run_before: list[MigrationTarget]
+    ) -> list[MigrationTarget]:
+        """Adds initial migrations for apps with None as targeted migration."""
+        for t in targets:
+            if t[1] is None:
+                roots = self._get_roots(t)
+                for root in roots:
+                    if root not in run_before:  # only add roots from this app
+                        run_before.append(root)
+        return run_before
+
     def apply_initial_migration(
-        self, targets: MigrationSpec, run_before: MigrationSpec = []
+        self, targets: MigrationSpec, run_before: MigrationSpec = None
     ) -> ProjectState:
         """Reverse back to the original migration."""
+        if run_before is None:
+            run_before = []
         targets = normalize(targets)
         run_before = normalize(run_before)
 
@@ -118,12 +134,7 @@ class Migrator:
 
         # if specifying None as a target migration, add the initial migration(s)
         # for that app to run_before to ensure no migrations are applied
-        for t in targets:
-            if t[1] is None:
-                roots = self._get_roots(t)
-                for root in roots:
-                    if root not in run_before:  # only add roots from this app
-                        run_before.append(root)
+        run_before = self._collect_run_before(targets, run_before)
 
         # ensure targets are migrated before the run_before
         target_plan = [
@@ -131,7 +142,9 @@ class Migrator:
             for m, _ in self._executor.migration_plan(targets, clean_start=True)
         ]
         not_none_targets = [t for t in targets if t[1] is not None]
-        for b in run_before:  # check each individually to support mixing forward and reverse migrations in a plan
+        for b in run_before:
+            # check each individually to support mixing forward
+            # and reverse migrations in a plan
             if b[1] is not None and b not in target_plan:
                 self._set_run_before(not_none_targets, b)
 
@@ -141,8 +154,10 @@ class Migrator:
         max_plan_migrations = []
         for leaf in leaf_nodes:
             # check if any targets get applied by migrating to the leaf node
-            # if so, see how far along that plan we can go without exceeding targets
-            max_leaf = find_maximum_plan_depth(targets, self._executor.migration_plan([leaf], clean_start=True))
+            # see how far along that plan we can go without exceeding targets
+            max_leaf = find_maximum_plan_depth(
+                targets, self._executor.migration_plan([leaf], clean_start=True)
+            )
             if max_leaf is not None:
                 max_plan_migrations.append(max_leaf)
         plan = self._executor.migration_plan(
