@@ -1,6 +1,56 @@
 import pytest
+from django.db.migrations import Migration
 
-from django_test_migrations.plan import find_maximum_plan_depth
+from django_test_migrations.plan import (
+    _has_exceeded_target,
+    find_maximum_plan_depth,
+)
+
+
+def test_has_exceeded_target():
+    """Encounter migration in app past target."""
+    target = ('app1', '0001')
+    seen = {target: True}
+    migration = Migration('0002', 'app1')
+
+    assert _has_exceeded_target([target], seen, migration)
+
+
+def test_has_not_exceeded_target_reached_target():
+    """Encounter target migration in app."""
+    target = ('app1', '0001')
+    seen = {target: False}
+    migration = Migration('0001', 'app1')
+
+    assert not _has_exceeded_target([target], seen, migration)
+    assert seen[target]
+
+
+def test_has_not_exceeded_target():
+    """Encounter migration before target in app."""
+    target = ('app1', '0002')
+    seen = {target: False}
+    migration = Migration('0001', 'app1')
+
+    assert not _has_exceeded_target([target], seen, migration)
+
+
+def test_has_exceeded_target_none():
+    """Encounter migration from app when target None."""
+    target = ('app1', None)
+    seen = {target: True}
+    migration = Migration('0001', 'app1')
+
+    assert _has_exceeded_target([target], seen, migration)
+
+
+def test_has_not_exceeded_target_other_app():
+    """Encounter migration from other app."""
+    target = ('app1', None)
+    seen = {target: True}
+    migration = Migration('0001', 'app2')
+
+    assert not _has_exceeded_target([target], seen, migration)
 
 
 @pytest.mark.parametrize(
