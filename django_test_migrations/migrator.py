@@ -90,7 +90,7 @@ class Migrator:
                     to_migration not in migration.dependencies
                     and to_migration not in migration.run_before
                 ):
-                    migration.run_before.append(to_migration)
+                    migration.run_before = [*migration.run_before, to_migration]
             self._executor.loader.substitute_migration(
                 from_migration, migration
             )
