@@ -23,21 +23,21 @@ from django_test_migrations.types import (
 class SubstitutableMigrationLoader(MigrationLoader):
     """Class to allow for on-the-fly migration substitution."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Create required attributes."""
-        self.substituted_migrations = {}
+        self.substituted_migrations: dict[tuple[str, str], Migration] = {}
         super().__init__(*args, **kwargs)
         # initializes as None, we need a dict to apply when load=False
-        self.disk_migrations = {}
+        self.disk_migrations: dict[tuple[str, str], Migration] = {}
 
     def substitute_migration(
         self, target: MigrationTarget, migration: Migration
     ) -> None:
         """Substitute a target migration with a given migration."""
-        self.substituted_migrations[target] = migration
+        self.substituted_migrations[target] = migration  # type: ignore[index]
         self._apply_substitutions()
 
-    def _apply_substitutions(self):
+    def _apply_substitutions(self) -> None:
         self.disk_migrations.update(self.substituted_migrations)
 
     def load_disk(self) -> None:
@@ -84,18 +84,23 @@ class Migrator:
         for from_migration in migrations:
             if from_migration[1] is None:
                 continue
-            migration = self._executor.loader.get_migration(*from_migration)
+            migration = self._executor.loader.get_migration(*from_migration)  # type: ignore[arg-type]
             for to_migration in run_before:
+                if to_migration[0] is None:
+                    continue  # type: ignore[unreachable]
                 if (
                     to_migration not in migration.dependencies
                     and to_migration not in migration.run_before
                 ):
-                    migration.run_before = [*migration.run_before, to_migration]
-            self._executor.loader.substitute_migration(
+                    migration.run_before = [  # type: ignore[misc]
+                        *migration.run_before,
+                        to_migration  # type: ignore[list-item]
+                    ]
+            self._executor.loader.substitute_migration(  # type: ignore[attr-defined]
                 from_migration, migration
             )
 
-    def _get_roots(self, migration: MigrationTarget):
+    def _get_roots(self, migration: MigrationTarget) -> list[MigrationTarget]:
         """Gets the root migration(s) for the provided migration."""
         all_roots = []
         roots = self._executor.loader.graph.root_nodes(app=migration[0])
@@ -119,7 +124,7 @@ class Migrator:
         return run_before
 
     def apply_initial_migration(
-        self, targets: MigrationSpec, run_before: MigrationSpec = None
+        self, targets: MigrationSpec, run_before: MigrationSpec | None = None
     ) -> ProjectState:
         """Reverse back to the original migration."""
         if run_before is None:
