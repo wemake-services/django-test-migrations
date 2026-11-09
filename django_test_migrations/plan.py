@@ -223,6 +223,7 @@ def find_max_safe_nodes(
     targets = normalize(targets)
     seen_targets = {target: target[1] is None for target in targets}
     seen_nodes = []
+    blocked_nodes = []
 
     max_safe_nodes = set()
     for root in graph.root_nodes():
@@ -231,30 +232,61 @@ def find_max_safe_nodes(
         root_seen = seen_targets.copy()
         # make sure the root migration isn't past a None target
         if not _has_exceeded_target(root_seen, Migration(root[1], root[0])):
-            max_safe_nodes.update(
-                _follow_node(root_seen, graph.node_map[root], seen_nodes)
-            )
+            node = graph.node_map[root]
+            # if the root has out-of-app dependencies, we must
+            # check these other apps first, and will encounter
+            # this root node by following the branches in other apps
+            if not node.parents:
+                max_safe_nodes.update(
+                    _follow_node(targets, node, seen_nodes, blocked_nodes)
+                )
+    print(max_safe_nodes)
     return list(max_safe_nodes)
 
 
 def _follow_node(
-    seen_targets: dict[MigrationTarget, bool],
-    node: Node, seen_nodes: list[Node]
+    targets: list[MigrationTarget],
+    node: Node,
+    seen_nodes: list[Node],
+    blocked_nodes: list[Node]
 ) -> Generator[MigrationTarget]:
-    if node in seen_nodes:
-        return  # already checked on another branch
     seen_nodes.append(node)
 
-    if not node.children:
-        yield node.key  # this is a leaf node
-
-    for child in node.children:
-        if _has_exceeded_target(
-            seen_targets, Migration(child.key[1], child.key[0])
+    if any(
+        _filter_predicate(target, Migration(node.key[1], node.key[0]))
+        for target in targets if target[1] is not None
         ):
-            yield node.key  # unsafe to migrate past this node
-        elif child.key[0] == node.key[0]:
-            # follow remaining child branches within an app
-            # send copy of seen_targets in case multiple branches
-            # independently encounter migrations out-of-order
-            yield from _follow_node(seen_targets.copy(), child, seen_nodes)
+        # this node is a target migration, do not proceed to its children
+        yield node.key
+        for child in node.children:
+            if child.key[0] == node.key[0]:
+                # this is the next migration in this app
+                blocked_nodes.append(child)
+        return
+
+    # sort to follow this node's children first:
+    # django plans migration targets in the order they are listed.
+    # staying in-app first helps prevent yielding migrations out-of-order
+    # resulting in a mixed plan containing forward and reverse migrations
+    for child in sorted(node.children, key=lambda x: x.key[0] != node.key[0]):
+        if child in seen_nodes or child in blocked_nodes:
+            continue  # already checked on another branch
+        elif any(
+            _filter_predicate(target, Migration(child.key[1], child.key[0]))
+            for target in targets if target[1] is None
+        ):
+            # this child because from an app with a None target
+            continue
+        elif all(parent in seen_nodes for parent in child.parents) and not any(parent in blocked_nodes for parent in child.parents):
+            # follow remaining child branches if all other converging
+            # branches have been checked first
+            yield from _follow_node(targets, child, seen_nodes, blocked_nodes)
+
+    if not any(child in seen_nodes for child in node.children):
+        # we were unable to proceed past this node because:
+        # 1) this is a leaf node which has no children; or
+        # 2) we have arrived at a converging child node which has
+        # not had all its parent branches checked yet, either
+        # because we got here first, or another branch has reached
+        # a target first.
+        yield node.key
