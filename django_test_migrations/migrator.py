@@ -11,7 +11,7 @@ from django.db.models import ManyToManyField
 
 from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
-from django_test_migrations.plan import find_maximum_plan_depth
+from django_test_migrations.plan import find_max_safe_nodes
 from django_test_migrations.signals import mute_migrate_signals
 from django_test_migrations.types import (
     MigrationPlan,
@@ -155,24 +155,15 @@ class Migrator:
 
         # prepare as broad plan as possible based on full plan
         self._executor.loader.build_graph()  # reload
-        leaf_nodes = self._executor.loader.graph.leaf_nodes()
-        max_plan_migrations = []
-        for leaf in leaf_nodes:
-            # check if any targets get applied by migrating to the leaf node
-            # see how far along that plan we can go without exceeding targets
-            max_leaf = find_maximum_plan_depth(
-                targets, self._executor.migration_plan([leaf], clean_start=True)
-            )
-            if max_leaf is not None:
-                max_plan_migrations.append(max_leaf)
-        plan = self._executor.migration_plan(
-            max_plan_migrations,
-            clean_start=True,
-        )
+        max_plan_migrations = find_max_safe_nodes(targets, self._executor.loader.graph)
 
         # apply all migrations from generated plan on clean database
         # (only forward, so any unexpected migration won't be applied)
         # to restore database state before tested migration
+        plan = self._executor.migration_plan(
+            max_plan_migrations,
+            clean_start=True,
+        )
         return self._migrate(targets, plan=plan)
 
     def apply_tested_migration(self, targets: MigrationSpec) -> ProjectState:

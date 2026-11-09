@@ -1,7 +1,9 @@
+from collections.abc import Generator
+
 from django.apps import apps
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations import Migration
-from django.db.migrations.graph import Node
+from django.db.migrations.graph import MigrationGraph, Node
 from django.db.migrations.loader import MigrationLoader
 
 from django_test_migrations.exceptions import MigrationNotInPlan
@@ -85,26 +87,25 @@ def _generate_plan(
 
 
 def _has_exceeded_target(
-    targets: list[MigrationTarget],
-    seen: dict[MigrationTarget, bool],
+    seen_targets: dict[MigrationTarget, bool],
     migration: Migration
 ) -> bool:
     """Check if a migration is beyond migration targets."""
-    for target in targets:
+    for target, seen in seen_targets.items():
         # to_check[1] = None to match against any migration
         # in that app if already seen target
-        to_check = (target[0], None if seen[target] else target[1])
+        to_check = (target[0], None if seen else target[1])
 
         if not _filter_predicate(to_check, migration):
             continue  # not a match
 
-        if seen[target]:
+        if seen:
             # reached the next migration after one of our targets
             return True
 
         # we have reached a target migration and can proceed until
         # the next migration from this app
-        seen[target] = True
+        seen_targets[target] = True
 
     return False
 
@@ -129,7 +130,7 @@ def find_maximum_plan_depth(
     max_index = -1
 
     for index, migration in enumerate(migration_plan):
-        if _has_exceeded_target(targets, seen, migration):
+        if _has_exceeded_target(seen, migration):
             break
 
         max_index = index  # safe to migrate to this step
@@ -190,3 +191,52 @@ def _filter_predicate(target: MigrationTarget, migration: Migration) -> bool:
     # so in final all target app migrations will be excluded from plan
     index = 2 - (target[1] is None)
     return (migration.app_label, migration.name)[:index] == target[:index]
+
+
+def find_max_safe_nodes(
+    targets: MigrationSpec, graph: MigrationGraph
+) -> list[MigrationTarget]:
+    """Finds furthest nodes on a migration graph which can be migrated.
+
+    Starting from a root node from a migration graph, follows all children
+    on all branches to find the furthest nodes which can be safely migrated
+    without exceeding target migrations.
+    """
+    targets = normalize(targets)
+    seen_targets = {target: target[1] is None for target in targets}
+    seen_nodes = []
+
+    max_safe_nodes = set()
+    for root in graph.root_nodes():
+        # each root may encounter targets in a different order
+        # start from a fresh target mapping for each root
+        root_seen = seen_targets.copy()
+        # make sure the root migration isn't past a None target
+        if not _has_exceeded_target(root_seen, Migration(root[1], root[0])):
+            max_safe_nodes.update(
+                _follow_node(root_seen, graph.node_map[root], seen_nodes)
+            )
+    return list(max_safe_nodes)
+
+
+def _follow_node(
+    seen_targets: dict[MigrationTarget, bool],
+    node: Node, seen_nodes: list[Node]
+) -> Generator[MigrationTarget]:
+    if node in seen_nodes:
+        return  # already checked on another branch
+    seen_nodes.append(node)
+
+    if not node.children:
+        yield node.key  # this is a leaf node
+
+    for child in node.children:
+        if _has_exceeded_target(
+            seen_targets, Migration(child.key[1], child.key[0])
+        ):
+            yield node.key  # unsafe to migrate past this node
+        else:
+            # follow remaining child branches
+            # send copy of seen_targets in case multiple branches
+            # independently encounter migrations out-of-order
+            yield from _follow_node(seen_targets.copy(), child, seen_nodes)
