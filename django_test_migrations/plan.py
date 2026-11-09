@@ -196,11 +196,29 @@ def _filter_predicate(target: MigrationTarget, migration: Migration) -> bool:
 def find_max_safe_nodes(
     targets: MigrationSpec, graph: MigrationGraph
 ) -> list[MigrationTarget]:
-    """Finds furthest nodes on a migration graph which can be migrated.
+    r"""Finds furthest nodes on a migration graph which can be migrated.
 
-    Starting from a root node from a migration graph, follows all children
+    Starting from a root node in the migration graph, follows all children
     on all branches to find the furthest nodes which can be safely migrated
-    without exceeding target migrations.
+    without exceeding target migrations in a given app.
+
+    Consider this scenario:
+
+    A1 - A2 - A3
+       \    /
+    B1 - B2 - B3
+
+    With A2 as a target, we need to select B1-B3 and A1-A2. If branches outside
+    a given app were followed, it would be possible to go around A2 via B2
+    to arrive at A3 which would not get detected by _filter_predicate() since
+    we haven't actually visited B2 yet.
+
+    If just using graph.forwards_plan(), the depth-first search seems to start
+    alphabetically by app name. So it would yield A1-A2-B1-B2-B3, which
+    truncate_plan() would then leave as just A1-A2, failing to select B1-B3.
+
+    graph.root_nodes() returns all nodes which do not have any dependencies
+    within their app, thus serving as a starting point for every installed app.
     """
     targets = normalize(targets)
     seen_targets = {target: target[1] is None for target in targets}
@@ -235,8 +253,8 @@ def _follow_node(
             seen_targets, Migration(child.key[1], child.key[0])
         ):
             yield node.key  # unsafe to migrate past this node
-        else:
-            # follow remaining child branches
+        elif child.key[0] == node.key[0]:
+            # follow remaining child branches within an app
             # send copy of seen_targets in case multiple branches
             # independently encounter migrations out-of-order
             yield from _follow_node(seen_targets.copy(), child, seen_nodes)
