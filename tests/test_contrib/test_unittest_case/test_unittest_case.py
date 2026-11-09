@@ -82,7 +82,23 @@ class TestPlanTruncating(MigratorTestCase):
         model = self.old_state.apps.get_model('another_app', 'DummyModel')
         assert 'test_field' not in [f.name for f in model._meta.fields]
 
-    def test_ensure_test_field_added_after(self):
+    def test_ensure_test_field_not_added_after(self):
         """test_field should not be added since 0002_add_field not in migrate_to"""
         model = self.new_state.apps.get_model('another_app', 'DummyModel')
         assert 'test_field' not in [f.name for f in model._meta.fields]
+
+
+class TestPlanConvergence(MigratorTestCase):
+    """Ensure we don't go past migration targets by jumping between branches."""
+    migrate_from = [('another_app', '0002_add_field')]
+    migrate_to = [('main_app', '0001_initial')]
+
+    def test_ensure_test_field_not_added_before(self):
+        """test_field should not be added since 0002_add_field not in migrate_from"""
+        model = self.old_state.apps.get_model('another_app', 'DummyModel')
+        assert 'converged' not in [f.name for f in model._meta.fields]
+
+    def test_ensure_test_field_not_added_after(self):
+        """test_field should not be added since 0002_add_field not in migrate_to"""
+        model = self.new_state.apps.get_model('another_app', 'DummyModel')
+        assert 'converged' not in [f.name for f in model._meta.fields]
