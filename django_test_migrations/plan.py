@@ -219,12 +219,12 @@ def select_leaf_nodes(
     possible to go around A2 via B2 to arrive at A3, so it does not proceed to a
     converging node until all other parent nodes have been checked.
     """
-    none_targets = [t for t in targets if t[1] is None]
+    none_apps = [t[0] for t in targets if t[1] is None]
     not_none_targets = [t for t in targets if t[1] is not None]
 
     seen: set[Node] = set()
     leaf: set[Node] = set()
-    stack = [*_select_root_nodes(graph, none_targets)]
+    stack = [*_select_root_nodes(graph, none_apps)]
 
     while stack:
         node = stack.pop()
@@ -238,7 +238,7 @@ def select_leaf_nodes(
         # add any suitable child nodes to the stack for processing
         stack.extend(
             child for child in node.children if _check_if_can_process_child(
-                child, seen, none_targets, not_none_targets))
+                child, seen, none_apps, not_none_targets))
 
         if not any(child in stack for child in node.children):
             # unable to process any children, so maybe this is a leaf node?
@@ -249,7 +249,7 @@ def select_leaf_nodes(
 
 def _select_root_nodes(
     graph: MigrationGraph,
-    none_targets: list[MigrationTarget]
+    none_apps: list[str]
 ) -> Generator[Node]:
     """
     Identifies root nodes to follow to determine suitable leaf nodes.
@@ -263,19 +263,20 @@ def _select_root_nodes(
     """
     for root in graph.root_nodes():
         root_node = graph.node_map[root]
-        if not root_node.parents and root[0] not in [
-            n[0] for n in none_targets]:
+        if not root_node.parents and root[0] not in none_apps:
             yield root_node
 
 
 def _check_if_can_process_child(
     child: Node,
     seen: set[Node],
-    none_targets: list[MigrationTarget],
+    none_apps: list[str],
     not_none_targets: list[MigrationTarget]
 ) -> bool:
     """Determine if child node should be added to the stack."""
-    none_apps = [n[0] for n in none_targets]
+    if child in seen:
+        # child has already been checked on another branch
+        return False
     if not all(parent in seen for parent in child.parents):
         # we have not checked all branches for this child yet
         return False
