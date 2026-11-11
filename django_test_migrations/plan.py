@@ -193,8 +193,8 @@ def _filter_predicate(target: MigrationTarget, migration: Migration) -> bool:
     return (migration.app_label, migration.name)[:index] == target[:index]
 
 
-def find_max_safe_nodes(
-    targets: MigrationSpec, graph: MigrationGraph
+def select_leaf_nodes(
+    targets: list[MigrationTarget], graph: MigrationGraph
 ) -> list[MigrationTarget]:
     r"""Finds furthest nodes on a migration graph which can be migrated.
 
@@ -208,85 +208,83 @@ def find_max_safe_nodes(
        \    /
     B1 - B2 - B3
 
-    With A2 as a target, we need to select B1-B3 and A1-A2. If branches outside
-    a given app were followed, it would be possible to go around A2 via B2
-    to arrive at A3 which would not get detected by _filter_predicate() since
-    we haven't actually visited B2 yet.
+    With A2 as a target, we need to select B1-B3 and A1-A2.
 
     If just using graph.forwards_plan(), the depth-first search seems to start
     alphabetically by app name. So it would yield A1-A2-B1-B2-B3, which
     truncate_plan() would then leave as just A1-A2, failing to select B1-B3.
 
+    This function checks all nodes starting from roots and follows all children.
+    If branches were followed before all parent nodes were checked, it would be
+    possible to go around A2 via B2 to arrive at A3, so it does not proceed to a
+    converging node until all other parent nodes have been checked.
+    """
+    none_targets = [t for t in targets if t[1] is None]
+    not_none_targets = [t for t in targets if t[1] is not None]
+
+    seen: set[Node] = set()
+    leaf: set[Node] = set()
+    stack = [*_select_root_nodes(graph, none_targets)]
+
+    while stack:
+        node = stack.pop()
+        seen.add(node)
+
+        # if this is converging node, it may have proceeded past a previously
+        # identified leaf node (marked leaf because not all parent branches
+        # had been checked) - remove these unnecessary leaf nodes
+        leaf.difference_update(node.parents)
+
+        # add any suitable child nodes to the stack for processing
+        stack.extend(
+            child for child in node.children if _check_if_can_process_child(
+                child, seen, none_targets, not_none_targets))
+
+        if not any(child in stack for child in node.children):
+            # unable to process any children, so maybe this is a leaf node?
+            leaf.add(node)
+
+    return [node.key for node in leaf]
+
+
+def _select_root_nodes(
+    graph: MigrationGraph,
+    none_targets: list[MigrationTarget]
+) -> Generator[Node]:
+    """
+    Identifies root nodes to follow to determine suitable leaf nodes.
+
+    Selects only root nodes which are not in an app with a None target,
+    and which have no out-of-app dependencies (as these will get checked
+    by following branches from other app roots).
+
     graph.root_nodes() returns all nodes which do not have any dependencies
     within their app, thus serving as a starting point for every installed app.
     """
-    targets = normalize(targets)
-    seen_targets = {target: target[1] is None for target in targets}
-    seen_nodes = []
-    blocked_nodes = []
-
-    max_safe_nodes = set()
     for root in graph.root_nodes():
-        # each root may encounter targets in a different order
-        # start from a fresh target mapping for each root
-        root_seen = seen_targets.copy()
-        # make sure the root migration isn't past a None target
-        if not _has_exceeded_target(root_seen, Migration(root[1], root[0])):
-            node = graph.node_map[root]
-            # if the root has out-of-app dependencies, we must
-            # check these other apps first, and will encounter
-            # this root node by following the branches in other apps
-            if not node.parents:
-                max_safe_nodes.update(
-                    _follow_node(targets, node, seen_nodes, blocked_nodes)
-                )
-    print(max_safe_nodes)
-    return list(max_safe_nodes)
+        root_node = graph.node_map[root]
+        if not root_node.parents and root[0] not in [
+            n[0] for n in none_targets]:
+            yield root_node
 
 
-def _follow_node(
-    targets: list[MigrationTarget],
-    node: Node,
-    seen_nodes: list[Node],
-    blocked_nodes: list[Node]
-) -> Generator[MigrationTarget]:
-    seen_nodes.append(node)
-
+def _check_if_can_process_child(
+    child: Node,
+    seen: set[Node],
+    none_targets: list[MigrationTarget],
+    not_none_targets: list[MigrationTarget]
+) -> bool:
+    """Determine if child node should be added to the stack."""
+    none_apps = [n[0] for n in none_targets]
+    if not all(parent in seen for parent in child.parents):
+        # we have not checked all branches for this child yet
+        return False
     if any(
-        _filter_predicate(target, Migration(node.key[1], node.key[0]))
-        for target in targets if target[1] is not None
-        ):
-        # this node is a target migration, do not proceed to its children
-        yield node.key
-        for child in node.children:
-            if child.key[0] == node.key[0]:
-                # this is the next migration in this app
-                blocked_nodes.append(child)
-        return
-
-    # sort to follow this node's children first:
-    # django plans migration targets in the order they are listed.
-    # staying in-app first helps prevent yielding migrations out-of-order
-    # resulting in a mixed plan containing forward and reverse migrations
-    for child in sorted(node.children, key=lambda x: x.key[0] != node.key[0]):
-        if child in seen_nodes or child in blocked_nodes:
-            continue  # already checked on another branch
-        elif any(
-            _filter_predicate(target, Migration(child.key[1], child.key[0]))
-            for target in targets if target[1] is None
-        ):
-            # this child because from an app with a None target
-            continue
-        elif all(parent in seen_nodes for parent in child.parents) and not any(parent in blocked_nodes for parent in child.parents):
-            # follow remaining child branches if all other converging
-            # branches have been checked first
-            yield from _follow_node(targets, child, seen_nodes, blocked_nodes)
-
-    if not any(child in seen_nodes for child in node.children):
-        # we were unable to proceed past this node because:
-        # 1) this is a leaf node which has no children; or
-        # 2) we have arrived at a converging child node which has
-        # not had all its parent branches checked yet, either
-        # because we got here first, or another branch has reached
-        # a target first.
-        yield node.key
+        parent.key[0] == child.key[0] and parent in
+        not_none_targets for parent in child.parents
+    ):
+        # this child has a target migration for a parent and belongs to
+        # that target's app, so is past the target
+        return False
+    # ensure this child does not belong to an app with a None target
+    return child[0] not in none_apps

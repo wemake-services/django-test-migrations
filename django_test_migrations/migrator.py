@@ -11,7 +11,7 @@ from django.db.models import ManyToManyField
 
 from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
-from django_test_migrations.plan import find_max_safe_nodes
+from django_test_migrations.plan import select_leaf_nodes
 from django_test_migrations.signals import mute_migrate_signals
 from django_test_migrations.types import (
     MigrationPlan,
@@ -155,7 +155,7 @@ class Migrator:
 
         # prepare as broad plan as possible based on full plan
         self._executor.loader.build_graph()  # reload
-        max_plan_migrations = find_max_safe_nodes(targets, self._executor.loader.graph)
+        max_plan_migrations = select_leaf_nodes(targets, self._executor.loader.graph)
 
         # apply all migrations from generated plan on clean database
         # (only forward, so any unexpected migration won't be applied)
