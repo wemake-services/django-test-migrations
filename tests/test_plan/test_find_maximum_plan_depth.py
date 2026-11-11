@@ -13,7 +13,7 @@ def test_has_exceeded_target():
     seen = {target: True}
     migration = Migration('0002', 'app1')
 
-    assert _has_exceeded_target([target], seen, migration)
+    assert _has_exceeded_target(seen, migration)
 
 
 def test_has_not_exceeded_target_reached_target():
@@ -22,7 +22,7 @@ def test_has_not_exceeded_target_reached_target():
     seen = {target: False}
     migration = Migration('0001', 'app1')
 
-    assert not _has_exceeded_target([target], seen, migration)
+    assert not _has_exceeded_target(seen, migration)
     assert seen[target]
 
 
@@ -32,7 +32,7 @@ def test_has_not_exceeded_target():
     seen = {target: False}
     migration = Migration('0001', 'app1')
 
-    assert not _has_exceeded_target([target], seen, migration)
+    assert not _has_exceeded_target(seen, migration)
 
 
 def test_has_exceeded_target_none():
@@ -41,7 +41,7 @@ def test_has_exceeded_target_none():
     seen = {target: True}
     migration = Migration('0001', 'app1')
 
-    assert _has_exceeded_target([target], seen, migration)
+    assert _has_exceeded_target(seen, migration)
 
 
 def test_has_not_exceeded_target_other_app():
@@ -50,7 +50,7 @@ def test_has_not_exceeded_target_other_app():
     seen = {target: True}
     migration = Migration('0001', 'app2')
 
-    assert not _has_exceeded_target([target], seen, migration)
+    assert not _has_exceeded_target(seen, migration)
 
 
 @pytest.mark.parametrize(
