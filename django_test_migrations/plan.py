@@ -7,12 +7,7 @@ from django.db.migrations.graph import MigrationGraph, Node
 from django.db.migrations.loader import MigrationLoader
 
 from django_test_migrations.exceptions import MigrationNotInPlan
-from django_test_migrations.logic.migrations import normalize
-from django_test_migrations.types import (
-    MigrationPlan,
-    MigrationSpec,
-    MigrationTarget,
-)
+from django_test_migrations.types import MigrationPlan, MigrationTarget
 
 
 def all_migrations(
@@ -84,63 +79,6 @@ def _generate_plan(
                 plan.append(node)
                 seen.add(migration)
     return plan
-
-
-def _has_exceeded_target(
-    seen_targets: dict[MigrationTarget, bool],
-    migration: Migration
-) -> bool:
-    """Check if a migration is beyond migration targets."""
-    for target, seen in seen_targets.items():
-        # to_check[1] = None to match against any migration
-        # in that app if already seen target
-        to_check = (target[0], None if seen else target[1])
-
-        if not _filter_predicate(to_check, migration):
-            continue  # not a match
-
-        if seen:
-            # reached the next migration after one of our targets
-            return True
-
-        # we have reached a target migration and can proceed until
-        # the next migration from this app
-        seen_targets[target] = True
-
-    return False
-
-
-def find_maximum_plan_depth(
-    targets: MigrationSpec, plan: MigrationPlan
-) -> MigrationTarget | None:
-    """Find maximum depth before exceeding migration targets.
-
-    Given a migration plan, checks each step in the plan
-    against the listed migration targets. If a target is
-    found, continues down the plan until it reaches the
-    next migration in that app. That is the maximum depth
-    in the plan that can be safely migrated without exceeding
-    the migration targets. If None is the target, the first
-    migration encountered from that app is considered past
-    the target.
-    """
-    targets = normalize(targets)
-    migration_plan = [node[0] for node in plan]
-    seen = {target: target[1] is None for target in targets}
-    max_index = -1
-
-    for index, migration in enumerate(migration_plan):
-        if _has_exceeded_target(seen, migration):
-            break
-
-        max_index = index  # safe to migrate to this step
-
-    if max_index < 0:
-        # all migrations in this plan exceed targets
-        return None
-
-    max_migration = plan[max_index][0]
-    return max_migration.app_label, max_migration.name
 
 
 def truncate_plan(
