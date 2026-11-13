@@ -1,11 +1,11 @@
 import pytest
-from django.db import connections, DEFAULT_DB_ALIAS
+from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.loader import MigrationLoader
 
 from django_test_migrations.plan import (
-    _select_root_nodes,
     _check_if_can_process_child,
-    select_leaf_nodes
+    _select_root_nodes,
+    select_leaf_nodes,
 )
 
 
@@ -30,7 +30,7 @@ def test_select_root_nodes_none_target():
 def test_can_check_child():
     # should select child since no concerns
     graph = MigrationLoader(connections[DEFAULT_DB_ALIAS]).graph
-    node = graph.node_map[('another_app', '0001_initial')]
+    node = graph.node_map['another_app', '0001_initial']
     assert _check_if_can_process_child(node, set(), [], [])
 
 
@@ -38,7 +38,7 @@ def test_can_check_child():
 def test_can_check_child_seen():
     # should not select child since already seen
     graph = MigrationLoader(connections[DEFAULT_DB_ALIAS]).graph
-    node = graph.node_map[('another_app', '0001_initial')]
+    node = graph.node_map['another_app', '0001_initial']
     assert not _check_if_can_process_child(node, {node.key}, [], [])
 
 
@@ -46,7 +46,7 @@ def test_can_check_child_seen():
 def test_can_check_child_parent_not_seen():
     # should not select child since parent not yet checked
     graph = MigrationLoader(connections[DEFAULT_DB_ALIAS]).graph
-    node = graph.node_map[('another_app', '0002_add_field')]
+    node = graph.node_map['another_app', '0002_add_field']
     assert not _check_if_can_process_child(node, set(), [], [])
 
 
@@ -54,16 +54,20 @@ def test_can_check_child_parent_not_seen():
 def test_can_check_child_parent_target():
     # should not select child since parent is in app and is a target
     graph = MigrationLoader(connections[DEFAULT_DB_ALIAS]).graph
-    node = graph.node_map[('another_app', '0002_add_field')]
-    assert not _check_if_can_process_child(node, node.parents, [], [('another_app', '0001_initial')])
+    node = graph.node_map['another_app', '0002_add_field']
+    assert not _check_if_can_process_child(
+        node, node.parents, [], [('another_app', '0001_initial')]
+    )
 
 
 @pytest.mark.django_db
 def test_can_check_child_parent_target():
     # should not select child since is from an app with a None target
     graph = MigrationLoader(connections[DEFAULT_DB_ALIAS]).graph
-    node = graph.node_map[('another_app', '0003_converge')]
-    assert not _check_if_can_process_child(node, node.parents, ['another_app'], [])
+    node = graph.node_map['another_app', '0003_converge']
+    assert not _check_if_can_process_child(
+        node, node.parents, ['another_app'], []
+    )
 
 
 @pytest.mark.django_db

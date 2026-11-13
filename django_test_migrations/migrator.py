@@ -43,8 +43,7 @@ class Migrator:
         self._database: str = database
         self._executor = MigrationExecutor(connections[self._database])
 
-    def apply_initial_migration(
-        self, targets: MigrationSpec) -> ProjectState:
+    def apply_initial_migration(self, targets: MigrationSpec) -> ProjectState:
         """Reverse back to the original migration."""
         targets = normalize(targets)
 
@@ -56,7 +55,8 @@ class Migrator:
         # prepare as broad plan as possible based on full plan
         self._executor.loader.build_graph()  # reload
         max_plan_migrations = select_leaf_nodes(
-            targets, self._executor.loader.graph)
+            targets, self._executor.loader.graph
+        )
 
         # apply all migrations from generated plan on clean database
         # (only forward, so any unexpected migration won't be applied)

@@ -77,6 +77,7 @@ class TestMigrationOrdering(MigratorTestCase):
 
 class TestPlanTruncating(MigratorTestCase):
     """Ensure we don't migrate past target migrations in migrate_from"""
+
     migrate_from = [('main_app', None), ('another_app', '0001_initial')]
     migrate_to = [('main_app', '0001_initial')]
 
@@ -94,7 +95,9 @@ class TestPlanTruncating(MigratorTestCase):
 class TestPlanConvergenceNeighboringNode(MigratorTestCase):
     """Ensure we don't go past migration targets by jumping between branches.
 
-    This test has the converging node immediately following a target node."""
+    This test has the converging node immediately following a target node.
+    """
+
     migrate_from = [('another_app', '0002_add_field')]
     migrate_to = [('main_app', '0001_initial')]
 
@@ -112,7 +115,9 @@ class TestPlanConvergenceNeighboringNode(MigratorTestCase):
 class TestPlanConvergenceGapNode(MigratorTestCase):
     """Ensure we don't go past migration targets by jumping between branches.
 
-    This test has the converging node one node away from the target node."""
+    This test has the converging node one node away from the target node.
+    """
+
     migrate_from = [('another_app', '0001_initial')]
     migrate_to = [('main_app', '0001_initial')]
 

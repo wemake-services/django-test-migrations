@@ -175,8 +175,12 @@ def select_leaf_nodes(
 
         # add any suitable child nodes to the stack for processing
         stack.extend(
-            child for child in node.children if _check_if_can_process_child(
-                child, seen, none_apps, not_none_targets))
+            child
+            for child in node.children
+            if _check_if_can_process_child(
+                child, seen, none_apps, not_none_targets
+            )
+        )
 
         if not any(child in stack for child in node.children):
             # unable to process any children, so maybe this is a leaf node?
@@ -186,8 +190,7 @@ def select_leaf_nodes(
 
 
 def _select_root_nodes(
-    graph: MigrationGraph,
-    none_apps: list[str]
+    graph: MigrationGraph, none_apps: list[str]
 ) -> Generator[Node]:
     """
     Identifies root nodes to follow to determine suitable leaf nodes.
@@ -209,7 +212,7 @@ def _check_if_can_process_child(
     child: Node,
     seen: set[Node],
     none_apps: list[str],
-    not_none_targets: list[MigrationTarget]
+    not_none_targets: list[MigrationTarget],
 ) -> bool:
     """Determine if child node should be added to the stack."""
     if child in seen:
@@ -219,8 +222,8 @@ def _check_if_can_process_child(
         # we have not checked all branches for this child yet
         return False
     if any(
-        parent.key[0] == child.key[0] and parent in
-        not_none_targets for parent in child.parents
+        parent.key[0] == child.key[0] and parent in not_none_targets
+        for parent in child.parents
     ):
         # this child has a target migration for a parent and belongs to
         # that target's app, so is past the target
