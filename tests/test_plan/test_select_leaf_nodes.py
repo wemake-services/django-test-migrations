@@ -1,6 +1,5 @@
 import pytest
 from django.db import connections, DEFAULT_DB_ALIAS
-from django.db.migrations import Migration
 from django.db.migrations.loader import MigrationLoader
 
 from django_test_migrations.plan import (

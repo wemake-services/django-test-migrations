@@ -134,7 +134,7 @@ def _filter_predicate(target: MigrationTarget, migration: Migration) -> bool:
 def select_leaf_nodes(
     targets: list[MigrationTarget], graph: MigrationGraph
 ) -> list[MigrationTarget]:
-    r"""Finds furthest nodes on a migration graph which can be migrated.
+    r"""Finds the furthest nodes on a migration graph which can be migrated.
 
     Starting from a root node in the migration graph, follows all children
     on all branches to find the furthest nodes which can be safely migrated
@@ -154,8 +154,8 @@ def select_leaf_nodes(
 
     This function checks all nodes starting from roots and follows all children.
     If branches were followed before all parent nodes were checked, it would be
-    possible to go around A2 via B2 to arrive at A3, so it does not proceed to a
-    converging node until all other parent nodes have been checked.
+    possible to go around A2 via B2 to arrive at A3, so this function does not
+    proceed to a converging node until all other parent nodes have been checked.
     """
     none_apps = [t[0] for t in targets if t[1] is None]
     not_none_targets = [t for t in targets if t[1] is not None]
