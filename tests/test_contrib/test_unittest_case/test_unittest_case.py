@@ -13,6 +13,9 @@ class TestDirectMigration(MigratorTestCase):
         """Override parent's setUpClass to trigger #503."""
         super().setUpClass()
 
+    def setUp(self):
+        super().setUp()
+
     def prepare(self):
         """Prepare some data before the migration."""
         SomeItem = self.old_state.apps.get_model('main_app', 'SomeItem')
@@ -50,3 +53,80 @@ def test_migration_test_marker_tag():
     """Ensure ``MigratorTestCase`` subclasses are properly tagged."""
     assert MIGRATION_TEST_MARKER in TestDirectMigration.tags
     assert MIGRATION_TEST_MARKER in TestBackwardMigration.tags
+
+
+class TestMigrationOrdering(MigratorTestCase):
+    """Ensure we don't select migrations we intend to test as part of the initial migration"""
+
+    migrate_from = [('main_app', None), ('another_app', '0001_initial')]
+    migrate_to = [
+        ('main_app', '0001_initial'),
+        ('another_app', '0002_add_field'),
+    ]
+
+    def test_ensure_test_field_not_added_before(self):
+        """test_field should not be added since 0002_add_field not in migrate_from"""
+        model = self.old_state.apps.get_model('another_app', 'DummyModel')
+        assert 'test_field' not in [f.name for f in model._meta.fields]
+
+    def test_ensure_test_field_added_after(self):
+        """test_field should be added since 0002_add_field in migrate_to"""
+        model = self.new_state.apps.get_model('another_app', 'DummyModel')
+        assert 'test_field' in [f.name for f in model._meta.fields]
+
+
+class TestPlanTruncating(MigratorTestCase):
+    """Ensure we don't migrate past target migrations in migrate_from"""
+
+    migrate_from = [('main_app', None), ('another_app', '0001_initial')]
+    migrate_to = [('main_app', '0001_initial')]
+
+    def test_ensure_test_field_not_added_before(self):
+        """test_field should not be added since 0002_add_field not in migrate_from"""
+        model = self.old_state.apps.get_model('another_app', 'DummyModel')
+        assert 'test_field' not in [f.name for f in model._meta.fields]
+
+    def test_ensure_test_field_not_added_after(self):
+        """test_field should not be added since 0002_add_field not in migrate_to"""
+        model = self.new_state.apps.get_model('another_app', 'DummyModel')
+        assert 'test_field' not in [f.name for f in model._meta.fields]
+
+
+class TestPlanConvergenceNeighboringNode(MigratorTestCase):
+    """Ensure we don't go past migration targets by jumping between branches.
+
+    This test has the converging node immediately following a target node.
+    """
+
+    migrate_from = [('another_app', '0002_add_field')]
+    migrate_to = [('main_app', '0001_initial')]
+
+    def test_ensure_test_field_not_added_before(self):
+        """test_field should not be added since 0002_add_field not in migrate_from"""
+        model = self.old_state.apps.get_model('another_app', 'DummyModel')
+        assert 'converged' not in [f.name for f in model._meta.fields]
+
+    def test_ensure_test_field_not_added_after(self):
+        """test_field should not be added since 0002_add_field not in migrate_to"""
+        model = self.new_state.apps.get_model('another_app', 'DummyModel')
+        assert 'converged' not in [f.name for f in model._meta.fields]
+
+
+class TestPlanConvergenceGapNode(MigratorTestCase):
+    """Ensure we don't go past migration targets by jumping between branches.
+
+    This test has the converging node one node away from the target node.
+    """
+
+    migrate_from = [('another_app', '0001_initial')]
+    migrate_to = [('main_app', '0001_initial')]
+
+    def test_ensure_test_field_not_added_before(self):
+        """test_field should not be added since 0002_add_field not in migrate_from"""
+        model = self.old_state.apps.get_model('another_app', 'DummyModel')
+        assert 'converged' not in [f.name for f in model._meta.fields]
+
+    def test_ensure_test_field_not_added_after(self):
+        """test_field should not be added since 0002_add_field not in migrate_to"""
+        model = self.new_state.apps.get_model('another_app', 'DummyModel')
+        assert 'converged' not in [f.name for f in model._meta.fields]
