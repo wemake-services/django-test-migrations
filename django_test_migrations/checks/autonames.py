@@ -10,14 +10,14 @@ _IgnoreAppSpec = frozenset[str]
 
 _IgnoreMigrationSpec = frozenset[tuple[str, str]]
 
-#: We use this type hint to represent ignore rules for migrations.
 _IgnoreSpec = tuple[_IgnoreAppSpec, _IgnoreMigrationSpec]
+"""We use this type hint to represent ignore rules for migrations."""
 
-#: We use this value as a unique identifier of this check.
 CHECK_NAME: Final = 'django_test_migrations.checks.autonames'
+"""We use this value as a unique identifier of this check."""
 
-#: Settings name for this check to ignore some migrations.
 _SETTINGS_NAME: Final = 'DTM_IGNORED_MIGRATIONS'
+"""Settings name for this check to ignore some migrations."""
 
 # Special key to ignore all migrations inside an app
 _IGNORE_APP_MIGRATIONS_SPECIAL_KEY: Final = '*'

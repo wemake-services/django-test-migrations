@@ -17,9 +17,9 @@ class MigratorTestCase(TransactionTestCase):
     old_state: ProjectState
     new_state: ProjectState
 
-    #: Part of the end-user API. Used to tell what migrations we are using.
     migrate_from: ClassVar[MigrationSpec]
     migrate_to: ClassVar[MigrationSpec]
+    """Part of the end-user API. Used to tell what migrations we are using."""
 
     # hold original receivers to restore them after each test
     _pre_migrate_receivers: list[Any]
