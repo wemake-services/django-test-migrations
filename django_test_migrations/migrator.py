@@ -9,7 +9,7 @@ from django.db.models import ManyToManyField
 
 from django_test_migrations import sql
 from django_test_migrations.logic.migrations import normalize
-from django_test_migrations.plan import truncate_plan
+from django_test_migrations.plan import select_leaf_nodes
 from django_test_migrations.signals import mute_migrate_signals
 from django_test_migrations.types import (
     MigrationPlan,
@@ -45,7 +45,7 @@ class Migrator:
 
     def apply_initial_migration(self, targets: MigrationSpec) -> ProjectState:
         """Reverse back to the original migration."""
-        migration_targets = normalize(targets)
+        targets = normalize(targets)
 
         style = no_style()
         # start from clean database state
@@ -54,16 +54,18 @@ class Migrator:
 
         # prepare as broad plan as possible based on full plan
         self._executor.loader.build_graph()  # reload
-        full_plan = self._executor.migration_plan(
-            self._executor.loader.graph.leaf_nodes(),
-            clean_start=True,
+        max_plan_migrations = select_leaf_nodes(
+            targets, self._executor.loader.graph
         )
-        plan = truncate_plan(migration_targets, full_plan)
 
         # apply all migrations from generated plan on clean database
         # (only forward, so any unexpected migration won't be applied)
         # to restore database state before tested migration
-        return self._migrate(migration_targets, plan=plan)
+        plan = self._executor.migration_plan(
+            max_plan_migrations,
+            clean_start=True,
+        )
+        return self._migrate(targets, plan=plan)
 
     def apply_tested_migration(self, targets: MigrationSpec) -> ProjectState:
         """Apply the next migration."""
