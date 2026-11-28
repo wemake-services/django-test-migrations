@@ -26,3 +26,16 @@ def test_migrator_list(transactional_db):
     assert isinstance(old_state, ProjectState)
     assert isinstance(new_state, ProjectState)
     assert migrator.reset() is None
+
+
+@pytest.mark.django_db()
+def test_migrator_reset(transactional_db, mocker):
+    """Ensure reset does not execute any migrations."""
+    migrator = Migrator()
+    old_state = migrator.apply_initial_migration([('main_app', None)])
+    new_state = migrator.apply_tested_migration([('main_app', '0001_initial')])
+
+    run_python_mock = mocker.patch('django.db.migrations.RunPython')
+    migrator.reset()
+
+    assert not run_python_mock.called
